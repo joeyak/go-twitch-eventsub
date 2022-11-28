@@ -53,8 +53,14 @@ type Client struct {
 	onRevoke       func(message RevokeMessage)
 
 	// Events
-	onEventChannelBan   func(event EventChannelBan)
-	onEventChannelUnban func(event EventChannelUnban)
+	onEventChannelUpdate              func(event EventChannelUpdate)
+	onEventChannelFollow              func(event EventChannelFollow)
+	onEventChannelSubscribe           func(event EventChannelSubscribe)
+	onEventChannelSubscriptionEnd     func(event EventChannelSubscriptionEnd)
+	onEventChannelSubscriptionGift    func(event EventChannelSubscriptionGift)
+	onEventChannelSubscriptionMessage func(event EventChannelSubscriptionMessage)
+	onEventChannelBan                 func(event EventChannelBan)
+	onEventChannelUnban               func(event EventChannelUnban)
 }
 
 func NewClient() *Client {
@@ -136,6 +142,30 @@ func (c *Client) OnReconnect(callback func(message ReconnectMessage)) {
 
 func (c *Client) OnRevoke(callback func(message RevokeMessage)) {
 	c.onRevoke = callback
+}
+
+func (c *Client) OnEventChannelUpdate(callback func(event EventChannelUpdate)) {
+	c.onEventChannelUpdate = callback
+}
+
+func (c *Client) OnEventChannelFollow(callback func(event EventChannelFollow)) {
+	c.onEventChannelFollow = callback
+}
+
+func (c *Client) OnEventChannelSubscribe(callback func(event EventChannelSubscribe)) {
+	c.onEventChannelSubscribe = callback
+}
+
+func (c *Client) OnEventChannelSubscriptionEnd(callback func(event EventChannelSubscriptionEnd)) {
+	c.onEventChannelSubscriptionEnd = callback
+}
+
+func (c *Client) OnEventChannelSubscriptionGift(callback func(event EventChannelSubscriptionGift)) {
+	c.onEventChannelSubscriptionGift = callback
+}
+
+func (c *Client) OnEventChannelSubscriptionMessage(callback func(event EventChannelSubscriptionMessage)) {
+	c.onEventChannelSubscriptionMessage = callback
 }
 
 func (c *Client) OnEventChannelBan(callback func(event EventChannelBan)) {
@@ -224,6 +254,18 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 	}
 
 	switch event := newEvent.(type) {
+	case *EventChannelUpdate:
+		callFunc(c.onEventChannelUpdate, *event)
+	case *EventChannelFollow:
+		callFunc(c.onEventChannelFollow, *event)
+	case *EventChannelSubscribe:
+		callFunc(c.onEventChannelSubscribe, *event)
+	case *EventChannelSubscriptionEnd:
+		callFunc(c.onEventChannelSubscriptionEnd, *event)
+	case *EventChannelSubscriptionGift:
+		callFunc(c.onEventChannelSubscriptionGift, *event)
+	case *EventChannelSubscriptionMessage:
+		callFunc(c.onEventChannelSubscriptionMessage, *event)
 	case *EventChannelBan:
 		callFunc(c.onEventChannelBan, *event)
 	case *EventChannelUnban:

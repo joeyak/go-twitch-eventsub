@@ -64,22 +64,28 @@ var (
 
 	subMetadata = map[EventSubscription]subscriptionMetadata{
 		SubChannelUpdate: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelUpdate](),
 		},
 		SubChannelFollow: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelFollow](),
 		},
 		SubChannelSubscribe: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelSubscribe](),
 		},
 		SubChannelSubscriptionEnd: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelSubscriptionEnd](),
 		},
 		SubChannelSubscriptionGift: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelSubscriptionGift](),
 		},
 		SubChannelSubscriptionMessage: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelSubscriptionMessage](),
 		},
 		SubChannelCheer: {
 			Version: "1",
