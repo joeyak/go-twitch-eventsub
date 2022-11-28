@@ -1,4 +1,4 @@
-package eventsub
+package twitch
 
 import (
 	"context"
@@ -32,7 +32,7 @@ func genDefault[T any]() func() interface{} {
 	}
 }
 
-type Conn struct {
+type Client struct {
 	Address string
 	ws      *websocket.Conn
 	closed  bool
@@ -46,23 +46,23 @@ type Conn struct {
 	onRevoke       func(message RevokeMessage)
 }
 
-func NewConn() *Conn {
-	return NewConnWithUrl(twitchWebsocketUrl)
+func NewClient() *Client {
+	return NewClientWithUrl(twitchWebsocketUrl)
 }
 
-func NewConnWithUrl(url string) *Conn {
-	return &Conn{
+func NewClientWithUrl(url string) *Client {
+	return &Client{
 		Address: url,
 		closed:  true,
 		onError: func(err error) { fmt.Printf("ERROR: %v\n", err) },
 	}
 }
 
-func (c *Conn) Connect() error {
+func (c *Client) Connect() error {
 	return c.ConnectWithContext(context.Background())
 }
 
-func (c *Conn) ConnectWithContext(ctx context.Context) error {
+func (c *Client) ConnectWithContext(ctx context.Context) error {
 	if c.onWelcome == nil {
 		return ErrNilOnWelcome
 	}
@@ -91,7 +91,7 @@ func (c *Conn) ConnectWithContext(ctx context.Context) error {
 	}
 }
 
-func (c *Conn) Close() error {
+func (c *Client) Close() error {
 	c.closed = true
 	if c.ws == nil {
 		return nil
@@ -99,35 +99,35 @@ func (c *Conn) Close() error {
 	return c.ws.Close(websocket.StatusNormalClosure, "Stopping Connection")
 }
 
-func (c *Conn) IsClosed() bool {
+func (c *Client) IsClosed() bool {
 	return c.closed
 }
 
-func (c *Conn) OnError(callback func(err error)) {
+func (c *Client) OnError(callback func(err error)) {
 	c.onError = callback
 }
 
-func (c *Conn) OnWelcome(callback func(message WelcomeMessage)) {
+func (c *Client) OnWelcome(callback func(message WelcomeMessage)) {
 	c.onWelcome = callback
 }
 
-func (c *Conn) OnKeepAlive(callback func(message KeepAliveMessage)) {
+func (c *Client) OnKeepAlive(callback func(message KeepAliveMessage)) {
 	c.onKeepAlive = callback
 }
 
-func (c *Conn) OnNotification(callback func(message NotificationMessage)) {
+func (c *Client) OnNotification(callback func(message NotificationMessage)) {
 	c.onNotification = callback
 }
 
-func (c *Conn) OnReconnect(callback func(message ReconnectMessage)) {
+func (c *Client) OnReconnect(callback func(message ReconnectMessage)) {
 	c.onReconnect = callback
 }
 
-func (c *Conn) OnRevoke(callback func(message RevokeMessage)) {
+func (c *Client) OnRevoke(callback func(message RevokeMessage)) {
 	c.onRevoke = callback
 }
 
-func (c *Conn) handleMessage(data []byte) error {
+func (c *Client) handleMessage(data []byte) error {
 	var baseMessage messageBase
 	err := json.Unmarshal(data, &baseMessage)
 	if err != nil {
@@ -173,7 +173,7 @@ func (c *Conn) handleMessage(data []byte) error {
 	return nil
 }
 
-func (c *Conn) handleReconnect(message ReconnectMessage) error {
+func (c *Client) handleReconnect(message ReconnectMessage) error {
 	c.Address = message.Payload.Session.ReconnectUrl
 	err := c.dial()
 	if err != nil {
@@ -187,7 +187,7 @@ func (c *Conn) handleReconnect(message ReconnectMessage) error {
 	return nil
 }
 
-func (c *Conn) dial() error {
+func (c *Client) dial() error {
 	ws, _, err := websocket.Dial(c.ctx, c.Address, nil)
 	if err != nil {
 		return fmt.Errorf("could not dial twitch: %w", err)

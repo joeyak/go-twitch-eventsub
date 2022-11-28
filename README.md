@@ -12,7 +12,7 @@ package main
 import (
 	"fmt"
 
-	eventsub "github.com/joeyak/go-twitch-eventsub"
+	"github.com/joeyak/go-twitch-eventsub"
 )
 
 var (
@@ -22,22 +22,22 @@ var (
 )
 
 func main() {
-	conn := eventsub.NewConn()
+	client := twitch.NewClient()
 
-	conn.OnError(func(err error) {
+	client.OnError(func(err error) {
 		fmt.Printf("ERROR: %v\n", err)
 	})
-	conn.OnWelcome(func(message eventsub.WelcomeMessage) {
+	client.OnWelcome(func(message twitch.WelcomeMessage) {
 		fmt.Printf("WELCOME: %v\n", message)
 
-		events := []eventsub.EventSubscription{
-			eventsub.SubStreamOnline,
-			eventsub.SubStreamOffline,
+		events := []twitch.EventSubscription{
+			twitch.SubStreamOnline,
+			twitch.SubStreamOffline,
 		}
 
 		for _, event := range events {
 			fmt.Printf("subscribing to %s\n", event)
-			_, err := eventsub.SubscribeEvent(eventsub.SubscribeRequest{
+			_, err := twitch.SubscribeEvent(twitch.SubscribeRequest{
 				SessionID:   message.Payload.Session.ID,
 				ClientID:    clientID,
 				AccessToken: accessToken,
@@ -52,19 +52,19 @@ func main() {
 			}
 		}
 	})
-	conn.OnNotification(func(message eventsub.NotificationMessage) {
+	client.OnNotification(func(message twitch.NotificationMessage) {
 		fmt.Printf("NOTIFICATION: %s: %#v\n", message.Payload.Subscription.Type, message.Payload.Event)
 	})
-	conn.OnKeepAlive(func(message eventsub.KeepAliveMessage) {
+	client.OnKeepAlive(func(message twitch.KeepAliveMessage) {
 		fmt.Printf("KEEPALIVE: %v\n", message)
 	})
-	conn.OnRevoke(func(message eventsub.RevokeMessage) {
+	client.OnRevoke(func(message twitch.RevokeMessage) {
 		fmt.Printf("REVOKE: %v\n", message)
 	})
 
-	err := conn.Connect()
+	err := client.Connect()
 	if err != nil {
-		fmt.Printf("Could not connect eventsub: %v\n", err)
+		fmt.Printf("Could not connect client: %v\n", err)
 	}
 }
 ```
