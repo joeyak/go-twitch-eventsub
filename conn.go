@@ -53,7 +53,8 @@ type Client struct {
 	onRevoke       func(message RevokeMessage)
 
 	// Events
-	onEventChannelBan func(event EventChannelBan)
+	onEventChannelBan   func(event EventChannelBan)
+	onEventChannelUnban func(event EventChannelUnban)
 }
 
 func NewClient() *Client {
@@ -141,6 +142,10 @@ func (c *Client) OnEventChannelBan(callback func(event EventChannelBan)) {
 	c.onEventChannelBan = callback
 }
 
+func (c *Client) OnEventChannelUnban(callback func(event EventChannelUnban)) {
+	c.onEventChannelUnban = callback
+}
+
 func (c *Client) handleMessage(data []byte) error {
 	var baseMessage messageBase
 	err := json.Unmarshal(data, &baseMessage)
@@ -221,6 +226,8 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 	switch event := newEvent.(type) {
 	case *EventChannelBan:
 		callFunc(c.onEventChannelBan, *event)
+	case *EventChannelUnban:
+		callFunc(c.onEventChannelUnban, *event)
 	default:
 		c.onError(fmt.Errorf("unkown event type %s", subType))
 	}

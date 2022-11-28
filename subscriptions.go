@@ -92,7 +92,8 @@ var (
 			EventGen: zeroPtrGen[EventChannelBan](),
 		},
 		SubChannelUnban: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelUnban](),
 		},
 		SubChannelModeratorAdd: {
 			Version: "1",
