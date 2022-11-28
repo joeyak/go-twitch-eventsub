@@ -18,17 +18,23 @@ var (
 	ErrNilOnWelcome = fmt.Errorf("OnWelcome function was not set")
 
 	messageTypeMap = map[string]func() interface{}{
-		"session_welcome":       genDefault[WelcomeMessage](),
-		"session_keepalive":     genDefault[KeepAliveMessage](),
-		"notification":          genDefault[NotificationMessage](),
-		"session_reconnect":     genDefault[ReconnectMessage](),
-		"authorization_revoked": genDefault[RevokeMessage](),
+		"session_welcome":       zeroPtrGen[WelcomeMessage](),
+		"session_keepalive":     zeroPtrGen[KeepAliveMessage](),
+		"notification":          zeroPtrGen[NotificationMessage](),
+		"session_reconnect":     zeroPtrGen[ReconnectMessage](),
+		"authorization_revoked": zeroPtrGen[RevokeMessage](),
 	}
 )
 
-func genDefault[T any]() func() interface{} {
+func zeroPtrGen[T any]() func() interface{} {
 	return func() interface{} {
 		return new(T)
+	}
+}
+
+func callFunc[T any](f func(T), v T) {
+	if f != nil {
+		f(v)
 	}
 }
 
@@ -38,12 +44,16 @@ type Client struct {
 	closed  bool
 	ctx     context.Context
 
+	// Responses
 	onError        func(err error)
 	onWelcome      func(message WelcomeMessage)
 	onKeepAlive    func(message KeepAliveMessage)
 	onNotification func(message NotificationMessage)
 	onReconnect    func(message ReconnectMessage)
 	onRevoke       func(message RevokeMessage)
+
+	// Events
+	onEventChannelBan func(event EventChannelBan)
 }
 
 func NewClient() *Client {
@@ -127,6 +137,10 @@ func (c *Client) OnRevoke(callback func(message RevokeMessage)) {
 	c.onRevoke = callback
 }
 
+func (c *Client) OnEventChannelBan(callback func(event EventChannelBan)) {
+	c.onEventChannelBan = callback
+}
+
 func (c *Client) handleMessage(data []byte) error {
 	var baseMessage messageBase
 	err := json.Unmarshal(data, &baseMessage)
@@ -150,12 +164,12 @@ func (c *Client) handleMessage(data []byte) error {
 	case *WelcomeMessage:
 		c.onWelcome(*msg)
 	case *KeepAliveMessage:
-		if c.onKeepAlive != nil {
-			c.onKeepAlive(*msg)
-		}
+		callFunc(c.onKeepAlive, *msg)
 	case *NotificationMessage:
-		if c.onNotification != nil {
-			c.onNotification(*msg)
+		callFunc(c.onNotification, *msg)
+		err = c.handleNotification(*msg)
+		if err != nil {
+			return fmt.Errorf("could not handle notification: %w", err)
 		}
 	case *ReconnectMessage:
 		err = c.handleReconnect(*msg)
@@ -163,9 +177,7 @@ func (c *Client) handleMessage(data []byte) error {
 			return fmt.Errorf("could not reconnect: %w", err)
 		}
 	case *RevokeMessage:
-		if c.onRevoke != nil {
-			c.onRevoke(*msg)
-		}
+		callFunc(c.onRevoke, *msg)
 	default:
 		return fmt.Errorf("unhandled %T message: %v", msg, msg)
 	}
@@ -180,8 +192,37 @@ func (c *Client) handleReconnect(message ReconnectMessage) error {
 		return fmt.Errorf("could not reconnect: %w", err)
 	}
 
-	if c.onReconnect != nil {
-		c.onReconnect(message)
+	callFunc(c.onReconnect, message)
+
+	return nil
+}
+
+func (c *Client) handleNotification(message NotificationMessage) error {
+	data, err := message.Payload.Event.MarshalJSON()
+	if err != nil {
+		return fmt.Errorf("could not get event json: %w", err)
+	}
+
+	subType := message.Payload.Subscription.Type
+	metadata, ok := subMetadata[subType]
+	if !ok {
+		return fmt.Errorf("unkown subscription type %s", subType)
+	}
+
+	var newEvent interface{}
+	if metadata.EventGen != nil {
+		newEvent = metadata.EventGen()
+		err = json.Unmarshal(data, newEvent)
+		if err != nil {
+			return fmt.Errorf("could not unmarshal %s json: %w", subType, err)
+		}
+	}
+
+	switch event := newEvent.(type) {
+	case *EventChannelBan:
+		callFunc(c.onEventChannelBan, *event)
+	default:
+		c.onError(fmt.Errorf("unkown event type %s", subType))
 	}
 
 	return nil

@@ -62,46 +62,126 @@ var (
 	SubUserAuthorizationRevoke EventSubscription = "user.authorization.revoke"
 	SubUserUpdate              EventSubscription = "user.update"
 
-	versionMap = map[EventSubscription]string{
-		SubChannelUpdate:                                    "1",
-		SubChannelFollow:                                    "1",
-		SubChannelSubscribe:                                 "1",
-		SubChannelSubscriptionEnd:                           "1",
-		SubChannelSubscriptionGift:                          "1",
-		SubChannelSubscriptionMessage:                       "1",
-		SubChannelCheer:                                     "1",
-		SubChannelRaid:                                      "1",
-		SubChannelBan:                                       "1",
-		SubChannelUnban:                                     "1",
-		SubChannelModeratorAdd:                              "1",
-		SubChannelModeratorRemove:                           "1",
-		SubChannelChannelPointsCustomRewardAdd:              "1",
-		SubChannelChannelPointsCustomRewardUpdate:           "1",
-		SubChannelChannelPointsCustomRewardRemove:           "1",
-		SubChannelChannelPointsCustomRewardRedemptionAdd:    "1",
-		SubChannelChannelPointsCustomRewardRedemptionUpdate: "1",
-		SubChannelPollBegin:                                 "1",
-		SubChannelPollProgress:                              "1",
-		SubChannelPollEnd:                                   "1",
-		SubChannelPredictionBegin:                           "1",
-		SubChannelPredictionProgress:                        "1",
-		SubChannelPredictionLock:                            "1",
-		SubChannelPredictionEnd:                             "1",
-		SubDropEntitlementGrant:                             "1",
-		SubExtensionBitsTransactionCreate:                   "1",
-		SubChannelGoalBegin:                                 "1",
-		SubChannelGoalProgress:                              "1",
-		SubChannelGoalEnd:                                   "1",
-		SubChannelHypeTrainBegin:                            "1",
-		SubChannelHypeTrainProgress:                         "1",
-		SubChannelHypeTrainEnd:                              "1",
-		SubStreamOnline:                                     "1",
-		SubStreamOffline:                                    "1",
-		SubUserAuthorizationGrant:                           "1",
-		SubUserAuthorizationRevoke:                          "1",
-		SubUserUpdate:                                       "1",
+	subMetadata = map[EventSubscription]subscriptionMetadata{
+		SubChannelUpdate: {
+			Version: "1",
+		},
+		SubChannelFollow: {
+			Version: "1",
+		},
+		SubChannelSubscribe: {
+			Version: "1",
+		},
+		SubChannelSubscriptionEnd: {
+			Version: "1",
+		},
+		SubChannelSubscriptionGift: {
+			Version: "1",
+		},
+		SubChannelSubscriptionMessage: {
+			Version: "1",
+		},
+		SubChannelCheer: {
+			Version: "1",
+		},
+		SubChannelRaid: {
+			Version: "1",
+		},
+		SubChannelBan: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelBan](),
+		},
+		SubChannelUnban: {
+			Version: "1",
+		},
+		SubChannelModeratorAdd: {
+			Version: "1",
+		},
+		SubChannelModeratorRemove: {
+			Version: "1",
+		},
+		SubChannelChannelPointsCustomRewardAdd: {
+			Version: "1",
+		},
+		SubChannelChannelPointsCustomRewardUpdate: {
+			Version: "1",
+		},
+		SubChannelChannelPointsCustomRewardRemove: {
+			Version: "1",
+		},
+		SubChannelChannelPointsCustomRewardRedemptionAdd: {
+			Version: "1",
+		},
+		SubChannelChannelPointsCustomRewardRedemptionUpdate: {
+			Version: "1",
+		},
+		SubChannelPollBegin: {
+			Version: "1",
+		},
+		SubChannelPollProgress: {
+			Version: "1",
+		},
+		SubChannelPollEnd: {
+			Version: "1",
+		},
+		SubChannelPredictionBegin: {
+			Version: "1",
+		},
+		SubChannelPredictionProgress: {
+			Version: "1",
+		},
+		SubChannelPredictionLock: {
+			Version: "1",
+		},
+		SubChannelPredictionEnd: {
+			Version: "1",
+		},
+		SubDropEntitlementGrant: {
+			Version: "1",
+		},
+		SubExtensionBitsTransactionCreate: {
+			Version: "1",
+		},
+		SubChannelGoalBegin: {
+			Version: "1",
+		},
+		SubChannelGoalProgress: {
+			Version: "1",
+		},
+		SubChannelGoalEnd: {
+			Version: "1",
+		},
+		SubChannelHypeTrainBegin: {
+			Version: "1",
+		},
+		SubChannelHypeTrainProgress: {
+			Version: "1",
+		},
+		SubChannelHypeTrainEnd: {
+			Version: "1",
+		},
+		SubStreamOnline: {
+			Version: "1",
+		},
+		SubStreamOffline: {
+			Version: "1",
+		},
+		SubUserAuthorizationGrant: {
+			Version: "1",
+		},
+		SubUserAuthorizationRevoke: {
+			Version: "1",
+		},
+		SubUserUpdate: {
+			Version: "1",
+		},
 	}
 )
+
+type subscriptionMetadata struct {
+	Version  string
+	EventGen func() interface{}
+}
 
 type SubscribeRequest struct {
 	SessionID   string
@@ -119,11 +199,11 @@ type SubscribeResponse struct {
 }
 
 func SubscribeEvent(request SubscribeRequest) (SubscribeResponse, error) {
-	version := versionMap[request.Event]
+	metadata := subMetadata[request.Event]
 
 	b, err := json.Marshal(subscriptionRequest{
 		Type:      request.Event,
-		Version:   version,
+		Version:   metadata.Version,
 		Condition: request.Condition,
 		Transport: subscriptionTransport{
 			Method:    "websocket",

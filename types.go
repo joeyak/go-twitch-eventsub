@@ -1,6 +1,9 @@
 package twitch
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type metadata struct {
 	MessageID        string    `json:"message_id"`
@@ -57,7 +60,7 @@ type NotificationMessage struct {
 	messageBase
 	Payload struct {
 		Subscription payloadSubscription `json:"subscription"`
-		Event        interface{}         `json:"event"`
+		Event        *json.RawMessage    `json:"event"`
 	} `json:"payload"`
 }
 
