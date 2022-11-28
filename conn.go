@@ -99,6 +99,10 @@ func (c *Conn) Close() error {
 	return c.ws.Close(websocket.StatusNormalClosure, "Stopping Connection")
 }
 
+func (c *Conn) IsClosed() bool {
+	return c.closed
+}
+
 func (c *Conn) OnError(callback func(err error)) {
 	c.onError = callback
 }

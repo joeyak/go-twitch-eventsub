@@ -7,6 +7,14 @@ If a websocket connection has no subscriptions, then it will close automatically
 ## Example
 
 ```go
+package main
+
+import (
+	"fmt"
+
+	eventsub "github.com/joeyak/go-twitch-eventsub"
+)
+
 var (
 	userID = "<USERID>"
 	accessToken = "<ACCESSTOKEN>"
