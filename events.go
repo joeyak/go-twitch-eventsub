@@ -20,17 +20,6 @@ type eventModerator struct {
 	ModeratorUserName  string `json:"moderator_user_name"`
 }
 
-type eventEmote struct {
-	ID    string `json:"id"`
-	Begin int    `json:"begin"`
-	End   int    `json:"end"`
-}
-
-type eventMessage struct {
-	Text   string       `json:"text"`
-	Emotes []eventEmote `json:"emotes"`
-}
-
 type EventChannelUpdate struct {
 	eventBroadcaster
 
@@ -72,6 +61,17 @@ type EventChannelSubscriptionGift struct {
 	Tier            string `json:"tier"`
 	CumulativeTotal int    `json:"cumulative_total"`
 	IsAnonymous     bool   `json:"is_anonymous"`
+}
+
+type eventEmote struct {
+	ID    string `json:"id"`
+	Begin int    `json:"begin"`
+	End   int    `json:"end"`
+}
+
+type eventMessage struct {
+	Text   string       `json:"text"`
+	Emotes []eventEmote `json:"emotes"`
 }
 
 type EventChannelSubscriptionMessage struct {
@@ -130,3 +130,65 @@ type EventChannelModeratorRemove struct {
 	eventBroadcaster
 	eventUser
 }
+
+type eventCpMaxPerStream struct {
+	IsEnabled bool `json:"is_enabled"`
+	Value     int  `json:"value"`
+}
+
+type eventImage struct {
+	Url1x string `json:"url_1x"`
+	Url2x string `json:"url_2x"`
+	Url4x string `json:"url_4x"`
+}
+
+type eventGlobalCooldown struct {
+	IsEnabled bool `json:"is_enabled"`
+	Seconds   int  `json:"seconds"`
+}
+
+type EventChannelChannelPointsCustomRewardAdd struct {
+	eventBroadcaster
+
+	ID                                string              `json:"id"`
+	IsEnabled                         bool                `json:"is_enabled"`
+	IsPaused                          bool                `json:"is_paused"`
+	IsInStock                         bool                `json:"is_in_stock"`
+	Title                             string              `json:"title"`
+	Cost                              int                 `json:"cost"`
+	Prompt                            string              `json:"prompt"`
+	IsUserInputRequired               bool                `json:"is_user_input_required"`
+	ShouldRedemptionsSkipRequestQueue bool                `json:"should_redemptions_skip_request_queue"`
+	MaxPerStream                      eventCpMaxPerStream `json:"max_per_stream"`
+	MaxPerUserPerStream               eventCpMaxPerStream `json:"max_per_user_per_stream"`
+	BackgroundColor                   string              `json:"background_color"`
+	Image                             eventImage          `json:"image"`
+	DefaultImage                      eventImage          `json:"default_image"`
+	GlobalCooldown                    eventGlobalCooldown `json:"global_cooldown"`
+	CooldownExpiresAt                 time.Time           `json:"cooldown_expires_at"`
+	RedemptionsRedeemedCurrentStream  int                 `json:"redemptions_redeemed_current_stream"`
+}
+
+type EventChannelChannelPointsCustomRewardUpdate EventChannelChannelPointsCustomRewardAdd
+
+type EventChannelChannelPointsCustomRewardRemove EventChannelChannelPointsCustomRewardAdd
+
+type eventChannelPointReward struct {
+	ID     string `json:"id"`
+	Title  string `json:"title"`
+	Cost   int    `json:"cost"`
+	Prompt string `json:"prompt"`
+}
+
+type EventChannelChannelPointsCustomRewardRedemptionAdd struct {
+	eventBroadcaster
+	eventUser
+
+	ID         string                  `json:"id"`
+	UserInput  string                  `json:"user_input"`
+	Status     string                  `json:"status"`
+	Reward     eventChannelPointReward `json:"reward"`
+	RedeemedAt time.Time               `json:"redeemed_at"`
+}
+
+type EventChannelChannelPointsCustomRewardRedemptionUpdate EventChannelChannelPointsCustomRewardRedemptionAdd

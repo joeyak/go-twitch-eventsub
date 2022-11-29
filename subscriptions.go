@@ -112,19 +112,24 @@ var (
 			EventGen: zeroPtrGen[EventChannelModeratorRemove](),
 		},
 		SubChannelChannelPointsCustomRewardAdd: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChannelPointsCustomRewardAdd](),
 		},
 		SubChannelChannelPointsCustomRewardUpdate: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChannelPointsCustomRewardUpdate](),
 		},
 		SubChannelChannelPointsCustomRewardRemove: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChannelPointsCustomRewardRemove](),
 		},
 		SubChannelChannelPointsCustomRewardRedemptionAdd: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChannelPointsCustomRewardRedemptionAdd](),
 		},
 		SubChannelChannelPointsCustomRewardRedemptionUpdate: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChannelPointsCustomRewardRedemptionUpdate](),
 		},
 		SubChannelPollBegin: {
 			Version: "1",

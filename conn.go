@@ -53,18 +53,23 @@ type Client struct {
 	onRevoke       func(message RevokeMessage)
 
 	// Events
-	onEventChannelUpdate              func(event EventChannelUpdate)
-	onEventChannelFollow              func(event EventChannelFollow)
-	onEventChannelSubscribe           func(event EventChannelSubscribe)
-	onEventChannelSubscriptionEnd     func(event EventChannelSubscriptionEnd)
-	onEventChannelSubscriptionGift    func(event EventChannelSubscriptionGift)
-	onEventChannelSubscriptionMessage func(event EventChannelSubscriptionMessage)
-	onEventChannelCheer               func(event EventChannelCheer)
-	onEventChannelRaid                func(event EventChannelRaid)
-	onEventChannelBan                 func(event EventChannelBan)
-	onEventChannelUnban               func(event EventChannelUnban)
-	onEventChannelModeratorAdd        func(event EventChannelModeratorAdd)
-	onEventChannelModeratorRemove     func(event EventChannelModeratorRemove)
+	onEventChannelUpdate                                    func(event EventChannelUpdate)
+	onEventChannelFollow                                    func(event EventChannelFollow)
+	onEventChannelSubscribe                                 func(event EventChannelSubscribe)
+	onEventChannelSubscriptionEnd                           func(event EventChannelSubscriptionEnd)
+	onEventChannelSubscriptionGift                          func(event EventChannelSubscriptionGift)
+	onEventChannelSubscriptionMessage                       func(event EventChannelSubscriptionMessage)
+	onEventChannelCheer                                     func(event EventChannelCheer)
+	onEventChannelRaid                                      func(event EventChannelRaid)
+	onEventChannelBan                                       func(event EventChannelBan)
+	onEventChannelUnban                                     func(event EventChannelUnban)
+	onEventChannelModeratorAdd                              func(event EventChannelModeratorAdd)
+	onEventChannelModeratorRemove                           func(event EventChannelModeratorRemove)
+	onEventChannelChannelPointsCustomRewardAdd              func(event EventChannelChannelPointsCustomRewardAdd)
+	onEventChannelChannelPointsCustomRewardUpdate           func(event EventChannelChannelPointsCustomRewardUpdate)
+	onEventChannelChannelPointsCustomRewardRemove           func(event EventChannelChannelPointsCustomRewardRemove)
+	onEventChannelChannelPointsCustomRewardRedemptionAdd    func(event EventChannelChannelPointsCustomRewardRedemptionAdd)
+	onEventChannelChannelPointsCustomRewardRedemptionUpdate func(event EventChannelChannelPointsCustomRewardRedemptionUpdate)
 }
 
 func NewClient() *Client {
@@ -196,6 +201,26 @@ func (c *Client) OnEventChannelModeratorRemove(callback func(event EventChannelM
 	c.onEventChannelModeratorRemove = callback
 }
 
+func (c *Client) OnChannelChannelPointsCustomRewardAdd(callback func(event EventChannelChannelPointsCustomRewardAdd)) {
+	c.onEventChannelChannelPointsCustomRewardAdd = callback
+}
+
+func (c *Client) OnChannelChannelPointsCustomRewardUpdate(callback func(event EventChannelChannelPointsCustomRewardUpdate)) {
+	c.onEventChannelChannelPointsCustomRewardUpdate = callback
+}
+
+func (c *Client) OnChannelChannelPointsCustomRewardRemove(callback func(event EventChannelChannelPointsCustomRewardRemove)) {
+	c.onEventChannelChannelPointsCustomRewardRemove = callback
+}
+
+func (c *Client) OnChannelChannelPointsCustomRewardRedemptionAdd(callback func(event EventChannelChannelPointsCustomRewardRedemptionAdd)) {
+	c.onEventChannelChannelPointsCustomRewardRedemptionAdd = callback
+}
+
+func (c *Client) OnChannelChannelPointsCustomRewardRedemptionUpdate(callback func(event EventChannelChannelPointsCustomRewardRedemptionUpdate)) {
+	c.onEventChannelChannelPointsCustomRewardRedemptionUpdate = callback
+}
+
 func (c *Client) handleMessage(data []byte) error {
 	var baseMessage messageBase
 	err := json.Unmarshal(data, &baseMessage)
@@ -298,6 +323,16 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelModeratorAdd, *event)
 	case *EventChannelModeratorRemove:
 		callFunc(c.onEventChannelModeratorRemove, *event)
+	case *EventChannelChannelPointsCustomRewardAdd:
+		callFunc(c.onEventChannelChannelPointsCustomRewardAdd, *event)
+	case *EventChannelChannelPointsCustomRewardUpdate:
+		callFunc(c.onEventChannelChannelPointsCustomRewardUpdate, *event)
+	case *EventChannelChannelPointsCustomRewardRemove:
+		callFunc(c.onEventChannelChannelPointsCustomRewardRemove, *event)
+	case *EventChannelChannelPointsCustomRewardRedemptionAdd:
+		callFunc(c.onEventChannelChannelPointsCustomRewardRedemptionAdd, *event)
+	case *EventChannelChannelPointsCustomRewardRedemptionUpdate:
+		callFunc(c.onEventChannelChannelPointsCustomRewardRedemptionUpdate, *event)
 	default:
 		c.onError(fmt.Errorf("unkown event type %s", subType))
 	}
