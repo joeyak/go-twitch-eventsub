@@ -8,20 +8,31 @@ type eventUser struct {
 	UserName  string `json:"user_name"`
 }
 
-type eventBroadcasterUser struct {
+type eventBroadcaster struct {
 	BroadcasterUserId    string `json:"broadcaster_user_id"`
 	BroadcasterUserLogin string `json:"broadcaster_user_login"`
 	BroadcasterUserName  string `json:"broadcaster_user_name"`
 }
 
-type eventModeratorUser struct {
+type eventModerator struct {
 	ModeratorUserId    string `json:"moderator_user_id"`
 	ModeratorUserLogin string `json:"moderator_user_login"`
 	ModeratorUserName  string `json:"moderator_user_name"`
 }
 
+type eventEmote struct {
+	ID    string `json:"id"`
+	Begin int    `json:"begin"`
+	End   int    `json:"end"`
+}
+
+type eventMessage struct {
+	Text   string       `json:"text"`
+	Emotes []eventEmote `json:"emotes"`
+}
+
 type EventChannelUpdate struct {
-	eventBroadcasterUser
+	eventBroadcaster
 
 	Title        string `json:"title"`
 	Language     string `json:"language"`
@@ -32,14 +43,14 @@ type EventChannelUpdate struct {
 
 type EventChannelFollow struct {
 	eventUser
-	eventBroadcasterUser
+	eventBroadcaster
 
 	FollowedAt time.Time `json:"followed_at"`
 }
 
 type EventChannelSubscribe struct {
 	eventUser
-	eventBroadcasterUser
+	eventBroadcaster
 
 	Tier   string `json:"tier"`
 	IsGift bool   `json:"is_gift"`
@@ -47,7 +58,7 @@ type EventChannelSubscribe struct {
 
 type EventChannelSubscriptionEnd struct {
 	eventUser
-	eventBroadcasterUser
+	eventBroadcaster
 
 	Tier   string `json:"tier"`
 	IsGift bool   `json:"is_gift"`
@@ -55,7 +66,7 @@ type EventChannelSubscriptionEnd struct {
 
 type EventChannelSubscriptionGift struct {
 	eventUser
-	eventBroadcasterUser
+	eventBroadcaster
 
 	Total           int    `json:"total"`
 	Tier            string `json:"tier"`
@@ -65,19 +76,38 @@ type EventChannelSubscriptionGift struct {
 
 type EventChannelSubscriptionMessage struct {
 	eventUser
-	eventBroadcasterUser
+	eventBroadcaster
 
-	Tier             string   `json:"tier"`
-	Message          struct{} `json:"message"`
-	CumulativeMonths int      `json:"cumulative_months"`
-	StreakMonths     int      `json:"streak_months"`
-	DurationMonths   int      `json:"duration_months"`
+	Tier             string       `json:"tier"`
+	Message          eventMessage `json:"message"`
+	CumulativeMonths int          `json:"cumulative_months"`
+	StreakMonths     int          `json:"streak_months"`
+	DurationMonths   int          `json:"duration_months"`
+}
+
+type EventChannelCheer struct {
+	eventUser
+	eventBroadcaster
+
+	Message     string `json:"message"`
+	Bits        int    `json:"bits"`
+	IsAnonymous bool   `json:"is_anonymous"`
+}
+
+type EventChannelRaid struct {
+	FromBroadcasterUserId    string `json:"from_broadcaster_user_id"`
+	FromBroadcasterUserLogin string `json:"from_broadcaster_user_login"`
+	FromBroadcasterUserName  string `json:"from_broadcaster_user_name"`
+	ToBroadcasterUserId      string `json:"to_broadcaster_user_id"`
+	ToBroadcasterUserLogin   string `json:"to_broadcaster_user_login"`
+	ToBroadcasterUserName    string `json:"to_broadcaster_user_name"`
+	Viewers                  int    `json:"viewers"`
 }
 
 type EventChannelBan struct {
 	eventUser
-	eventBroadcasterUser
-	eventModeratorUser
+	eventBroadcaster
+	eventModerator
 
 	Reason      string `json:"reason"`
 	BannedAt    string `json:"banned_at"`
@@ -87,6 +117,16 @@ type EventChannelBan struct {
 
 type EventChannelUnban struct {
 	eventUser
-	eventBroadcasterUser
-	eventModeratorUser
+	eventBroadcaster
+	eventModerator
+}
+
+type EventChannelModeratorAdd struct {
+	eventBroadcaster
+	eventUser
+}
+
+type EventChannelModeratorRemove struct {
+	eventBroadcaster
+	eventUser
 }

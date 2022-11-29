@@ -88,10 +88,12 @@ var (
 			EventGen: zeroPtrGen[EventChannelSubscriptionMessage](),
 		},
 		SubChannelCheer: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelCheer](),
 		},
 		SubChannelRaid: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelRaid](),
 		},
 		SubChannelBan: {
 			Version:  "1",
@@ -102,10 +104,12 @@ var (
 			EventGen: zeroPtrGen[EventChannelUnban](),
 		},
 		SubChannelModeratorAdd: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelModeratorAdd](),
 		},
 		SubChannelModeratorRemove: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelModeratorRemove](),
 		},
 		SubChannelChannelPointsCustomRewardAdd: {
 			Version: "1",

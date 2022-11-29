@@ -59,8 +59,12 @@ type Client struct {
 	onEventChannelSubscriptionEnd     func(event EventChannelSubscriptionEnd)
 	onEventChannelSubscriptionGift    func(event EventChannelSubscriptionGift)
 	onEventChannelSubscriptionMessage func(event EventChannelSubscriptionMessage)
+	onEventChannelCheer               func(event EventChannelCheer)
+	onEventChannelRaid                func(event EventChannelRaid)
 	onEventChannelBan                 func(event EventChannelBan)
 	onEventChannelUnban               func(event EventChannelUnban)
+	onEventChannelModeratorAdd        func(event EventChannelModeratorAdd)
+	onEventChannelModeratorRemove     func(event EventChannelModeratorRemove)
 }
 
 func NewClient() *Client {
@@ -168,12 +172,28 @@ func (c *Client) OnEventChannelSubscriptionMessage(callback func(event EventChan
 	c.onEventChannelSubscriptionMessage = callback
 }
 
+func (c *Client) OnEventChannelCheer(callback func(event EventChannelCheer)) {
+	c.onEventChannelCheer = callback
+}
+
+func (c *Client) OnEventChannelRaid(callback func(event EventChannelRaid)) {
+	c.onEventChannelRaid = callback
+}
+
 func (c *Client) OnEventChannelBan(callback func(event EventChannelBan)) {
 	c.onEventChannelBan = callback
 }
 
 func (c *Client) OnEventChannelUnban(callback func(event EventChannelUnban)) {
 	c.onEventChannelUnban = callback
+}
+
+func (c *Client) OnEventChannelModeratorAdd(callback func(event EventChannelModeratorAdd)) {
+	c.onEventChannelModeratorAdd = callback
+}
+
+func (c *Client) OnEventChannelModeratorRemove(callback func(event EventChannelModeratorRemove)) {
+	c.onEventChannelModeratorRemove = callback
 }
 
 func (c *Client) handleMessage(data []byte) error {
@@ -266,10 +286,18 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelSubscriptionGift, *event)
 	case *EventChannelSubscriptionMessage:
 		callFunc(c.onEventChannelSubscriptionMessage, *event)
+	case *EventChannelCheer:
+		callFunc(c.onEventChannelCheer, *event)
+	case *EventChannelRaid:
+		callFunc(c.onEventChannelRaid, *event)
 	case *EventChannelBan:
 		callFunc(c.onEventChannelBan, *event)
 	case *EventChannelUnban:
 		callFunc(c.onEventChannelUnban, *event)
+	case *EventChannelModeratorAdd:
+		callFunc(c.onEventChannelModeratorAdd, *event)
+	case *EventChannelModeratorRemove:
+		callFunc(c.onEventChannelModeratorRemove, *event)
 	default:
 		c.onError(fmt.Errorf("unkown event type %s", subType))
 	}
