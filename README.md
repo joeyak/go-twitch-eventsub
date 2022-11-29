@@ -61,6 +61,9 @@ func main() {
 	client.OnRevoke(func(message twitch.RevokeMessage) {
 		fmt.Printf("REVOKE: %v\n", message)
 	})
+	client.OnRawEvent(func(event string) {
+		fmt.Printf("EVENT: %s\n", event)
+	})
 
 	err := client.Connect()
 	if err != nil {

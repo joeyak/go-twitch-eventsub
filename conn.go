@@ -53,6 +53,7 @@ type Client struct {
 	onRevoke       func(message RevokeMessage)
 
 	// Events
+	onRawEvent                                              func(event string, eventType EventSubscription)
 	onEventChannelUpdate                                    func(event EventChannelUpdate)
 	onEventChannelFollow                                    func(event EventChannelFollow)
 	onEventChannelSubscribe                                 func(event EventChannelSubscribe)
@@ -171,6 +172,10 @@ func (c *Client) OnReconnect(callback func(message ReconnectMessage)) {
 
 func (c *Client) OnRevoke(callback func(message RevokeMessage)) {
 	c.onRevoke = callback
+}
+
+func (c *Client) OnRawEvent(callback func(event string, eventType EventSubscription)) {
+	c.onRawEvent = callback
 }
 
 func (c *Client) OnEventChannelUpdate(callback func(event EventChannelUpdate)) {
@@ -347,11 +352,14 @@ func (c *Client) handleMessage(data []byte) error {
 		callFunc(c.onKeepAlive, *msg)
 	case *NotificationMessage:
 		callFunc(c.onNotification, *msg)
+
 		err = c.handleNotification(*msg)
 		if err != nil {
 			return fmt.Errorf("could not handle notification: %w", err)
 		}
 	case *ReconnectMessage:
+		callFunc(c.onReconnect, *msg)
+
 		err = c.handleReconnect(*msg)
 		if err != nil {
 			return fmt.Errorf("could not reconnect: %w", err)
@@ -371,9 +379,6 @@ func (c *Client) handleReconnect(message ReconnectMessage) error {
 	if err != nil {
 		return fmt.Errorf("could not reconnect: %w", err)
 	}
-
-	callFunc(c.onReconnect, message)
-
 	return nil
 }
 
@@ -387,6 +392,10 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 	metadata, ok := subMetadata[subType]
 	if !ok {
 		return fmt.Errorf("unkown subscription type %s", subType)
+	}
+
+	if c.onRawEvent != nil {
+		c.onRawEvent(string(data), subType)
 	}
 
 	var newEvent interface{}
