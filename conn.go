@@ -70,6 +70,13 @@ type Client struct {
 	onEventChannelChannelPointsCustomRewardRemove           func(event EventChannelChannelPointsCustomRewardRemove)
 	onEventChannelChannelPointsCustomRewardRedemptionAdd    func(event EventChannelChannelPointsCustomRewardRedemptionAdd)
 	onEventChannelChannelPointsCustomRewardRedemptionUpdate func(event EventChannelChannelPointsCustomRewardRedemptionUpdate)
+	onEventChannelPollBegin                                 func(event EventChannelPollBegin)
+	onEventChannelPollProgress                              func(event EventChannelPollProgress)
+	onEventChannelPollEnd                                   func(event EventChannelPollEnd)
+	onEventChannelPredictionBegin                           func(event EventChannelPredictionBegin)
+	onEventChannelPredictionProgress                        func(event EventChannelPredictionProgress)
+	onEventChannelPredictionLock                            func(event EventChannelPredictionLock)
+	onEventChannelPredictionEnd                             func(event EventChannelPredictionEnd)
 }
 
 func NewClient() *Client {
@@ -201,24 +208,52 @@ func (c *Client) OnEventChannelModeratorRemove(callback func(event EventChannelM
 	c.onEventChannelModeratorRemove = callback
 }
 
-func (c *Client) OnChannelChannelPointsCustomRewardAdd(callback func(event EventChannelChannelPointsCustomRewardAdd)) {
+func (c *Client) OnEventChannelChannelPointsCustomRewardAdd(callback func(event EventChannelChannelPointsCustomRewardAdd)) {
 	c.onEventChannelChannelPointsCustomRewardAdd = callback
 }
 
-func (c *Client) OnChannelChannelPointsCustomRewardUpdate(callback func(event EventChannelChannelPointsCustomRewardUpdate)) {
+func (c *Client) OnEventChannelChannelPointsCustomRewardUpdate(callback func(event EventChannelChannelPointsCustomRewardUpdate)) {
 	c.onEventChannelChannelPointsCustomRewardUpdate = callback
 }
 
-func (c *Client) OnChannelChannelPointsCustomRewardRemove(callback func(event EventChannelChannelPointsCustomRewardRemove)) {
+func (c *Client) OnEventChannelChannelPointsCustomRewardRemove(callback func(event EventChannelChannelPointsCustomRewardRemove)) {
 	c.onEventChannelChannelPointsCustomRewardRemove = callback
 }
 
-func (c *Client) OnChannelChannelPointsCustomRewardRedemptionAdd(callback func(event EventChannelChannelPointsCustomRewardRedemptionAdd)) {
+func (c *Client) OnEventChannelChannelPointsCustomRewardRedemptionAdd(callback func(event EventChannelChannelPointsCustomRewardRedemptionAdd)) {
 	c.onEventChannelChannelPointsCustomRewardRedemptionAdd = callback
 }
 
-func (c *Client) OnChannelChannelPointsCustomRewardRedemptionUpdate(callback func(event EventChannelChannelPointsCustomRewardRedemptionUpdate)) {
+func (c *Client) OnEventChannelChannelPointsCustomRewardRedemptionUpdate(callback func(event EventChannelChannelPointsCustomRewardRedemptionUpdate)) {
 	c.onEventChannelChannelPointsCustomRewardRedemptionUpdate = callback
+}
+
+func (c *Client) OnEventChannelPollBegin(callback func(event EventChannelPollBegin)) {
+	c.onEventChannelPollBegin = callback
+}
+
+func (c *Client) OnEventChannelPollProgress(callback func(event EventChannelPollProgress)) {
+	c.onEventChannelPollProgress = callback
+}
+
+func (c *Client) OnEventChannelPollEnd(callback func(event EventChannelPollEnd)) {
+	c.onEventChannelPollEnd = callback
+}
+
+func (c *Client) OnEventChannelPredictionBegin(callback func(event EventChannelPredictionBegin)) {
+	c.onEventChannelPredictionBegin = callback
+}
+
+func (c *Client) OnEventChannelPredictionProgress(callback func(event EventChannelPredictionProgress)) {
+	c.onEventChannelPredictionProgress = callback
+}
+
+func (c *Client) OnEventChannelPredictionLock(callback func(event EventChannelPredictionLock)) {
+	c.onEventChannelPredictionLock = callback
+}
+
+func (c *Client) OnEventChannelPredictionEnd(callback func(event EventChannelPredictionEnd)) {
+	c.onEventChannelPredictionEnd = callback
 }
 
 func (c *Client) handleMessage(data []byte) error {
@@ -333,6 +368,20 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelChannelPointsCustomRewardRedemptionAdd, *event)
 	case *EventChannelChannelPointsCustomRewardRedemptionUpdate:
 		callFunc(c.onEventChannelChannelPointsCustomRewardRedemptionUpdate, *event)
+	case *EventChannelPollBegin:
+		callFunc(c.onEventChannelPollBegin, *event)
+	case *EventChannelPollProgress:
+		callFunc(c.onEventChannelPollProgress, *event)
+	case *EventChannelPollEnd:
+		callFunc(c.onEventChannelPollEnd, *event)
+	case *EventChannelPredictionBegin:
+		callFunc(c.onEventChannelPredictionBegin, *event)
+	case *EventChannelPredictionProgress:
+		callFunc(c.onEventChannelPredictionProgress, *event)
+	case *EventChannelPredictionLock:
+		callFunc(c.onEventChannelPredictionLock, *event)
+	case *EventChannelPredictionEnd:
+		callFunc(c.onEventChannelPredictionEnd, *event)
 	default:
 		c.onError(fmt.Errorf("unkown event type %s", subType))
 	}

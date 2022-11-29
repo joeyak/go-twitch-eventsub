@@ -132,25 +132,32 @@ var (
 			EventGen: zeroPtrGen[EventChannelChannelPointsCustomRewardRedemptionUpdate](),
 		},
 		SubChannelPollBegin: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelPollBegin](),
 		},
 		SubChannelPollProgress: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelPollProgress](),
 		},
 		SubChannelPollEnd: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelPollEnd](),
 		},
 		SubChannelPredictionBegin: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelPredictionBegin](),
 		},
 		SubChannelPredictionProgress: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelPredictionProgress](),
 		},
 		SubChannelPredictionLock: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelPredictionLock](),
 		},
 		SubChannelPredictionEnd: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelPredictionEnd](),
 		},
 		SubDropEntitlementGrant: {
 			Version: "1",

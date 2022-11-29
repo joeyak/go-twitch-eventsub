@@ -192,3 +192,78 @@ type EventChannelChannelPointsCustomRewardRedemptionAdd struct {
 }
 
 type EventChannelChannelPointsCustomRewardRedemptionUpdate EventChannelChannelPointsCustomRewardRedemptionAdd
+
+type eventPollChoices struct {
+	ID                string `json:"id"`
+	Title             string `json:"title"`
+	BitsVotes         int    `json:"bits_votes"`
+	ChannelPointVotes int    `json:"channel_points_votes"`
+	Votes             int    `json:"votes"`
+}
+
+type eventPollVoting struct {
+	IsEnabled     bool `json:"is_enabled"`
+	AmountPerVote int  `json:"amount_per_vote"`
+}
+
+type EventChannelPollBegin struct {
+	eventBroadcaster
+
+	ID                  string             `json:"id"`
+	Title               string             `json:"title"`
+	Choices             []eventPollChoices `json:"choices"`
+	BitsVoting          eventPollVoting    `json:"bits_voting"`
+	ChannelPointsVoting eventPollVoting    `json:"channel_points_voting"`
+	StartedAt           time.Time          `json:"started_at"`
+	EndsAt              time.Time          `json:"ends_at"`
+}
+
+type EventChannelPollProgress EventChannelPollBegin
+
+type EventChannelPollEnd struct {
+	EventChannelPollBegin
+
+	Status string `json:"status"`
+}
+
+type eventTopPredictors struct {
+	eventUser
+
+	ChannelPointsWon  int `json:"channel_points_won"`
+	ChannelPointsUsed int `json:"channel_points_used"`
+}
+
+type eventPredictionOutcome struct {
+	ID            string               `json:"id"`
+	Title         string               `json:"title"`
+	Color         string               `json:"color"`
+	Users         int                  `json:"users"`
+	ChannelPoints int                  `json:"channel_points"`
+	TopPredictors []eventTopPredictors `json:"top_predictors"`
+}
+
+type EventChannelPredictionBegin struct {
+	eventBroadcaster
+
+	ID        string                   `json:"id"`
+	Title     string                   `json:"title"`
+	Outcomes  []eventPredictionOutcome `json:"outcomes"`
+	StartedAt time.Time                `json:"started_at"`
+	LocksAt   time.Time                `json:"locks_at"`
+}
+
+type EventChannelPredictionProgress EventChannelPredictionBegin
+
+type EventChannelPredictionLock EventChannelPredictionBegin
+
+type EventChannelPredictionEnd struct {
+	eventBroadcaster
+
+	ID               string                   `json:"id"`
+	Title            string                   `json:"title"`
+	WinningOutcomeID int                      `json:"winning_outcome_id"`
+	Outcomes         []eventPredictionOutcome `json:"outcomes"`
+	Status           string                   `json:"status"`
+	StartedAt        time.Time                `json:"started_at"`
+	EndedAt          time.Time                `json:"ended_at"`
+}
