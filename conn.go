@@ -77,6 +77,19 @@ type Client struct {
 	onEventChannelPredictionProgress                        func(event EventChannelPredictionProgress)
 	onEventChannelPredictionLock                            func(event EventChannelPredictionLock)
 	onEventChannelPredictionEnd                             func(event EventChannelPredictionEnd)
+	onEventDropEntitlementGrant                             func(event EventDropEntitlementGrant)
+	onEventExtensionBitsTransactionCreate                   func(event EventExtensionBitsTransactionCreate)
+	onEventChannelGoalBegin                                 func(event EventChannelGoalBegin)
+	onEventChannelGoalProgress                              func(event EventChannelGoalProgress)
+	onEventChannelGoalEnd                                   func(event EventChannelGoalEnd)
+	onEventChannelHypeTrainBegin                            func(event EventChannelHypeTrainBegin)
+	onEventChannelHypeTrainProgress                         func(event EventChannelHypeTrainProgress)
+	onEventChannelHypeTrainEnd                              func(event EventChannelHypeTrainEnd)
+	onEventStreamOnline                                     func(event EventStreamOnline)
+	onEventStreamOffline                                    func(event EventStreamOffline)
+	onEventUserAuthorizationGrant                           func(event EventUserAuthorizationGrant)
+	onEventUserAuthorizationRevoke                          func(event EventUserAuthorizationRevoke)
+	onEventUserUpdate                                       func(event EventUserUpdate)
 }
 
 func NewClient() *Client {
@@ -256,6 +269,58 @@ func (c *Client) OnEventChannelPredictionEnd(callback func(event EventChannelPre
 	c.onEventChannelPredictionEnd = callback
 }
 
+func (c *Client) OnEventDropEntitlementGrant(callback func(event EventDropEntitlementGrant)) {
+	c.onEventDropEntitlementGrant = callback
+}
+
+func (c *Client) OnEventExtensionBitsTransactionCreate(callback func(event EventExtensionBitsTransactionCreate)) {
+	c.onEventExtensionBitsTransactionCreate = callback
+}
+
+func (c *Client) OnEventChannelGoalBegin(callback func(event EventChannelGoalBegin)) {
+	c.onEventChannelGoalBegin = callback
+}
+
+func (c *Client) OnEventChannelGoalProgress(callback func(event EventChannelGoalProgress)) {
+	c.onEventChannelGoalProgress = callback
+}
+
+func (c *Client) OnEventChannelGoalEnd(callback func(event EventChannelGoalEnd)) {
+	c.onEventChannelGoalEnd = callback
+}
+
+func (c *Client) OnEventChannelHypeTrainBegin(callback func(event EventChannelHypeTrainBegin)) {
+	c.onEventChannelHypeTrainBegin = callback
+}
+
+func (c *Client) OnEventChannelHypeTrainProgress(callback func(event EventChannelHypeTrainProgress)) {
+	c.onEventChannelHypeTrainProgress = callback
+}
+
+func (c *Client) OnEventChannelHypeTrainEnd(callback func(event EventChannelHypeTrainEnd)) {
+	c.onEventChannelHypeTrainEnd = callback
+}
+
+func (c *Client) OnEventStreamOnline(callback func(event EventStreamOnline)) {
+	c.onEventStreamOnline = callback
+}
+
+func (c *Client) OnEventStreamOffline(callback func(event EventStreamOffline)) {
+	c.onEventStreamOffline = callback
+}
+
+func (c *Client) OnEventUserAuthorizationGrant(callback func(event EventUserAuthorizationGrant)) {
+	c.onEventUserAuthorizationGrant = callback
+}
+
+func (c *Client) OnEventUserAuthorizationRevoke(callback func(event EventUserAuthorizationRevoke)) {
+	c.onEventUserAuthorizationRevoke = callback
+}
+
+func (c *Client) OnEventUserUpdate(callback func(event EventUserUpdate)) {
+	c.onEventUserUpdate = callback
+}
+
 func (c *Client) handleMessage(data []byte) error {
 	var baseMessage messageBase
 	err := json.Unmarshal(data, &baseMessage)
@@ -382,6 +447,32 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelPredictionLock, *event)
 	case *EventChannelPredictionEnd:
 		callFunc(c.onEventChannelPredictionEnd, *event)
+	case *EventDropEntitlementGrant:
+		callFunc(c.onEventDropEntitlementGrant, *event)
+	case *EventExtensionBitsTransactionCreate:
+		callFunc(c.onEventExtensionBitsTransactionCreate, *event)
+	case *EventChannelGoalBegin:
+		callFunc(c.onEventChannelGoalBegin, *event)
+	case *EventChannelGoalProgress:
+		callFunc(c.onEventChannelGoalProgress, *event)
+	case *EventChannelGoalEnd:
+		callFunc(c.onEventChannelGoalEnd, *event)
+	case *EventChannelHypeTrainBegin:
+		callFunc(c.onEventChannelHypeTrainBegin, *event)
+	case *EventChannelHypeTrainProgress:
+		callFunc(c.onEventChannelHypeTrainProgress, *event)
+	case *EventChannelHypeTrainEnd:
+		callFunc(c.onEventChannelHypeTrainEnd, *event)
+	case *EventStreamOnline:
+		callFunc(c.onEventStreamOnline, *event)
+	case *EventStreamOffline:
+		callFunc(c.onEventStreamOffline, *event)
+	case *EventUserAuthorizationGrant:
+		callFunc(c.onEventUserAuthorizationGrant, *event)
+	case *EventUserAuthorizationRevoke:
+		callFunc(c.onEventUserAuthorizationRevoke, *event)
+	case *EventUserUpdate:
+		callFunc(c.onEventUserUpdate, *event)
 	default:
 		c.onError(fmt.Errorf("unkown event type %s", subType))
 	}

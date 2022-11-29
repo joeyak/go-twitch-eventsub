@@ -160,43 +160,56 @@ var (
 			EventGen: zeroPtrGen[EventChannelPredictionEnd](),
 		},
 		SubDropEntitlementGrant: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventDropEntitlementGrant](),
 		},
 		SubExtensionBitsTransactionCreate: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventExtensionBitsTransactionCreate](),
 		},
 		SubChannelGoalBegin: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelGoalBegin](),
 		},
 		SubChannelGoalProgress: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelGoalProgress](),
 		},
 		SubChannelGoalEnd: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelGoalEnd](),
 		},
 		SubChannelHypeTrainBegin: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelHypeTrainBegin](),
 		},
 		SubChannelHypeTrainProgress: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelHypeTrainProgress](),
 		},
 		SubChannelHypeTrainEnd: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelHypeTrainEnd](),
 		},
 		SubStreamOnline: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventStreamOnline](),
 		},
 		SubStreamOffline: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventStreamOffline](),
 		},
 		SubUserAuthorizationGrant: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventUserAuthorizationGrant](),
 		},
 		SubUserAuthorizationRevoke: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventUserAuthorizationRevoke](),
 		},
 		SubUserUpdate: {
-			Version: "1",
+			Version:  "1",
+			EventGen: zeroPtrGen[EventUserUpdate](),
 		},
 	}
 )
