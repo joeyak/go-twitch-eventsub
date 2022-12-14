@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type metadata struct {
+type MessageMetadata struct {
 	MessageID        string    `json:"message_id"`
 	MessageType      string    `json:"message_type"`
 	MessageTimestamp time.Time `json:"message_timestamp"`
@@ -41,7 +41,7 @@ type payloadSubscription struct {
 }
 
 type messageBase struct {
-	Metadata metadata `json:"metadata"`
+	Metadata MessageMetadata `json:"metadata"`
 }
 
 type WelcomeMessage struct {

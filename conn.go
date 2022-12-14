@@ -53,7 +53,7 @@ type Client struct {
 	onRevoke       func(message RevokeMessage)
 
 	// Events
-	onRawEvent                                              func(event string, eventType EventSubscription)
+	onRawEvent                                              func(event string, metadata MessageMetadata, eventType EventSubscription)
 	onEventChannelUpdate                                    func(event EventChannelUpdate)
 	onEventChannelFollow                                    func(event EventChannelFollow)
 	onEventChannelSubscribe                                 func(event EventChannelSubscribe)
@@ -174,7 +174,7 @@ func (c *Client) OnRevoke(callback func(message RevokeMessage)) {
 	c.onRevoke = callback
 }
 
-func (c *Client) OnRawEvent(callback func(event string, eventType EventSubscription)) {
+func (c *Client) OnRawEvent(callback func(event string, metadata MessageMetadata, eventType EventSubscription)) {
 	c.onRawEvent = callback
 }
 
@@ -395,7 +395,7 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 	}
 
 	if c.onRawEvent != nil {
-		c.onRawEvent(string(data), subType)
+		c.onRawEvent(string(data), message.Metadata, subType)
 	}
 
 	var newEvent interface{}
