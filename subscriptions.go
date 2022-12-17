@@ -2,6 +2,7 @@ package twitch
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -235,6 +236,10 @@ type SubscribeResponse struct {
 }
 
 func SubscribeEvent(request SubscribeRequest) (SubscribeResponse, error) {
+	return SubscribeEventWithContext(context.Background(), request)
+}
+
+func SubscribeEventWithContext(ctx context.Context, request SubscribeRequest) (SubscribeResponse, error) {
 	metadata := subMetadata[request.Event]
 
 	b, err := json.Marshal(subscriptionRequest{
@@ -251,7 +256,7 @@ func SubscribeEvent(request SubscribeRequest) (SubscribeResponse, error) {
 	}
 	buf := bytes.NewBuffer(b)
 
-	req, err := http.NewRequest(http.MethodPost, twitchEventSubUrl, buf)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, twitchEventSubUrl, buf)
 	if err != nil {
 		return SubscribeResponse{}, fmt.Errorf("could not create new request: %w", err)
 	}
