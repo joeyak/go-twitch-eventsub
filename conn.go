@@ -125,7 +125,7 @@ func (c *Client) ConnectWithContext(ctx context.Context) error {
 		_, data, err := c.ws.Read(ctx)
 		if err != nil {
 			var closeError websocket.CloseError
-			if c.closed && (errors.As(err, &closeError) || errors.Is(err, context.Canceled)) {
+			if errors.Is(err, context.Canceled) || (c.closed && errors.As(err, &closeError)) {
 				return nil
 			}
 			return fmt.Errorf("could not read message: %w", err)
