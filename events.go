@@ -5,26 +5,26 @@ import (
 	"time"
 )
 
-type user struct {
+type User struct {
 	UserID    string `json:"user_id"`
 	UserLogin string `json:"user_login"`
 	UserName  string `json:"user_name"`
 }
 
-type broadcaster struct {
+type Broadcaster struct {
 	BroadcasterUserId    string `json:"broadcaster_user_id"`
 	BroadcasterUserLogin string `json:"broadcaster_user_login"`
 	BroadcasterUserName  string `json:"broadcaster_user_name"`
 }
 
-type moderator struct {
+type Moderator struct {
 	ModeratorUserId    string `json:"moderator_user_id"`
 	ModeratorUserLogin string `json:"moderator_user_login"`
 	ModeratorUserName  string `json:"moderator_user_name"`
 }
 
 type EventChannelUpdate struct {
-	broadcaster
+	Broadcaster
 
 	Title        string `json:"title"`
 	Language     string `json:"language"`
@@ -34,31 +34,31 @@ type EventChannelUpdate struct {
 }
 
 type EventChannelFollow struct {
-	user
-	broadcaster
+	User
+	Broadcaster
 
 	FollowedAt time.Time `json:"followed_at"`
 }
 
 type EventChannelSubscribe struct {
-	user
-	broadcaster
+	User
+	Broadcaster
 
 	Tier   string `json:"tier"`
 	IsGift bool   `json:"is_gift"`
 }
 
 type EventChannelSubscriptionEnd struct {
-	user
-	broadcaster
+	User
+	Broadcaster
 
 	Tier   string `json:"tier"`
 	IsGift bool   `json:"is_gift"`
 }
 
 type EventChannelSubscriptionGift struct {
-	user
-	broadcaster
+	User
+	Broadcaster
 
 	Total           int    `json:"total"`
 	Tier            string `json:"tier"`
@@ -78,8 +78,8 @@ type Message struct {
 }
 
 type EventChannelSubscriptionMessage struct {
-	user
-	broadcaster
+	User
+	Broadcaster
 
 	Tier             string  `json:"tier"`
 	Message          Message `json:"message"`
@@ -89,8 +89,8 @@ type EventChannelSubscriptionMessage struct {
 }
 
 type EventChannelCheer struct {
-	user
-	broadcaster
+	User
+	Broadcaster
 
 	Message     string `json:"message"`
 	Bits        int    `json:"bits"`
@@ -108,9 +108,9 @@ type EventChannelRaid struct {
 }
 
 type EventChannelBan struct {
-	user
-	broadcaster
-	moderator
+	User
+	Broadcaster
+	Moderator
 
 	Reason      string `json:"reason"`
 	BannedAt    string `json:"banned_at"`
@@ -119,19 +119,19 @@ type EventChannelBan struct {
 }
 
 type EventChannelUnban struct {
-	user
-	broadcaster
-	moderator
+	User
+	Broadcaster
+	Moderator
 }
 
 type EventChannelModeratorAdd struct {
-	broadcaster
-	user
+	Broadcaster
+	User
 }
 
 type EventChannelModeratorRemove struct {
-	broadcaster
-	user
+	Broadcaster
+	User
 }
 
 type MaxChannelPointsPerStream struct {
@@ -151,7 +151,7 @@ type GlobalCooldown struct {
 }
 
 type EventChannelChannelPointsCustomRewardAdd struct {
-	broadcaster
+	Broadcaster
 
 	ID                                string                    `json:"id"`
 	IsEnabled                         bool                      `json:"is_enabled"`
@@ -184,8 +184,8 @@ type ChannelPointReward struct {
 }
 
 type EventChannelChannelPointsCustomRewardRedemptionAdd struct {
-	broadcaster
-	user
+	Broadcaster
+	User
 
 	ID         string             `json:"id"`
 	UserInput  string             `json:"user_input"`
@@ -210,7 +210,7 @@ type PollVoting struct {
 }
 
 type EventChannelPollBegin struct {
-	broadcaster
+	Broadcaster
 
 	ID                  string       `json:"id"`
 	Title               string       `json:"title"`
@@ -230,7 +230,7 @@ type EventChannelPollEnd struct {
 }
 
 type TopPredictor struct {
-	user
+	User
 
 	ChannelPointsWon  int `json:"channel_points_won"`
 	ChannelPointsUsed int `json:"channel_points_used"`
@@ -246,7 +246,7 @@ type PredictionOutcome struct {
 }
 
 type EventChannelPredictionBegin struct {
-	broadcaster
+	Broadcaster
 
 	ID        string              `json:"id"`
 	Title     string              `json:"title"`
@@ -260,7 +260,7 @@ type EventChannelPredictionProgress EventChannelPredictionBegin
 type EventChannelPredictionLock EventChannelPredictionBegin
 
 type EventChannelPredictionEnd struct {
-	broadcaster
+	Broadcaster
 
 	ID               string              `json:"id"`
 	Title            string              `json:"title"`
@@ -272,7 +272,7 @@ type EventChannelPredictionEnd struct {
 }
 
 type DropEntitlement struct {
-	user
+	User
 
 	OrganizationId string    `json:"organization_id"`
 	CategoryId     string    `json:"category_id"`
@@ -296,8 +296,8 @@ type ExtensionProduct struct {
 }
 
 type EventExtensionBitsTransactionCreate struct {
-	broadcaster
-	user
+	Broadcaster
+	User
 
 	ID                string           `json:"id"`
 	ExtensionClientID string           `json:"extension_client_id"`
@@ -315,7 +315,7 @@ func (a GoalAmount) Amount() float64 {
 }
 
 type EventChannelGoalBegin struct {
-	broadcaster
+	Broadcaster
 
 	ID                 string     `json:"id"`
 	CharityName        string     `json:"charity_name"`
@@ -332,14 +332,14 @@ type EventChannelGoalProgress EventChannelGoalBegin
 type EventChannelGoalEnd EventChannelGoalBegin
 
 type HypeTrainContribution struct {
-	user
+	User
 
 	Type  string `json:"type"`
 	Total int    `json:"total"`
 }
 
 type EventChannelHypeTrainBegin struct {
-	broadcaster
+	Broadcaster
 
 	Id               string                `json:"id"`
 	Total            int                   `json:"total"`
@@ -359,7 +359,7 @@ type EventChannelHypeTrainProgress struct {
 }
 
 type EventChannelHypeTrainEnd struct {
-	broadcaster
+	Broadcaster
 
 	Id               string                `json:"id"`
 	Level            int                   `json:"level"`
@@ -371,17 +371,17 @@ type EventChannelHypeTrainEnd struct {
 }
 
 type EventStreamOnline struct {
-	broadcaster
+	Broadcaster
 
 	Id        string    `json:"id"`
 	Type      string    `json:"type"`
 	StartedAt time.Time `json:"started_at"`
 }
 
-type EventStreamOffline broadcaster
+type EventStreamOffline Broadcaster
 
 type EventUserAuthorizationGrant struct {
-	user
+	User
 
 	ClientID string `json:"client_id"`
 }
@@ -389,7 +389,7 @@ type EventUserAuthorizationGrant struct {
 type EventUserAuthorizationRevoke EventUserAuthorizationGrant
 
 type EventUserUpdate struct {
-	user
+	User
 
 	Email         string `json:"email"`
 	EmailVerified bool   `json:"email_verified"`

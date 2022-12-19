@@ -11,7 +11,7 @@ type MessageMetadata struct {
 	MessageTimestamp time.Time `json:"message_timestamp"`
 }
 
-type payloadSession struct {
+type PayloadSession struct {
 	ID                      string    `json:"id"`
 	Status                  string    `json:"status"`
 	ConnectedAt             time.Time `json:"connected_at"`
@@ -19,20 +19,20 @@ type payloadSession struct {
 	ReconnectUrl            string    `json:"reconnect_url"`
 }
 
-type subscriptionTransport struct {
+type SubscriptionTransport struct {
 	Method    string `json:"method"`
 	SessionID string `json:"session_id"`
 }
 
-type subscriptionRequest struct {
+type SubscriptionRequest struct {
 	Type      EventSubscription     `json:"type"`
 	Version   string                `json:"version"`
 	Condition map[string]string     `json:"condition"`
-	Transport subscriptionTransport `json:"transport"`
+	Transport SubscriptionTransport `json:"transport"`
 }
 
-type payloadSubscription struct {
-	subscriptionRequest
+type PayloadSubscription struct {
+	SubscriptionRequest
 
 	ID       string    `json:"id"`
 	Status   string    `json:"status"`
@@ -40,40 +40,36 @@ type payloadSubscription struct {
 	CreateAt time.Time `json:"created_at"`
 }
 
-type messageBase struct {
-	Metadata MessageMetadata `json:"metadata"`
-}
-
 type WelcomeMessage struct {
-	messageBase
-	Payload struct {
-		Session payloadSession `json:"session"`
+	Metadata MessageMetadata `json:"metadata"`
+	Payload  struct {
+		Session PayloadSession `json:"session"`
 	} `json:"payload"`
 }
 
 type KeepAliveMessage struct {
-	messageBase
-	Payload struct{} `json:"payload"`
+	Metadata MessageMetadata `json:"metadata"`
+	Payload  struct{}        `json:"payload"`
 }
 
 type NotificationMessage struct {
-	messageBase
-	Payload struct {
-		Subscription payloadSubscription `json:"subscription"`
+	Metadata MessageMetadata `json:"metadata"`
+	Payload  struct {
+		Subscription PayloadSubscription `json:"subscription"`
 		Event        *json.RawMessage    `json:"event"`
 	} `json:"payload"`
 }
 
 type ReconnectMessage struct {
-	messageBase
-	Payload struct {
-		Session payloadSession `json:"session"`
+	Metadata MessageMetadata `json:"metadata"`
+	Payload  struct {
+		Session PayloadSession `json:"session"`
 	} `json:"payload"`
 }
 
 type RevokeMessage struct {
-	messageBase
-	Payload struct {
-		Subscription payloadSubscription `json:"subscription"`
+	Metadata MessageMetadata `json:"metadata"`
+	Payload  struct {
+		Subscription PayloadSubscription `json:"subscription"`
 	}
 }

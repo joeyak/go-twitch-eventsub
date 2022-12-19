@@ -229,7 +229,7 @@ type SubscribeRequest struct {
 }
 
 type SubscribeResponse struct {
-	Data         []payloadSubscription `json:"data"`
+	Data         []PayloadSubscription `json:"data"`
 	Total        int                   `json:"total"`
 	TotalCost    int                   `json:"total_cost"`
 	MaxTotalCost int                   `json:"max_total_cost"`
@@ -242,11 +242,11 @@ func SubscribeEvent(request SubscribeRequest) (SubscribeResponse, error) {
 func SubscribeEventWithContext(ctx context.Context, request SubscribeRequest) (SubscribeResponse, error) {
 	metadata := subMetadata[request.Event]
 
-	b, err := json.Marshal(subscriptionRequest{
+	b, err := json.Marshal(SubscriptionRequest{
 		Type:      request.Event,
 		Version:   metadata.Version,
 		Condition: request.Condition,
-		Transport: subscriptionTransport{
+		Transport: SubscriptionTransport{
 			Method:    "websocket",
 			SessionID: request.SessionID,
 		},
