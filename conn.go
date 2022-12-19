@@ -327,7 +327,11 @@ func (c *Client) OnEventUserUpdate(callback func(event EventUserUpdate)) {
 }
 
 func (c *Client) handleMessage(data []byte) error {
-	var baseMessage messageBase
+	type BaseMessage struct {
+		Metadata MessageMetadata `json:"metadata"`
+	}
+
+	var baseMessage BaseMessage
 	err := json.Unmarshal(data, &baseMessage)
 	if err != nil {
 		return fmt.Errorf("could not unmarshal basemessage to get message type: %w", err)
