@@ -236,10 +236,18 @@ type SubscribeResponse struct {
 }
 
 func SubscribeEvent(request SubscribeRequest) (SubscribeResponse, error) {
-	return SubscribeEventWithContext(context.Background(), request)
+	return SubscribeEventUrlWithContext(context.Background(), request, twitchEventSubUrl)
+}
+
+func SubscribeEventUrl(request SubscribeRequest, url string) (SubscribeResponse, error) {
+	return SubscribeEventUrlWithContext(context.Background(), request, url)
 }
 
 func SubscribeEventWithContext(ctx context.Context, request SubscribeRequest) (SubscribeResponse, error) {
+	return SubscribeEventUrlWithContext(ctx, request, twitchEventSubUrl)
+}
+
+func SubscribeEventUrlWithContext(ctx context.Context, request SubscribeRequest, url string) (SubscribeResponse, error) {
 	metadata := subMetadata[request.Event]
 
 	b, err := json.Marshal(SubscriptionRequest{
@@ -256,7 +264,7 @@ func SubscribeEventWithContext(ctx context.Context, request SubscribeRequest) (S
 	}
 	buf := bytes.NewBuffer(b)
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, twitchEventSubUrl, buf)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, buf)
 	if err != nil {
 		return SubscribeResponse{}, fmt.Errorf("could not create new request: %w", err)
 	}
