@@ -14,10 +14,10 @@ const twitchEventSubUrl = "https://api.twitch.tv/helix/eventsub/subscriptions"
 type EventSubscription string
 
 var (
-	SubChannelUpdate    EventSubscription = "channel.update"
-	SubChannelFollow    EventSubscription = "channel.follow"
-	SubChannelSubscribe EventSubscription = "channel.subscribe"
+	SubChannelUpdate EventSubscription = "channel.update"
+	SubChannelFollow EventSubscription = "channel.follow"
 
+	SubChannelSubscribe           EventSubscription = "channel.subscribe"
 	SubChannelSubscriptionEnd     EventSubscription = "channel.subscription.end"
 	SubChannelSubscriptionGift    EventSubscription = "channel.subscription.gift"
 	SubChannelSubscriptionMessage EventSubscription = "channel.subscription.message"
