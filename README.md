@@ -1,5 +1,7 @@
 # Twitch Eventsub
 
+[![GoDoc](https://godoc.org/github.com/joeyak/hoin-printer?status.svg)](https://godoc.org/github.com/joeyak/hoin-printer)
+
 Implements a Twitch EventSub Websocket connection
 
 If a websocket connection has no subscriptions, then it will close automatically on twitch's end
