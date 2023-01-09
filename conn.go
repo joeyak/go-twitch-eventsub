@@ -17,7 +17,7 @@ var (
 	ErrConnClosed   = fmt.Errorf("connection closed")
 	ErrNilOnWelcome = fmt.Errorf("OnWelcome function was not set")
 
-	messageTypeMap = map[string]func() interface{}{
+	messageTypeMap = map[string]func() any{
 		"session_welcome":       zeroPtrGen[WelcomeMessage](),
 		"session_keepalive":     zeroPtrGen[KeepAliveMessage](),
 		"notification":          zeroPtrGen[NotificationMessage](),
@@ -26,8 +26,8 @@ var (
 	}
 )
 
-func zeroPtrGen[T any]() func() interface{} {
-	return func() interface{} {
+func zeroPtrGen[T any]() func() any {
+	return func() any {
 		return new(T)
 	}
 }
@@ -78,7 +78,7 @@ type Client struct {
 	onEventChannelPredictionProgress                        func(event EventChannelPredictionProgress)
 	onEventChannelPredictionLock                            func(event EventChannelPredictionLock)
 	onEventChannelPredictionEnd                             func(event EventChannelPredictionEnd)
-	onEventDropEntitlementGrant                             func(event EventDropEntitlementGrant)
+	onEventDropEntitlementGrant                             func(event []EventDropEntitlementGrant)
 	onEventExtensionBitsTransactionCreate                   func(event EventExtensionBitsTransactionCreate)
 	onEventChannelGoalBegin                                 func(event EventChannelGoalBegin)
 	onEventChannelGoalProgress                              func(event EventChannelGoalProgress)
@@ -274,7 +274,7 @@ func (c *Client) OnEventChannelPredictionEnd(callback func(event EventChannelPre
 	c.onEventChannelPredictionEnd = callback
 }
 
-func (c *Client) OnEventDropEntitlementGrant(callback func(event EventDropEntitlementGrant)) {
+func (c *Client) OnEventDropEntitlementGrant(callback func(event []EventDropEntitlementGrant)) {
 	c.onEventDropEntitlementGrant = callback
 }
 
@@ -402,12 +402,12 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		c.onRawEvent(string(data), message.Metadata, subType)
 	}
 
-	var newEvent interface{}
+	var newEvent any
 	if metadata.EventGen != nil {
 		newEvent = metadata.EventGen()
 		err = json.Unmarshal(data, newEvent)
 		if err != nil {
-			return fmt.Errorf("could not unmarshal %s json: %w", subType, err)
+			return fmt.Errorf("could not unmarshal %s into %T: %w", subType, newEvent, err)
 		}
 	}
 
@@ -460,7 +460,7 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelPredictionLock, *event)
 	case *EventChannelPredictionEnd:
 		callFunc(c.onEventChannelPredictionEnd, *event)
-	case *EventDropEntitlementGrant:
+	case *[]EventDropEntitlementGrant:
 		callFunc(c.onEventDropEntitlementGrant, *event)
 	case *EventExtensionBitsTransactionCreate:
 		callFunc(c.onEventExtensionBitsTransactionCreate, *event)

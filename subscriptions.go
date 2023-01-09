@@ -162,7 +162,7 @@ var (
 		},
 		SubDropEntitlementGrant: {
 			Version:  "1",
-			EventGen: zeroPtrGen[EventDropEntitlementGrant](),
+			EventGen: zeroPtrGen[[]EventDropEntitlementGrant](), //func() any { return &[]EventDropEntitlementGrant{} },
 		},
 		SubExtensionBitsTransactionCreate: {
 			Version:  "1",

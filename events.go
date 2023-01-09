@@ -264,7 +264,7 @@ type EventChannelPredictionEnd struct {
 
 	ID               string              `json:"id"`
 	Title            string              `json:"title"`
-	WinningOutcomeID int                 `json:"winning_outcome_id"`
+	WinningOutcomeID string              `json:"winning_outcome_id"`
 	Outcomes         []PredictionOutcome `json:"outcomes"`
 	Status           string              `json:"status"`
 	StartedAt        time.Time           `json:"started_at"`
@@ -284,8 +284,8 @@ type DropEntitlement struct {
 }
 
 type EventDropEntitlementGrant struct {
-	ID   string            `json:"id"`
-	Data []DropEntitlement `json:"data"`
+	ID   string          `json:"id"`
+	Data DropEntitlement `json:"data"`
 }
 
 type ExtensionProduct struct {
@@ -304,27 +304,17 @@ type EventExtensionBitsTransactionCreate struct {
 	Product           ExtensionProduct `json:"product"`
 }
 
-type GoalAmount struct {
-	Value         int    `json:"value"`
-	DecimalPlaces int    `json:"decimal_places"`
-	Currency      string `json:"currency"`
-}
-
-func (a GoalAmount) Amount() float64 {
-	return float64(a.Value) / math.Pow10(a.DecimalPlaces)
-}
-
 type EventChannelGoalBegin struct {
 	Broadcaster
 
-	ID                 string     `json:"id"`
-	CharityName        string     `json:"charity_name"`
-	CharityDescription string     `json:"charity_description"`
-	CharityLogo        string     `json:"charity_logo"`
-	CharityWebsite     string     `json:"charity_website"`
-	CurrentAmount      GoalAmount `json:"current_amount"`
-	TargetAmount       GoalAmount `json:"target_amount"`
-	StoppedAt          time.Time  `json:"stopped_at"`
+	ID                 string    `json:"id"`
+	CharityName        string    `json:"charity_name"`
+	CharityDescription string    `json:"charity_description"`
+	CharityLogo        string    `json:"charity_logo"`
+	CharityWebsite     string    `json:"charity_website"`
+	CurrentAmount      int       `json:"current_amount"`
+	TargetAmount       int       `json:"target_amount"`
+	StoppedAt          time.Time `json:"stopped_at"`
 }
 
 type EventChannelGoalProgress EventChannelGoalBegin
@@ -341,15 +331,15 @@ type HypeTrainContribution struct {
 type EventChannelHypeTrainBegin struct {
 	Broadcaster
 
-	Id               string                `json:"id"`
-	Total            int                   `json:"total"`
-	Progress         int                   `json:"progress"`
-	Goal             int                   `json:"goal"`
-	TopContributions HypeTrainContribution `json:"top_contributions"`
-	LastContribution HypeTrainContribution `json:"last_contribution"`
-	Level            int                   `json:"level"`
-	StartedAt        time.Time             `json:"started_at"`
-	ExpiresAt        time.Time             `json:"expires_at"`
+	Id               string                  `json:"id"`
+	Total            int                     `json:"total"`
+	Progress         int                     `json:"progress"`
+	Goal             int                     `json:"goal"`
+	TopContributions []HypeTrainContribution `json:"top_contributions"`
+	LastContribution HypeTrainContribution   `json:"last_contribution"`
+	Level            int                     `json:"level"`
+	StartedAt        time.Time               `json:"started_at"`
+	ExpiresAt        time.Time               `json:"expires_at"`
 }
 
 type EventChannelHypeTrainProgress struct {
@@ -361,13 +351,13 @@ type EventChannelHypeTrainProgress struct {
 type EventChannelHypeTrainEnd struct {
 	Broadcaster
 
-	Id               string                `json:"id"`
-	Level            int                   `json:"level"`
-	Total            int                   `json:"total"`
-	TopContributions HypeTrainContribution `json:"top_contributions"`
-	StartedAt        time.Time             `json:"started_at"`
-	ExpiresAt        time.Time             `json:"expires_at"`
-	CooldownEndsAt   time.Time             `json:"cooldown_ends_at"`
+	Id               string                  `json:"id"`
+	Level            int                     `json:"level"`
+	Total            int                     `json:"total"`
+	TopContributions []HypeTrainContribution `json:"top_contributions"`
+	StartedAt        time.Time               `json:"started_at"`
+	ExpiresAt        time.Time               `json:"expires_at"`
+	CooldownEndsAt   time.Time               `json:"cooldown_ends_at"`
 }
 
 type EventStreamOnline struct {
@@ -394,4 +384,16 @@ type EventUserUpdate struct {
 	Email         string `json:"email"`
 	EmailVerified bool   `json:"email_verified"`
 	Description   string `json:"description"`
+}
+
+// For now GoalAmount is not used because it's used in channel.charity_campaign
+// events but those are beta and thus not implemented for now
+type GoalAmount struct {
+	Value         int    `json:"value"`
+	DecimalPlaces int    `json:"decimal_places"`
+	Currency      string `json:"currency"`
+}
+
+func (a GoalAmount) Amount() float64 {
+	return float64(a.Value) / math.Pow10(a.DecimalPlaces)
 }
