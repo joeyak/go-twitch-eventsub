@@ -1,6 +1,10 @@
 # Twitch Eventsub
 
-[![GoDoc](https://godoc.org/github.com/joeyak/hoin-printer?status.svg)](https://godoc.org/github.com/joeyak/hoin-printer)
+[![Go Report Card](https://goreportcard.com/badge/github.com/joeyak/go-twitch-eventsub)](https://goreportcard.com/report/github.com/joeyak/go-twitch-eventsub)
+![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)
+[![GoDoc](https://godoc.org/github.com/joeyak/go-twitch-eventsub?status.svg)](https://godoc.org/github.com/joeyak/go-twitch-eventsub)
+![tests](https://github.com/joeyak/go-twitch-eventsub/actions/workflows/main.yaml/badge.svg)
+
 
 Implements a Twitch EventSub Websocket connection
 
