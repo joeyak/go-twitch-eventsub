@@ -340,7 +340,7 @@ func (c *Client) handleMessage(data []byte) error {
 	messageType := baseMessage.Metadata.MessageType
 	genMessage, ok := messageTypeMap[messageType]
 	if !ok {
-		return fmt.Errorf("unkown message type %s: %s", messageType, string(data))
+		return fmt.Errorf("unknown message type %s: %s", messageType, string(data))
 	}
 
 	message := genMessage()
@@ -395,7 +395,7 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 	subType := message.Payload.Subscription.Type
 	metadata, ok := subMetadata[subType]
 	if !ok {
-		return fmt.Errorf("unkown subscription type %s", subType)
+		return fmt.Errorf("unknown subscription type %s", subType)
 	}
 
 	if c.onRawEvent != nil {
@@ -487,7 +487,7 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 	case *EventUserUpdate:
 		callFunc(c.onEventUserUpdate, *event)
 	default:
-		c.onError(fmt.Errorf("unkown event type %s", subType))
+		c.onError(fmt.Errorf("unknown event type %s", subType))
 	}
 
 	return nil
