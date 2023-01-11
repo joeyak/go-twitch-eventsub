@@ -18,11 +18,11 @@ var (
 	ErrNilOnWelcome = fmt.Errorf("OnWelcome function was not set")
 
 	messageTypeMap = map[string]func() any{
-		"session_welcome":       zeroPtrGen[WelcomeMessage](),
-		"session_keepalive":     zeroPtrGen[KeepAliveMessage](),
-		"notification":          zeroPtrGen[NotificationMessage](),
-		"session_reconnect":     zeroPtrGen[ReconnectMessage](),
-		"authorization_revoked": zeroPtrGen[RevokeMessage](),
+		"session_welcome":   zeroPtrGen[WelcomeMessage](),
+		"session_keepalive": zeroPtrGen[KeepAliveMessage](),
+		"notification":      zeroPtrGen[NotificationMessage](),
+		"session_reconnect": zeroPtrGen[ReconnectMessage](),
+		"revocation":        zeroPtrGen[RevokeMessage](),
 	}
 )
 
@@ -482,7 +482,7 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 func (c *Client) dial() error {
 	ws, _, err := websocket.Dial(c.ctx, c.Address, nil)
 	if err != nil {
-		return fmt.Errorf("could not dial twitch: %w", err)
+		return fmt.Errorf("could not dial %s: %w", c.Address, err)
 	}
 
 	if c.ws != nil && !c.closed {

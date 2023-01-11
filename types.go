@@ -71,5 +71,5 @@ type RevokeMessage struct {
 	Metadata MessageMetadata `json:"metadata"`
 	Payload  struct {
 		Subscription PayloadSubscription `json:"subscription"`
-	}
+	} `json:"payload"`
 }

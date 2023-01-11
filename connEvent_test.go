@@ -7,9 +7,45 @@ import (
 	"github.com/joeyak/go-twitch-eventsub"
 )
 
+func TestNotification(t *testing.T) {
+	t.Parallel()
+	client := newClientWithWelcome(t, twitch.SubStreamOnline, getTestEventData(twitch.SubStreamOnline))
+
+	ch := make(chan struct{})
+	client.OnNotification(func(message twitch.NotificationMessage) {
+		close(ch)
+	})
+
+	go connect(t, client)
+
+	select {
+	case <-ch:
+	case <-time.After(time.Second):
+		t.Error("event did not occur")
+	}
+}
+
+func TestUnkownSubscription(t *testing.T) {
+	t.Parallel()
+	client := newClientWithWelcome(t, "unkown", getTestEventData("unkown"))
+
+	ch := make(chan struct{})
+	client.OnError(func(err error) {
+		close(ch)
+	})
+
+	go connect(t, client)
+
+	select {
+	case <-ch:
+	case <-time.After(time.Second):
+		t.Error("event did not occur")
+	}
+}
+
 func TestEventChannelUpdate(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelUpdate, getTestEventData(twitch.SubChannelUpdate))
+	client := newClientWithWelcome(t, twitch.SubChannelUpdate, getTestEventData(twitch.SubChannelUpdate))
 
 	ch := make(chan struct{})
 	client.OnEventChannelUpdate(func(event twitch.EventChannelUpdate) {
@@ -27,7 +63,7 @@ func TestEventChannelUpdate(t *testing.T) {
 
 func TestEventChannelFollow(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelFollow, getTestEventData(twitch.SubChannelFollow))
+	client := newClientWithWelcome(t, twitch.SubChannelFollow, getTestEventData(twitch.SubChannelFollow))
 
 	ch := make(chan struct{})
 	client.OnEventChannelFollow(func(event twitch.EventChannelFollow) {
@@ -45,7 +81,7 @@ func TestEventChannelFollow(t *testing.T) {
 
 func TestEventChannelSubscribe(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelSubscribe, getTestEventData(twitch.SubChannelSubscribe))
+	client := newClientWithWelcome(t, twitch.SubChannelSubscribe, getTestEventData(twitch.SubChannelSubscribe))
 
 	ch := make(chan struct{})
 	client.OnEventChannelSubscribe(func(event twitch.EventChannelSubscribe) {
@@ -63,7 +99,7 @@ func TestEventChannelSubscribe(t *testing.T) {
 
 func TestEventChannelSubscriptionEnd(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelSubscriptionEnd, getTestEventData(twitch.SubChannelSubscriptionEnd))
+	client := newClientWithWelcome(t, twitch.SubChannelSubscriptionEnd, getTestEventData(twitch.SubChannelSubscriptionEnd))
 
 	ch := make(chan struct{})
 	client.OnEventChannelSubscriptionEnd(func(event twitch.EventChannelSubscriptionEnd) {
@@ -81,7 +117,7 @@ func TestEventChannelSubscriptionEnd(t *testing.T) {
 
 func TestEventChannelSubscriptionGift(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelSubscriptionGift, getTestEventData(twitch.SubChannelSubscriptionGift))
+	client := newClientWithWelcome(t, twitch.SubChannelSubscriptionGift, getTestEventData(twitch.SubChannelSubscriptionGift))
 
 	ch := make(chan struct{})
 	client.OnEventChannelSubscriptionGift(func(event twitch.EventChannelSubscriptionGift) {
@@ -99,7 +135,7 @@ func TestEventChannelSubscriptionGift(t *testing.T) {
 
 func TestEventChannelSubscriptionGiftAnon(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelSubscriptionGift, getTestEventData(twitch.SubChannelSubscriptionGift, "anon"))
+	client := newClientWithWelcome(t, twitch.SubChannelSubscriptionGift, getTestEventData(twitch.SubChannelSubscriptionGift, "anon"))
 
 	ch := make(chan struct{})
 	client.OnEventChannelSubscriptionGift(func(event twitch.EventChannelSubscriptionGift) {
@@ -117,7 +153,7 @@ func TestEventChannelSubscriptionGiftAnon(t *testing.T) {
 
 func TestEventChannelSubscriptionMessage(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelSubscriptionMessage, getTestEventData(twitch.SubChannelSubscriptionMessage))
+	client := newClientWithWelcome(t, twitch.SubChannelSubscriptionMessage, getTestEventData(twitch.SubChannelSubscriptionMessage))
 
 	ch := make(chan struct{})
 	client.OnEventChannelSubscriptionMessage(func(event twitch.EventChannelSubscriptionMessage) {
@@ -135,7 +171,7 @@ func TestEventChannelSubscriptionMessage(t *testing.T) {
 
 func TestEventChannelSubscriptionMessageNoStreak(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelSubscriptionMessage, getTestEventData(twitch.SubChannelSubscriptionMessage, "nostreak"))
+	client := newClientWithWelcome(t, twitch.SubChannelSubscriptionMessage, getTestEventData(twitch.SubChannelSubscriptionMessage, "nostreak"))
 
 	ch := make(chan struct{})
 	client.OnEventChannelSubscriptionMessage(func(event twitch.EventChannelSubscriptionMessage) {
@@ -153,7 +189,7 @@ func TestEventChannelSubscriptionMessageNoStreak(t *testing.T) {
 
 func TestEventChannelCheer(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelCheer, getTestEventData(twitch.SubChannelCheer))
+	client := newClientWithWelcome(t, twitch.SubChannelCheer, getTestEventData(twitch.SubChannelCheer))
 
 	ch := make(chan struct{})
 	client.OnEventChannelCheer(func(event twitch.EventChannelCheer) {
@@ -171,7 +207,7 @@ func TestEventChannelCheer(t *testing.T) {
 
 func TestEventChannelCheerAnon(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelCheer, getTestEventData(twitch.SubChannelCheer, "anon"))
+	client := newClientWithWelcome(t, twitch.SubChannelCheer, getTestEventData(twitch.SubChannelCheer, "anon"))
 
 	ch := make(chan struct{})
 	client.OnEventChannelCheer(func(event twitch.EventChannelCheer) {
@@ -189,7 +225,7 @@ func TestEventChannelCheerAnon(t *testing.T) {
 
 func TestEventChannelRaid(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelRaid, getTestEventData(twitch.SubChannelRaid))
+	client := newClientWithWelcome(t, twitch.SubChannelRaid, getTestEventData(twitch.SubChannelRaid))
 
 	ch := make(chan struct{})
 	client.OnEventChannelRaid(func(event twitch.EventChannelRaid) {
@@ -207,7 +243,7 @@ func TestEventChannelRaid(t *testing.T) {
 
 func TestEventChannelBan(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelBan, getTestEventData(twitch.SubChannelBan))
+	client := newClientWithWelcome(t, twitch.SubChannelBan, getTestEventData(twitch.SubChannelBan))
 
 	ch := make(chan struct{})
 	client.OnEventChannelBan(func(event twitch.EventChannelBan) {
@@ -225,7 +261,7 @@ func TestEventChannelBan(t *testing.T) {
 
 func TestEventChannelUnban(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelUnban, getTestEventData(twitch.SubChannelUnban))
+	client := newClientWithWelcome(t, twitch.SubChannelUnban, getTestEventData(twitch.SubChannelUnban))
 
 	ch := make(chan struct{})
 	client.OnEventChannelUnban(func(event twitch.EventChannelUnban) {
@@ -243,7 +279,7 @@ func TestEventChannelUnban(t *testing.T) {
 
 func TestEventChannelModeratorAdd(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelModeratorAdd, getTestEventData(twitch.SubChannelModeratorAdd))
+	client := newClientWithWelcome(t, twitch.SubChannelModeratorAdd, getTestEventData(twitch.SubChannelModeratorAdd))
 
 	ch := make(chan struct{})
 	client.OnEventChannelModeratorAdd(func(event twitch.EventChannelModeratorAdd) {
@@ -261,7 +297,7 @@ func TestEventChannelModeratorAdd(t *testing.T) {
 
 func TestEventChannelModeratorRemove(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelModeratorRemove, getTestEventData(twitch.SubChannelModeratorRemove))
+	client := newClientWithWelcome(t, twitch.SubChannelModeratorRemove, getTestEventData(twitch.SubChannelModeratorRemove))
 
 	ch := make(chan struct{})
 	client.OnEventChannelModeratorRemove(func(event twitch.EventChannelModeratorRemove) {
@@ -279,7 +315,7 @@ func TestEventChannelModeratorRemove(t *testing.T) {
 
 func TestEventChannelChannelPointsCustomRewardAdd(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelChannelPointsCustomRewardAdd, getTestEventData(twitch.SubChannelChannelPointsCustomRewardAdd))
+	client := newClientWithWelcome(t, twitch.SubChannelChannelPointsCustomRewardAdd, getTestEventData(twitch.SubChannelChannelPointsCustomRewardAdd))
 
 	ch := make(chan struct{})
 	client.OnEventChannelChannelPointsCustomRewardAdd(func(event twitch.EventChannelChannelPointsCustomRewardAdd) {
@@ -297,7 +333,7 @@ func TestEventChannelChannelPointsCustomRewardAdd(t *testing.T) {
 
 func TestEventChannelChannelPointsCustomRewardUpdate(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelChannelPointsCustomRewardUpdate, getTestEventData(twitch.SubChannelChannelPointsCustomRewardUpdate))
+	client := newClientWithWelcome(t, twitch.SubChannelChannelPointsCustomRewardUpdate, getTestEventData(twitch.SubChannelChannelPointsCustomRewardUpdate))
 
 	ch := make(chan struct{})
 	client.OnEventChannelChannelPointsCustomRewardUpdate(func(event twitch.EventChannelChannelPointsCustomRewardUpdate) {
@@ -315,7 +351,7 @@ func TestEventChannelChannelPointsCustomRewardUpdate(t *testing.T) {
 
 func TestEventChannelChannelPointsCustomRewardRemove(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelChannelPointsCustomRewardRemove, getTestEventData(twitch.SubChannelChannelPointsCustomRewardRemove))
+	client := newClientWithWelcome(t, twitch.SubChannelChannelPointsCustomRewardRemove, getTestEventData(twitch.SubChannelChannelPointsCustomRewardRemove))
 
 	ch := make(chan struct{})
 	client.OnEventChannelChannelPointsCustomRewardRemove(func(event twitch.EventChannelChannelPointsCustomRewardRemove) {
@@ -333,7 +369,7 @@ func TestEventChannelChannelPointsCustomRewardRemove(t *testing.T) {
 
 func TestEventChannelChannelPointsCustomRewardRedemptionAdd(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelChannelPointsCustomRewardRedemptionAdd, getTestEventData(twitch.SubChannelChannelPointsCustomRewardRedemptionAdd))
+	client := newClientWithWelcome(t, twitch.SubChannelChannelPointsCustomRewardRedemptionAdd, getTestEventData(twitch.SubChannelChannelPointsCustomRewardRedemptionAdd))
 
 	ch := make(chan struct{})
 	client.OnEventChannelChannelPointsCustomRewardRedemptionAdd(func(event twitch.EventChannelChannelPointsCustomRewardRedemptionAdd) {
@@ -351,7 +387,7 @@ func TestEventChannelChannelPointsCustomRewardRedemptionAdd(t *testing.T) {
 
 func TestEventChannelChannelPointsCustomRewardRedemptionUpdate(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelChannelPointsCustomRewardRedemptionUpdate, getTestEventData(twitch.SubChannelChannelPointsCustomRewardRedemptionUpdate))
+	client := newClientWithWelcome(t, twitch.SubChannelChannelPointsCustomRewardRedemptionUpdate, getTestEventData(twitch.SubChannelChannelPointsCustomRewardRedemptionUpdate))
 
 	ch := make(chan struct{})
 	client.OnEventChannelChannelPointsCustomRewardRedemptionUpdate(func(event twitch.EventChannelChannelPointsCustomRewardRedemptionUpdate) {
@@ -369,7 +405,7 @@ func TestEventChannelChannelPointsCustomRewardRedemptionUpdate(t *testing.T) {
 
 func TestEventChannelPollBegin(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelPollBegin, getTestEventData(twitch.SubChannelPollBegin))
+	client := newClientWithWelcome(t, twitch.SubChannelPollBegin, getTestEventData(twitch.SubChannelPollBegin))
 
 	ch := make(chan struct{})
 	client.OnEventChannelPollBegin(func(event twitch.EventChannelPollBegin) {
@@ -387,7 +423,7 @@ func TestEventChannelPollBegin(t *testing.T) {
 
 func TestEventChannelPollProgress(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelPollProgress, getTestEventData(twitch.SubChannelPollProgress))
+	client := newClientWithWelcome(t, twitch.SubChannelPollProgress, getTestEventData(twitch.SubChannelPollProgress))
 
 	ch := make(chan struct{})
 	client.OnEventChannelPollProgress(func(event twitch.EventChannelPollProgress) {
@@ -405,7 +441,7 @@ func TestEventChannelPollProgress(t *testing.T) {
 
 func TestEventChannelPollEnd(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelPollEnd, getTestEventData(twitch.SubChannelPollEnd))
+	client := newClientWithWelcome(t, twitch.SubChannelPollEnd, getTestEventData(twitch.SubChannelPollEnd))
 
 	ch := make(chan struct{})
 	client.OnEventChannelPollEnd(func(event twitch.EventChannelPollEnd) {
@@ -423,7 +459,7 @@ func TestEventChannelPollEnd(t *testing.T) {
 
 func TestEventChannelPredictionBegin(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelPredictionBegin, getTestEventData(twitch.SubChannelPredictionBegin))
+	client := newClientWithWelcome(t, twitch.SubChannelPredictionBegin, getTestEventData(twitch.SubChannelPredictionBegin))
 
 	ch := make(chan struct{})
 	client.OnEventChannelPredictionBegin(func(event twitch.EventChannelPredictionBegin) {
@@ -441,7 +477,7 @@ func TestEventChannelPredictionBegin(t *testing.T) {
 
 func TestEventChannelPredictionProgress(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelPredictionProgress, getTestEventData(twitch.SubChannelPredictionProgress))
+	client := newClientWithWelcome(t, twitch.SubChannelPredictionProgress, getTestEventData(twitch.SubChannelPredictionProgress))
 
 	ch := make(chan struct{})
 	client.OnEventChannelPredictionProgress(func(event twitch.EventChannelPredictionProgress) {
@@ -459,7 +495,7 @@ func TestEventChannelPredictionProgress(t *testing.T) {
 
 func TestEventChannelPredictionLock(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelPredictionLock, getTestEventData(twitch.SubChannelPredictionLock))
+	client := newClientWithWelcome(t, twitch.SubChannelPredictionLock, getTestEventData(twitch.SubChannelPredictionLock))
 
 	ch := make(chan struct{})
 	client.OnEventChannelPredictionLock(func(event twitch.EventChannelPredictionLock) {
@@ -477,7 +513,7 @@ func TestEventChannelPredictionLock(t *testing.T) {
 
 func TestEventChannelPredictionEnd(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelPredictionEnd, getTestEventData(twitch.SubChannelPredictionEnd))
+	client := newClientWithWelcome(t, twitch.SubChannelPredictionEnd, getTestEventData(twitch.SubChannelPredictionEnd))
 
 	ch := make(chan struct{})
 	client.OnEventChannelPredictionEnd(func(event twitch.EventChannelPredictionEnd) {
@@ -495,7 +531,7 @@ func TestEventChannelPredictionEnd(t *testing.T) {
 
 func TestEventDropEntitlementGrant(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubDropEntitlementGrant, getTestEventData(twitch.SubDropEntitlementGrant))
+	client := newClientWithWelcome(t, twitch.SubDropEntitlementGrant, getTestEventData(twitch.SubDropEntitlementGrant))
 
 	ch := make(chan struct{})
 	client.OnEventDropEntitlementGrant(func(event []twitch.EventDropEntitlementGrant) {
@@ -513,7 +549,7 @@ func TestEventDropEntitlementGrant(t *testing.T) {
 
 func TestEventExtensionBitsTransactionCreate(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubExtensionBitsTransactionCreate, getTestEventData(twitch.SubExtensionBitsTransactionCreate))
+	client := newClientWithWelcome(t, twitch.SubExtensionBitsTransactionCreate, getTestEventData(twitch.SubExtensionBitsTransactionCreate))
 
 	ch := make(chan struct{})
 	client.OnEventExtensionBitsTransactionCreate(func(event twitch.EventExtensionBitsTransactionCreate) {
@@ -531,7 +567,7 @@ func TestEventExtensionBitsTransactionCreate(t *testing.T) {
 
 func TestEventChannelGoalBegin(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelGoalBegin, getTestEventData(twitch.SubChannelGoalBegin))
+	client := newClientWithWelcome(t, twitch.SubChannelGoalBegin, getTestEventData(twitch.SubChannelGoalBegin))
 
 	ch := make(chan struct{})
 	client.OnEventChannelGoalBegin(func(event twitch.EventChannelGoalBegin) {
@@ -549,7 +585,7 @@ func TestEventChannelGoalBegin(t *testing.T) {
 
 func TestEventChannelGoalProgress(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelGoalProgress, getTestEventData(twitch.SubChannelGoalProgress))
+	client := newClientWithWelcome(t, twitch.SubChannelGoalProgress, getTestEventData(twitch.SubChannelGoalProgress))
 
 	ch := make(chan struct{})
 	client.OnEventChannelGoalProgress(func(event twitch.EventChannelGoalProgress) {
@@ -567,7 +603,7 @@ func TestEventChannelGoalProgress(t *testing.T) {
 
 func TestEventChannelGoalEnd(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelGoalEnd, getTestEventData(twitch.SubChannelGoalEnd))
+	client := newClientWithWelcome(t, twitch.SubChannelGoalEnd, getTestEventData(twitch.SubChannelGoalEnd))
 
 	ch := make(chan struct{})
 	client.OnEventChannelGoalEnd(func(event twitch.EventChannelGoalEnd) {
@@ -585,7 +621,7 @@ func TestEventChannelGoalEnd(t *testing.T) {
 
 func TestEventChannelHypeTrainBegin(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelHypeTrainBegin, getTestEventData(twitch.SubChannelHypeTrainBegin))
+	client := newClientWithWelcome(t, twitch.SubChannelHypeTrainBegin, getTestEventData(twitch.SubChannelHypeTrainBegin))
 
 	ch := make(chan struct{})
 	client.OnEventChannelHypeTrainBegin(func(event twitch.EventChannelHypeTrainBegin) {
@@ -603,7 +639,7 @@ func TestEventChannelHypeTrainBegin(t *testing.T) {
 
 func TestEventChannelHypeTrainProgress(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelHypeTrainProgress, getTestEventData(twitch.SubChannelHypeTrainProgress))
+	client := newClientWithWelcome(t, twitch.SubChannelHypeTrainProgress, getTestEventData(twitch.SubChannelHypeTrainProgress))
 
 	ch := make(chan struct{})
 	client.OnEventChannelHypeTrainProgress(func(event twitch.EventChannelHypeTrainProgress) {
@@ -621,7 +657,7 @@ func TestEventChannelHypeTrainProgress(t *testing.T) {
 
 func TestEventChannelHypeTrainEnd(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubChannelHypeTrainEnd, getTestEventData(twitch.SubChannelHypeTrainEnd))
+	client := newClientWithWelcome(t, twitch.SubChannelHypeTrainEnd, getTestEventData(twitch.SubChannelHypeTrainEnd))
 
 	ch := make(chan struct{})
 	client.OnEventChannelHypeTrainEnd(func(event twitch.EventChannelHypeTrainEnd) {
@@ -639,7 +675,7 @@ func TestEventChannelHypeTrainEnd(t *testing.T) {
 
 func TestEventStreamOnline(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubStreamOnline, getTestEventData(twitch.SubStreamOnline))
+	client := newClientWithWelcome(t, twitch.SubStreamOnline, getTestEventData(twitch.SubStreamOnline))
 
 	ch := make(chan struct{})
 	client.OnEventStreamOnline(func(event twitch.EventStreamOnline) {
@@ -657,7 +693,7 @@ func TestEventStreamOnline(t *testing.T) {
 
 func TestEventStreamOffline(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubStreamOffline, getTestEventData(twitch.SubStreamOffline))
+	client := newClientWithWelcome(t, twitch.SubStreamOffline, getTestEventData(twitch.SubStreamOffline))
 
 	ch := make(chan struct{})
 	client.OnEventStreamOffline(func(event twitch.EventStreamOffline) {
@@ -675,7 +711,7 @@ func TestEventStreamOffline(t *testing.T) {
 
 func TestEventUserAuthorizationGrant(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubUserAuthorizationGrant, getTestEventData(twitch.SubUserAuthorizationGrant))
+	client := newClientWithWelcome(t, twitch.SubUserAuthorizationGrant, getTestEventData(twitch.SubUserAuthorizationGrant))
 
 	ch := make(chan struct{})
 	client.OnEventUserAuthorizationGrant(func(event twitch.EventUserAuthorizationGrant) {
@@ -693,7 +729,7 @@ func TestEventUserAuthorizationGrant(t *testing.T) {
 
 func TestEventUserAuthorizationRevoke(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubUserAuthorizationRevoke, getTestEventData(twitch.SubUserAuthorizationRevoke))
+	client := newClientWithWelcome(t, twitch.SubUserAuthorizationRevoke, getTestEventData(twitch.SubUserAuthorizationRevoke))
 
 	ch := make(chan struct{})
 	client.OnEventUserAuthorizationRevoke(func(event twitch.EventUserAuthorizationRevoke) {
@@ -711,7 +747,7 @@ func TestEventUserAuthorizationRevoke(t *testing.T) {
 
 func TestEventUserAuthorizationRevokeNoUser(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubUserAuthorizationRevoke, getTestEventData(twitch.SubUserAuthorizationRevoke, "nouser"))
+	client := newClientWithWelcome(t, twitch.SubUserAuthorizationRevoke, getTestEventData(twitch.SubUserAuthorizationRevoke, "nouser"))
 
 	ch := make(chan struct{})
 	client.OnEventUserAuthorizationRevoke(func(event twitch.EventUserAuthorizationRevoke) {
@@ -729,7 +765,7 @@ func TestEventUserAuthorizationRevokeNoUser(t *testing.T) {
 
 func TestEventUserUpdate(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubUserUpdate, getTestEventData(twitch.SubUserUpdate))
+	client := newClientWithWelcome(t, twitch.SubUserUpdate, getTestEventData(twitch.SubUserUpdate))
 
 	ch := make(chan struct{})
 	client.OnEventUserUpdate(func(event twitch.EventUserUpdate) {
@@ -747,7 +783,7 @@ func TestEventUserUpdate(t *testing.T) {
 
 func TestEventUserUpdateNoEmail(t *testing.T) {
 	t.Parallel()
-	client := newClient(t, twitch.SubUserUpdate, getTestEventData(twitch.SubUserUpdate, "noemail"))
+	client := newClientWithWelcome(t, twitch.SubUserUpdate, getTestEventData(twitch.SubUserUpdate, "noemail"))
 
 	ch := make(chan struct{})
 	client.OnEventUserUpdate(func(event twitch.EventUserUpdate) {
