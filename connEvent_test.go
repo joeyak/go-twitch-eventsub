@@ -27,7 +27,7 @@ func TestNotification(t *testing.T) {
 
 func TestUnkownSubscription(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, "unkown", getTestEventData("unkown"))
+	client := newClientWithWelcome(t, "unknown", getTestEventData("unknown"))
 
 	ch := make(chan struct{})
 	client.OnError(func(err error) {
