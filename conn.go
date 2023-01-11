@@ -363,26 +363,12 @@ func (c *Client) handleMessage(data []byte) error {
 		}
 	case *ReconnectMessage:
 		callFunc(c.onReconnect, *msg)
-
-		err = c.handleReconnect(*msg)
-		if err != nil {
-			return fmt.Errorf("could not reconnect: %w", err)
-		}
 	case *RevokeMessage:
 		callFunc(c.onRevoke, *msg)
 	default:
 		return fmt.Errorf("unhandled %T message: %v", msg, msg)
 	}
 
-	return nil
-}
-
-func (c *Client) handleReconnect(message ReconnectMessage) error {
-	c.Address = message.Payload.Session.ReconnectUrl
-	err := c.dial()
-	if err != nil {
-		return fmt.Errorf("could not reconnect: %w", err)
-	}
 	return nil
 }
 
