@@ -2,799 +2,366 @@ package twitch_test
 
 import (
 	"testing"
-	"time"
 
 	"github.com/joeyak/go-twitch-eventsub"
 )
 
+func assertSpecificEventOccured(t *testing.T, register func(client *twitch.Client, ch chan struct{}), event twitch.EventSubscription, suffixes ...string) {
+	assertEventOccured(t, func(ch chan struct{}) {
+		client := newClientWithWelcome(t, event, getTestEventData(event, suffixes...))
+		register(client, ch)
+		go connect(t, client)
+	})
+}
+
 func TestNotification(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubStreamOnline, getTestEventData(twitch.SubStreamOnline))
 
-	ch := make(chan struct{})
-	client.OnNotification(func(message twitch.NotificationMessage) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnNotification(func(message twitch.NotificationMessage) { close(ch) })
+	}, twitch.SubStreamOnline)
 }
 
 func TestUnkownSubscription(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, "unknown", getTestEventData("unknown"))
 
-	ch := make(chan struct{})
-	client.OnError(func(err error) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnError(func(err error) { close(ch) })
+	}, "unknown")
 }
 
 func TestEventChannelUpdate(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelUpdate, getTestEventData(twitch.SubChannelUpdate))
 
-	ch := make(chan struct{})
-	client.OnEventChannelUpdate(func(event twitch.EventChannelUpdate) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelUpdate(func(event twitch.EventChannelUpdate) { close(ch) })
+	}, twitch.SubChannelUpdate)
 }
 
 func TestEventChannelFollow(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelFollow, getTestEventData(twitch.SubChannelFollow))
 
-	ch := make(chan struct{})
-	client.OnEventChannelFollow(func(event twitch.EventChannelFollow) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelFollow(func(event twitch.EventChannelFollow) { close(ch) })
+	}, twitch.SubChannelFollow)
 }
 
 func TestEventChannelSubscribe(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelSubscribe, getTestEventData(twitch.SubChannelSubscribe))
 
-	ch := make(chan struct{})
-	client.OnEventChannelSubscribe(func(event twitch.EventChannelSubscribe) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelSubscribe(func(event twitch.EventChannelSubscribe) { close(ch) })
+	}, twitch.SubChannelSubscribe)
 }
 
 func TestEventChannelSubscriptionEnd(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelSubscriptionEnd, getTestEventData(twitch.SubChannelSubscriptionEnd))
 
-	ch := make(chan struct{})
-	client.OnEventChannelSubscriptionEnd(func(event twitch.EventChannelSubscriptionEnd) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelSubscriptionEnd(func(event twitch.EventChannelSubscriptionEnd) { close(ch) })
+	}, twitch.SubChannelSubscriptionEnd)
 }
 
 func TestEventChannelSubscriptionGift(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelSubscriptionGift, getTestEventData(twitch.SubChannelSubscriptionGift))
 
-	ch := make(chan struct{})
-	client.OnEventChannelSubscriptionGift(func(event twitch.EventChannelSubscriptionGift) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelSubscriptionGift(func(event twitch.EventChannelSubscriptionGift) { close(ch) })
+	}, twitch.SubChannelSubscriptionGift)
 }
 
 func TestEventChannelSubscriptionGiftAnon(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelSubscriptionGift, getTestEventData(twitch.SubChannelSubscriptionGift, "anon"))
 
-	ch := make(chan struct{})
-	client.OnEventChannelSubscriptionGift(func(event twitch.EventChannelSubscriptionGift) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelSubscriptionGift(func(event twitch.EventChannelSubscriptionGift) { close(ch) })
+	}, twitch.SubChannelSubscriptionGift, "anon")
 }
 
 func TestEventChannelSubscriptionMessage(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelSubscriptionMessage, getTestEventData(twitch.SubChannelSubscriptionMessage))
 
-	ch := make(chan struct{})
-	client.OnEventChannelSubscriptionMessage(func(event twitch.EventChannelSubscriptionMessage) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelSubscriptionMessage(func(event twitch.EventChannelSubscriptionMessage) { close(ch) })
+	}, twitch.SubChannelSubscriptionMessage)
 }
 
 func TestEventChannelSubscriptionMessageNoStreak(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelSubscriptionMessage, getTestEventData(twitch.SubChannelSubscriptionMessage, "nostreak"))
 
-	ch := make(chan struct{})
-	client.OnEventChannelSubscriptionMessage(func(event twitch.EventChannelSubscriptionMessage) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelSubscriptionMessage(func(event twitch.EventChannelSubscriptionMessage) { close(ch) })
+	}, twitch.SubChannelSubscriptionMessage, "nostreak")
 }
 
 func TestEventChannelCheer(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelCheer, getTestEventData(twitch.SubChannelCheer))
 
-	ch := make(chan struct{})
-	client.OnEventChannelCheer(func(event twitch.EventChannelCheer) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelCheer(func(event twitch.EventChannelCheer) { close(ch) })
+	}, twitch.SubChannelCheer)
 }
 
 func TestEventChannelCheerAnon(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelCheer, getTestEventData(twitch.SubChannelCheer, "anon"))
 
-	ch := make(chan struct{})
-	client.OnEventChannelCheer(func(event twitch.EventChannelCheer) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelCheer(func(event twitch.EventChannelCheer) { close(ch) })
+	}, twitch.SubChannelCheer, "anon")
 }
 
 func TestEventChannelRaid(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelRaid, getTestEventData(twitch.SubChannelRaid))
 
-	ch := make(chan struct{})
-	client.OnEventChannelRaid(func(event twitch.EventChannelRaid) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelRaid(func(event twitch.EventChannelRaid) { close(ch) })
+	}, twitch.SubChannelRaid)
 }
 
 func TestEventChannelBan(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelBan, getTestEventData(twitch.SubChannelBan))
 
-	ch := make(chan struct{})
-	client.OnEventChannelBan(func(event twitch.EventChannelBan) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelBan(func(event twitch.EventChannelBan) { close(ch) })
+	}, twitch.SubChannelBan)
 }
 
 func TestEventChannelUnban(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelUnban, getTestEventData(twitch.SubChannelUnban))
 
-	ch := make(chan struct{})
-	client.OnEventChannelUnban(func(event twitch.EventChannelUnban) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelUnban(func(event twitch.EventChannelUnban) { close(ch) })
+	}, twitch.SubChannelUnban)
 }
 
 func TestEventChannelModeratorAdd(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelModeratorAdd, getTestEventData(twitch.SubChannelModeratorAdd))
 
-	ch := make(chan struct{})
-	client.OnEventChannelModeratorAdd(func(event twitch.EventChannelModeratorAdd) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelModeratorAdd(func(event twitch.EventChannelModeratorAdd) { close(ch) })
+	}, twitch.SubChannelModeratorAdd)
 }
 
 func TestEventChannelModeratorRemove(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelModeratorRemove, getTestEventData(twitch.SubChannelModeratorRemove))
 
-	ch := make(chan struct{})
-	client.OnEventChannelModeratorRemove(func(event twitch.EventChannelModeratorRemove) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelModeratorRemove(func(event twitch.EventChannelModeratorRemove) { close(ch) })
+	}, twitch.SubChannelModeratorRemove)
 }
 
 func TestEventChannelChannelPointsCustomRewardAdd(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelChannelPointsCustomRewardAdd, getTestEventData(twitch.SubChannelChannelPointsCustomRewardAdd))
 
-	ch := make(chan struct{})
-	client.OnEventChannelChannelPointsCustomRewardAdd(func(event twitch.EventChannelChannelPointsCustomRewardAdd) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelChannelPointsCustomRewardAdd(func(event twitch.EventChannelChannelPointsCustomRewardAdd) { close(ch) })
+	}, twitch.SubChannelChannelPointsCustomRewardAdd)
 }
 
 func TestEventChannelChannelPointsCustomRewardUpdate(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelChannelPointsCustomRewardUpdate, getTestEventData(twitch.SubChannelChannelPointsCustomRewardUpdate))
 
-	ch := make(chan struct{})
-	client.OnEventChannelChannelPointsCustomRewardUpdate(func(event twitch.EventChannelChannelPointsCustomRewardUpdate) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelChannelPointsCustomRewardUpdate(func(event twitch.EventChannelChannelPointsCustomRewardUpdate) { close(ch) })
+	}, twitch.SubChannelChannelPointsCustomRewardUpdate)
 }
 
 func TestEventChannelChannelPointsCustomRewardRemove(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelChannelPointsCustomRewardRemove, getTestEventData(twitch.SubChannelChannelPointsCustomRewardRemove))
 
-	ch := make(chan struct{})
-	client.OnEventChannelChannelPointsCustomRewardRemove(func(event twitch.EventChannelChannelPointsCustomRewardRemove) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelChannelPointsCustomRewardRemove(func(event twitch.EventChannelChannelPointsCustomRewardRemove) { close(ch) })
+	}, twitch.SubChannelChannelPointsCustomRewardRemove)
 }
 
 func TestEventChannelChannelPointsCustomRewardRedemptionAdd(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelChannelPointsCustomRewardRedemptionAdd, getTestEventData(twitch.SubChannelChannelPointsCustomRewardRedemptionAdd))
 
-	ch := make(chan struct{})
-	client.OnEventChannelChannelPointsCustomRewardRedemptionAdd(func(event twitch.EventChannelChannelPointsCustomRewardRedemptionAdd) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelChannelPointsCustomRewardRedemptionAdd(func(event twitch.EventChannelChannelPointsCustomRewardRedemptionAdd) { close(ch) })
+	}, twitch.SubChannelChannelPointsCustomRewardRedemptionAdd)
 }
 
 func TestEventChannelChannelPointsCustomRewardRedemptionUpdate(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelChannelPointsCustomRewardRedemptionUpdate, getTestEventData(twitch.SubChannelChannelPointsCustomRewardRedemptionUpdate))
 
-	ch := make(chan struct{})
-	client.OnEventChannelChannelPointsCustomRewardRedemptionUpdate(func(event twitch.EventChannelChannelPointsCustomRewardRedemptionUpdate) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelChannelPointsCustomRewardRedemptionUpdate(func(event twitch.EventChannelChannelPointsCustomRewardRedemptionUpdate) { close(ch) })
+	}, twitch.SubChannelChannelPointsCustomRewardRedemptionUpdate)
 }
 
 func TestEventChannelPollBegin(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelPollBegin, getTestEventData(twitch.SubChannelPollBegin))
 
-	ch := make(chan struct{})
-	client.OnEventChannelPollBegin(func(event twitch.EventChannelPollBegin) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelPollBegin(func(event twitch.EventChannelPollBegin) { close(ch) })
+	}, twitch.SubChannelPollBegin)
 }
 
 func TestEventChannelPollProgress(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelPollProgress, getTestEventData(twitch.SubChannelPollProgress))
 
-	ch := make(chan struct{})
-	client.OnEventChannelPollProgress(func(event twitch.EventChannelPollProgress) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelPollProgress(func(event twitch.EventChannelPollProgress) { close(ch) })
+	}, twitch.SubChannelPollProgress)
 }
 
 func TestEventChannelPollEnd(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelPollEnd, getTestEventData(twitch.SubChannelPollEnd))
 
-	ch := make(chan struct{})
-	client.OnEventChannelPollEnd(func(event twitch.EventChannelPollEnd) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelPollEnd(func(event twitch.EventChannelPollEnd) { close(ch) })
+	}, twitch.SubChannelPollEnd)
 }
 
 func TestEventChannelPredictionBegin(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelPredictionBegin, getTestEventData(twitch.SubChannelPredictionBegin))
 
-	ch := make(chan struct{})
-	client.OnEventChannelPredictionBegin(func(event twitch.EventChannelPredictionBegin) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelPredictionBegin(func(event twitch.EventChannelPredictionBegin) { close(ch) })
+	}, twitch.SubChannelPredictionBegin)
 }
 
 func TestEventChannelPredictionProgress(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelPredictionProgress, getTestEventData(twitch.SubChannelPredictionProgress))
 
-	ch := make(chan struct{})
-	client.OnEventChannelPredictionProgress(func(event twitch.EventChannelPredictionProgress) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelPredictionProgress(func(event twitch.EventChannelPredictionProgress) { close(ch) })
+	}, twitch.SubChannelPredictionProgress)
 }
 
 func TestEventChannelPredictionLock(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelPredictionLock, getTestEventData(twitch.SubChannelPredictionLock))
 
-	ch := make(chan struct{})
-	client.OnEventChannelPredictionLock(func(event twitch.EventChannelPredictionLock) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelPredictionLock(func(event twitch.EventChannelPredictionLock) { close(ch) })
+	}, twitch.SubChannelPredictionLock)
 }
 
 func TestEventChannelPredictionEnd(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelPredictionEnd, getTestEventData(twitch.SubChannelPredictionEnd))
 
-	ch := make(chan struct{})
-	client.OnEventChannelPredictionEnd(func(event twitch.EventChannelPredictionEnd) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelPredictionEnd(func(event twitch.EventChannelPredictionEnd) { close(ch) })
+	}, twitch.SubChannelPredictionEnd)
 }
 
 func TestEventDropEntitlementGrant(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubDropEntitlementGrant, getTestEventData(twitch.SubDropEntitlementGrant))
 
-	ch := make(chan struct{})
-	client.OnEventDropEntitlementGrant(func(event []twitch.EventDropEntitlementGrant) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventDropEntitlementGrant(func(event []twitch.EventDropEntitlementGrant) { close(ch) })
+	}, twitch.SubDropEntitlementGrant)
 }
 
 func TestEventExtensionBitsTransactionCreate(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubExtensionBitsTransactionCreate, getTestEventData(twitch.SubExtensionBitsTransactionCreate))
 
-	ch := make(chan struct{})
-	client.OnEventExtensionBitsTransactionCreate(func(event twitch.EventExtensionBitsTransactionCreate) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventExtensionBitsTransactionCreate(func(event twitch.EventExtensionBitsTransactionCreate) { close(ch) })
+	}, twitch.SubExtensionBitsTransactionCreate)
 }
 
 func TestEventChannelGoalBegin(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelGoalBegin, getTestEventData(twitch.SubChannelGoalBegin))
 
-	ch := make(chan struct{})
-	client.OnEventChannelGoalBegin(func(event twitch.EventChannelGoalBegin) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelGoalBegin(func(event twitch.EventChannelGoalBegin) { close(ch) })
+	}, twitch.SubChannelGoalBegin)
 }
 
 func TestEventChannelGoalProgress(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelGoalProgress, getTestEventData(twitch.SubChannelGoalProgress))
 
-	ch := make(chan struct{})
-	client.OnEventChannelGoalProgress(func(event twitch.EventChannelGoalProgress) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelGoalProgress(func(event twitch.EventChannelGoalProgress) { close(ch) })
+	}, twitch.SubChannelGoalProgress)
 }
 
 func TestEventChannelGoalEnd(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelGoalEnd, getTestEventData(twitch.SubChannelGoalEnd))
 
-	ch := make(chan struct{})
-	client.OnEventChannelGoalEnd(func(event twitch.EventChannelGoalEnd) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelGoalEnd(func(event twitch.EventChannelGoalEnd) { close(ch) })
+	}, twitch.SubChannelGoalEnd)
 }
 
 func TestEventChannelHypeTrainBegin(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelHypeTrainBegin, getTestEventData(twitch.SubChannelHypeTrainBegin))
 
-	ch := make(chan struct{})
-	client.OnEventChannelHypeTrainBegin(func(event twitch.EventChannelHypeTrainBegin) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelHypeTrainBegin(func(event twitch.EventChannelHypeTrainBegin) { close(ch) })
+	}, twitch.SubChannelHypeTrainBegin)
 }
 
 func TestEventChannelHypeTrainProgress(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelHypeTrainProgress, getTestEventData(twitch.SubChannelHypeTrainProgress))
 
-	ch := make(chan struct{})
-	client.OnEventChannelHypeTrainProgress(func(event twitch.EventChannelHypeTrainProgress) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelHypeTrainProgress(func(event twitch.EventChannelHypeTrainProgress) { close(ch) })
+	}, twitch.SubChannelHypeTrainProgress)
 }
 
 func TestEventChannelHypeTrainEnd(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubChannelHypeTrainEnd, getTestEventData(twitch.SubChannelHypeTrainEnd))
 
-	ch := make(chan struct{})
-	client.OnEventChannelHypeTrainEnd(func(event twitch.EventChannelHypeTrainEnd) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelHypeTrainEnd(func(event twitch.EventChannelHypeTrainEnd) { close(ch) })
+	}, twitch.SubChannelHypeTrainEnd)
 }
 
 func TestEventStreamOnline(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubStreamOnline, getTestEventData(twitch.SubStreamOnline))
 
-	ch := make(chan struct{})
-	client.OnEventStreamOnline(func(event twitch.EventStreamOnline) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventStreamOnline(func(event twitch.EventStreamOnline) { close(ch) })
+	}, twitch.SubStreamOnline)
 }
 
 func TestEventStreamOffline(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubStreamOffline, getTestEventData(twitch.SubStreamOffline))
 
-	ch := make(chan struct{})
-	client.OnEventStreamOffline(func(event twitch.EventStreamOffline) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventStreamOffline(func(event twitch.EventStreamOffline) { close(ch) })
+	}, twitch.SubStreamOffline)
 }
 
 func TestEventUserAuthorizationGrant(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubUserAuthorizationGrant, getTestEventData(twitch.SubUserAuthorizationGrant))
 
-	ch := make(chan struct{})
-	client.OnEventUserAuthorizationGrant(func(event twitch.EventUserAuthorizationGrant) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventUserAuthorizationGrant(func(event twitch.EventUserAuthorizationGrant) { close(ch) })
+	}, twitch.SubUserAuthorizationGrant)
 }
 
 func TestEventUserAuthorizationRevoke(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubUserAuthorizationRevoke, getTestEventData(twitch.SubUserAuthorizationRevoke))
 
-	ch := make(chan struct{})
-	client.OnEventUserAuthorizationRevoke(func(event twitch.EventUserAuthorizationRevoke) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventUserAuthorizationRevoke(func(event twitch.EventUserAuthorizationRevoke) { close(ch) })
+	}, twitch.SubUserAuthorizationRevoke)
 }
 
 func TestEventUserAuthorizationRevokeNoUser(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubUserAuthorizationRevoke, getTestEventData(twitch.SubUserAuthorizationRevoke, "nouser"))
 
-	ch := make(chan struct{})
-	client.OnEventUserAuthorizationRevoke(func(event twitch.EventUserAuthorizationRevoke) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventUserAuthorizationRevoke(func(event twitch.EventUserAuthorizationRevoke) { close(ch) })
+	}, twitch.SubUserAuthorizationRevoke, "nouser")
 }
 
 func TestEventUserUpdate(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubUserUpdate, getTestEventData(twitch.SubUserUpdate))
 
-	ch := make(chan struct{})
-	client.OnEventUserUpdate(func(event twitch.EventUserUpdate) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventUserUpdate(func(event twitch.EventUserUpdate) { close(ch) })
+	}, twitch.SubUserUpdate)
 }
 
 func TestEventUserUpdateNoEmail(t *testing.T) {
 	t.Parallel()
-	client := newClientWithWelcome(t, twitch.SubUserUpdate, getTestEventData(twitch.SubUserUpdate, "noemail"))
 
-	ch := make(chan struct{})
-	client.OnEventUserUpdate(func(event twitch.EventUserUpdate) {
-		close(ch)
-	})
-
-	go connect(t, client)
-
-	select {
-	case <-ch:
-	case <-time.After(time.Second):
-		t.Error("event did not occur")
-	}
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventUserUpdate(func(event twitch.EventUserUpdate) { close(ch) })
+	}, twitch.SubUserUpdate, "noemail")
 }

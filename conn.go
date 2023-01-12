@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
 
 	"nhooyr.io/websocket"
 )
@@ -43,6 +44,9 @@ type Client struct {
 	ws      *websocket.Conn
 	closed  bool
 	ctx     context.Context
+
+	reconnecting  bool
+	reconnectChan chan struct{}
 
 	// Responses
 	onError        func(err error)
@@ -99,9 +103,10 @@ func NewClient() *Client {
 
 func NewClientWithUrl(url string) *Client {
 	return &Client{
-		Address: url,
-		closed:  true,
-		onError: func(err error) { fmt.Printf("ERROR: %v\n", err) },
+		Address:       url,
+		closed:        true,
+		onError:       func(err error) { fmt.Printf("ERROR: %v\n", err) },
+		reconnectChan: make(chan struct{}, 1),
 	}
 }
 
@@ -119,15 +124,29 @@ func (c *Client) ConnectWithContext(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	defer func() { c.ws = nil }()
 
 	for {
 		_, data, err := c.ws.Read(ctx)
 		if err != nil {
-			var closeError websocket.CloseError
-			if errors.Is(err, context.Canceled) || (c.closed && errors.As(err, &closeError)) {
+			if errors.Is(err, context.Canceled) {
 				return nil
 			}
+
+			var closeError websocket.CloseError
+			if c.closed && errors.As(err, &closeError) {
+				if c.reconnecting {
+					c.reconnecting = false
+					t := 5 * time.Second
+					select {
+					case <-c.reconnectChan:
+						continue
+					case <-time.After(t):
+						return fmt.Errorf("client was marked for reconnecting and took longer than %s to reconnect: %w", t, err)
+					}
+				}
+				return nil
+			}
+
 			return fmt.Errorf("could not read message: %w", err)
 		}
 
@@ -139,15 +158,32 @@ func (c *Client) ConnectWithContext(ctx context.Context) error {
 }
 
 func (c *Client) Close() error {
-	c.closed = true
-	if c.ws == nil {
+	if c.closed {
 		return nil
 	}
-	return c.ws.Close(websocket.StatusNormalClosure, "Stopping Connection")
+	c.closed = true
+
+	err := c.ws.Close(websocket.StatusNormalClosure, "Stopping Connection")
+
+	var closeError websocket.CloseError
+	if err != nil && !(c.closed && errors.As(err, &closeError)) {
+		return fmt.Errorf("could not close websocket connection: %w", err)
+	}
+	return nil
 }
 
-func (c *Client) IsClosed() bool {
-	return c.closed
+func (c *Client) Reconnect(url string) error {
+	c.reconnecting = true
+	c.Address = url
+
+	c.Close()
+	err := c.dial()
+	if err != nil {
+		return fmt.Errorf("could not reconnect websocket: %w", err)
+	}
+
+	c.reconnectChan <- struct{}{}
+	return nil
 }
 
 func (c *Client) OnError(callback func(err error)) {
@@ -485,12 +521,6 @@ func (c *Client) dial() error {
 		return fmt.Errorf("could not dial %s: %w", c.Address, err)
 	}
 
-	if c.ws != nil && !c.closed {
-		err := c.Close()
-		if err != nil {
-			return fmt.Errorf("could not close existing connection: %w", err)
-		}
-	}
 	c.ws = ws
 	c.closed = false
 

@@ -8,7 +8,7 @@
 
 Implements a Twitch EventSub Websocket connection
 
-If a websocket connection has no subscriptions, then it will close automatically on twitch's end
+If a websocket connection has no subscriptions, then it will close automatically on twitch's end so call `client.OnWelcome` and subscribe there after getting the subscription ID.
 
 ## Example
 
@@ -67,8 +67,8 @@ func main() {
 	client.OnRevoke(func(message twitch.RevokeMessage) {
 		fmt.Printf("REVOKE: %v\n", message)
 	})
-	client.OnRawEvent(func(event string) {
-		fmt.Printf("EVENT: %s\n", event)
+	client.OnRawEvent(func(event string, metadata MessageMetadata, eventType EventSubscription) {
+		fmt.Printf("EVENT[%s]: %s: %s\n", eventType, metadata, event)
 	})
 
 	err := client.Connect()
@@ -76,4 +76,17 @@ func main() {
 		fmt.Printf("Could not connect client: %v\n", err)
 	}
 }
+```
+
+### Reconnecting
+
+Twitch will send a reconnect event shortly before it shuts down a connection. The payload will have the new url to connect to. Use `client.Reconnect` to seamlessly reconnect to the url. If there is an issue dialing the twitch url, then the `Reconnect` and `Connect/ConnectWithContext` commands will return an error. If the dialing takes too long, the `Connect/ConnectWithContext` will return an error.
+
+```go
+client.OnReconnect(func(message twitch.ReconnectMessage) {
+	err := client.Reconnect(message.Payload.Session.ReconnectUrl)
+	if err != nil {
+		fmt.Printf("Error reconnecting: %v\n", err)
+	}
+})
 ```
