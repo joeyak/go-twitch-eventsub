@@ -386,8 +386,6 @@ type EventUserUpdate struct {
 	Description   string `json:"description"`
 }
 
-// For now GoalAmount is not used because it's used in channel.charity_campaign
-// events but those are beta and thus not implemented for now
 type GoalAmount struct {
 	Value         int    `json:"value"`
 	DecimalPlaces int    `json:"decimal_places"`
@@ -397,3 +395,48 @@ type GoalAmount struct {
 func (a GoalAmount) Amount() float64 {
 	return float64(a.Value) / math.Pow10(a.DecimalPlaces)
 }
+
+type BaseCharity struct {
+	Broadcaster
+	User
+
+	CharityName        string `json:"charity_name"`
+	CharityDescription string `json:"charity_description"`
+	CharityLogo        string `json:"charity_logo"`
+	CharityWebsite     string `json:"charity_website"`
+}
+
+type EventChannelCharityCampaignDonate struct {
+	BaseCharity
+
+	Amount GoalAmount `json:"amount"`
+}
+
+type EventChannelCharityCampaignProgress struct {
+	BaseCharity
+
+	CurrentAmount GoalAmount `json:"current_amount"`
+	TargetAmount  GoalAmount `json:"target_amount"`
+}
+
+type EventChannelCharityCampaignStart struct {
+	EventChannelCharityCampaignProgress
+
+	StartedAt time.Time `json:"started_at"`
+}
+
+type EventChannelCharityCampaignStop struct {
+	EventChannelCharityCampaignProgress
+
+	StoppedAt time.Time `json:"stopped_at"`
+}
+
+type EventChannelShieldModeBegin struct {
+	Broadcaster
+	Moderator
+
+	StartedAt time.Time `json:"started_at"`
+	StoppedAt time.Time `json:"stopped_at"`
+}
+
+type EventChannelShieldModeEnd EventChannelShieldModeBegin

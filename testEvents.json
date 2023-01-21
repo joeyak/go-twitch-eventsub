@@ -1,5 +1,5 @@
 {
-    "unknown":{},
+    "unknown": {},
     "channel.update": {
         "broadcaster_user_id": "1337",
         "broadcaster_user_login": "cool_user",
@@ -847,5 +847,104 @@
         "email": "",
         "email_verified": true,
         "description": "cool description"
+    },
+    "channel.charity_campaign.start": {
+        "id": "123-abc-456-def",
+        "broadcaster_id": "123456",
+        "broadcaster_name": "SunnySideUp",
+        "broadcaster_login": "sunnysideup",
+        "charity_name": "Example name",
+        "charity_description": "Example description",
+        "charity_logo": "https://abc.cloudfront.net/ppgf/1000/100.png",
+        "charity_website": "https://www.example.com",
+        "current_amount": {
+            "value": 0,
+            "decimal_places": 2,
+            "currency": "USD"
+        },
+        "target_amount": {
+            "value": 1500000,
+            "decimal_places": 2,
+            "currency": "USD"
+        },
+        "started_at": "2022-07-26T17:00:03.17106713Z"
+    },
+    "channel.charity_campaign.progress": {
+        "id": "123-abc-456-def",
+        "broadcaster_id": "123456",
+        "broadcaster_name": "SunnySideUp",
+        "broadcaster_login": "sunnysideup",
+        "charity_name": "Example name",
+        "charity_description": "Example description",
+        "charity_logo": "https://abc.cloudfront.net/ppgf/1000/100.png",
+        "charity_website": "https://www.example.com",
+        "current_amount": {
+            "value": 260000,
+            "decimal_places": 2,
+            "currency": "USD"
+        },
+        "target_amount": {
+            "value": 1500000,
+            "decimal_places": 2,
+            "currency": "USD"
+        }
+    },
+    "channel.charity_campaign.stop": {
+        "id": "123-abc-456-def",
+        "broadcaster_id": "123456",
+        "broadcaster_name": "SunnySideUp",
+        "broadcaster_login": "sunnysideup",
+        "charity_name": "Example name",
+        "charity_description": "Example description",
+        "charity_logo": "https://abc.cloudfront.net/ppgf/1000/100.png",
+        "charity_website": "https://www.example.com",
+        "current_amount": {
+            "value": 1450000,
+            "decimal_places": 2,
+            "currency": "USD"
+        },
+        "target_amount": {
+            "value": 1500000,
+            "decimal_places": 2,
+            "currency": "USD"
+        },
+        "stopped_at": "2022-07-26T22:00:03.17106713Z"
+    },
+    "channel.charity_campaign.donate": {
+        "id": "a1b2c3-aabb-4455-d1e2f3",
+        "campaign_id": "123-abc-456-def",
+        "broadcaster_user_id": "123456",
+        "broadcaster_user_name": "SunnySideUp",
+        "broadcaster_user_login": "sunnysideup",
+        "user_id": "654321",
+        "user_login": "generoususer1",
+        "user_name": "GenerousUser1",
+        "charity_name": "Example name",
+        "charity_description": "Example description",
+        "charity_logo": "https://abc.cloudfront.net/ppgf/1000/100.png",
+        "charity_website": "https://www.example.com",
+        "amount": {
+            "value": 10000,
+            "decimal_places": 2,
+            "currency": "USD"
+        }
+    },
+    "channel.shield_mode.begin": {
+        "broadcaster_user_id": "12345",
+        "broadcaster_user_name": "SimplySimple",
+        "broadcaster_user_login": "simplysimple",
+        "moderator_user_id": "98765",
+        "moderator_user_name": "ParticularlyParticular123",
+        "moderator_user_login": "particularlyparticular123",
+        "started_at": "2022-07-26T17:00:03.17106713Z"
+    },
+    "channel.shield_mode.end": {
+        "broadcaster_user_id": "12345",
+        "broadcaster_user_name": "SimplySimple",
+        "broadcaster_user_login": "simplysimple",
+        "moderator_user_id": "98765",
+        "moderator_user_name": "ParticularlyParticular123",
+        "moderator_user_login": "particularlyparticular123",
+        "ended_at": "2022-07-27T01:30:23.17106713Z"
     }
 }

@@ -365,3 +365,51 @@ func TestEventUserUpdateNoEmail(t *testing.T) {
 		client.OnEventUserUpdate(func(event twitch.EventUserUpdate) { close(ch) })
 	}, twitch.SubUserUpdate, "noemail")
 }
+
+func TestEventChannelCharityCampaignDonate(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelCharityCampaignDonate(func(event twitch.EventChannelCharityCampaignDonate) { close(ch) })
+	}, twitch.SubChannelCharityCampaignDonate)
+}
+
+func TestEventChannelCharityCampaignProgress(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelCharityCampaignProgress(func(event twitch.EventChannelCharityCampaignProgress) { close(ch) })
+	}, twitch.SubChannelCharityCampaignProgress)
+}
+
+func TestEventChannelCharityCampaignStart(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelCharityCampaignStart(func(event twitch.EventChannelCharityCampaignStart) { close(ch) })
+	}, twitch.SubChannelCharityCampaignStart)
+}
+
+func TestEventChannelCharityCampaignStop(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelCharityCampaignStop(func(event twitch.EventChannelCharityCampaignStop) { close(ch) })
+	}, twitch.SubChannelCharityCampaignStop)
+}
+
+func TestEventChannelShieldModeBegin(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelShieldModeBegin(func(event twitch.EventChannelShieldModeBegin) { close(ch) })
+	}, twitch.SubChannelShieldModeBegin)
+}
+
+func TestEventChannelShieldModeEnd(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelShieldModeEnd(func(event twitch.EventChannelShieldModeEnd) { close(ch) })
+	}, twitch.SubChannelShieldModeEnd)
+}

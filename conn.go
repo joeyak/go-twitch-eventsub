@@ -95,6 +95,12 @@ type Client struct {
 	onEventUserAuthorizationGrant                           func(event EventUserAuthorizationGrant)
 	onEventUserAuthorizationRevoke                          func(event EventUserAuthorizationRevoke)
 	onEventUserUpdate                                       func(event EventUserUpdate)
+	onEventChannelCharityCampaignDonate                     func(event EventChannelCharityCampaignDonate)
+	onEventChannelCharityCampaignProgress                   func(event EventChannelCharityCampaignProgress)
+	onEventChannelCharityCampaignStart                      func(event EventChannelCharityCampaignStart)
+	onEventChannelCharityCampaignStop                       func(event EventChannelCharityCampaignStop)
+	onEventChannelShieldModeBegin                           func(event EventChannelShieldModeBegin)
+	onEventChannelShieldModeEnd                             func(event EventChannelShieldModeEnd)
 }
 
 func NewClient() *Client {
@@ -362,6 +368,30 @@ func (c *Client) OnEventUserUpdate(callback func(event EventUserUpdate)) {
 	c.onEventUserUpdate = callback
 }
 
+func (c *Client) OnEventChannelCharityCampaignDonate(callback func(event EventChannelCharityCampaignDonate)) {
+	c.onEventChannelCharityCampaignDonate = callback
+}
+
+func (c *Client) OnEventChannelCharityCampaignProgress(callback func(event EventChannelCharityCampaignProgress)) {
+	c.onEventChannelCharityCampaignProgress = callback
+}
+
+func (c *Client) OnEventChannelCharityCampaignStart(callback func(event EventChannelCharityCampaignStart)) {
+	c.onEventChannelCharityCampaignStart = callback
+}
+
+func (c *Client) OnEventChannelCharityCampaignStop(callback func(event EventChannelCharityCampaignStop)) {
+	c.onEventChannelCharityCampaignStop = callback
+}
+
+func (c *Client) OnEventChannelShieldModeBegin(callback func(event EventChannelShieldModeBegin)) {
+	c.onEventChannelShieldModeBegin = callback
+}
+
+func (c *Client) OnEventChannelShieldModeEnd(callback func(event EventChannelShieldModeEnd)) {
+	c.onEventChannelShieldModeEnd = callback
+}
+
 func (c *Client) handleMessage(data []byte) error {
 	type BaseMessage struct {
 		Metadata MessageMetadata `json:"metadata"`
@@ -508,6 +538,18 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventUserAuthorizationRevoke, *event)
 	case *EventUserUpdate:
 		callFunc(c.onEventUserUpdate, *event)
+	case *EventChannelCharityCampaignDonate:
+		callFunc(c.onEventChannelCharityCampaignDonate, *event)
+	case *EventChannelCharityCampaignProgress:
+		callFunc(c.onEventChannelCharityCampaignProgress, *event)
+	case *EventChannelCharityCampaignStart:
+		callFunc(c.onEventChannelCharityCampaignStart, *event)
+	case *EventChannelCharityCampaignStop:
+		callFunc(c.onEventChannelCharityCampaignStop, *event)
+	case *EventChannelShieldModeBegin:
+		callFunc(c.onEventChannelShieldModeBegin, *event)
+	case *EventChannelShieldModeEnd:
+		callFunc(c.onEventChannelShieldModeEnd, *event)
 	default:
 		c.onError(fmt.Errorf("unknown event type %s", subType))
 	}

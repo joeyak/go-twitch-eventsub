@@ -63,6 +63,14 @@ var (
 	SubUserAuthorizationRevoke EventSubscription = "user.authorization.revoke"
 	SubUserUpdate              EventSubscription = "user.update"
 
+	SubChannelCharityCampaignDonate   EventSubscription = "channel.charity_campaign.donate"
+	SubChannelCharityCampaignStart    EventSubscription = "channel.charity_campaign.start"
+	SubChannelCharityCampaignProgress EventSubscription = "channel.charity_campaign.progress"
+	SubChannelCharityCampaignStop     EventSubscription = "channel.charity_campaign.stop"
+
+	SubChannelShieldModeBegin EventSubscription = "channel.shield_mode.begin"
+	SubChannelShieldModeEnd   EventSubscription = "channel.shield_mode.end"
+
 	subMetadata = map[EventSubscription]subscriptionMetadata{
 		SubChannelUpdate: {
 			Version:  "1",
@@ -211,6 +219,30 @@ var (
 		SubUserUpdate: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventUserUpdate](),
+		},
+		SubChannelCharityCampaignDonate: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelCharityCampaignDonate](),
+		},
+		SubChannelCharityCampaignStart: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelCharityCampaignStart](),
+		},
+		SubChannelCharityCampaignProgress: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelCharityCampaignProgress](),
+		},
+		SubChannelCharityCampaignStop: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelCharityCampaignStop](),
+		},
+		SubChannelShieldModeBegin: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelShieldModeBegin](),
+		},
+		SubChannelShieldModeEnd: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelShieldModeEnd](),
 		},
 	}
 )
