@@ -1,6 +1,7 @@
 package twitch_test
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -21,10 +22,10 @@ import (
 //go:embed testEvents.json
 var testEvents []byte
 
-type messageDataGenerator func() ([]byte, bool, error)
+type messageDataGenerator func() ([][]byte, bool, error)
 
 func getTestEventData(eventType twitch.EventSubscription, suffixes ...string) messageDataGenerator {
-	return func() ([]byte, bool, error) {
+	return func() ([][]byte, bool, error) {
 		var events map[string]json.RawMessage
 		if err := json.Unmarshal(testEvents, &events); err != nil {
 			return nil, false, fmt.Errorf("could not parse event json file: %w", err)
@@ -59,7 +60,7 @@ func getTestEventData(eventType twitch.EventSubscription, suffixes ...string) me
 				},
 			},
 		})
-		return data, true, err
+		return [][]byte{data}, true, err
 	}
 }
 
@@ -67,7 +68,7 @@ type TestServer struct {
 	Address            string
 	conn               *websocket.Conn
 	sendInSubscription bool
-	data               []byte
+	data               [][]byte
 }
 
 func newTestServer(gen messageDataGenerator) (TestServer, error) {
@@ -79,6 +80,12 @@ func newTestServer(gen messageDataGenerator) (TestServer, error) {
 	data, sendInSubscription, err := gen()
 	if err != nil {
 		return TestServer{}, fmt.Errorf("could not get generate message data: %w", err)
+	}
+
+	for i := range data {
+		for _, r := range "\t\r\n" {
+			data[i] = bytes.ReplaceAll(data[i], []byte{byte(r)}, nil)
+		}
 	}
 
 	server := TestServer{
@@ -109,8 +116,11 @@ func (s *TestServer) handleWebsocket(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	if !s.sendInSubscription && len(s.data) > 0 {
-		s.conn.Write(r.Context(), websocket.MessageText, s.data)
+	if !s.sendInSubscription {
+		for _, data := range s.data {
+			s.conn.Write(r.Context(), websocket.MessageText, data)
+			fmt.Println(string(data))
+		}
 	}
 
 	// Read so it can close
@@ -134,9 +144,12 @@ func (s *TestServer) handleSubscription(w http.ResponseWriter, r *http.Request) 
 	w.WriteHeader(http.StatusAccepted)
 	w.Write(response)
 
-	err = s.conn.Write(r.Context(), websocket.MessageText, s.data)
-	if err != nil {
-		panic(err)
+	for _, data := range s.data {
+		err = s.conn.Write(r.Context(), websocket.MessageText, data)
+		fmt.Println(string(data))
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 

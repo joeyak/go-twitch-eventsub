@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"time"
 
 	"nhooyr.io/websocket"
 )
@@ -35,18 +34,18 @@ func zeroPtrGen[T any]() func() any {
 
 func callFunc[T any](f func(T), v T) {
 	if f != nil {
-		f(v)
+		go f(v)
 	}
 }
 
 type Client struct {
-	Address string
-	ws      *websocket.Conn
-	closed  bool
-	ctx     context.Context
+	Address   string
+	ws        *websocket.Conn
+	connected bool
+	ctx       context.Context
 
-	reconnecting  bool
-	reconnectChan chan struct{}
+	reconnecting bool
+	reconnected  chan struct{}
 
 	// Responses
 	onError        func(err error)
@@ -109,10 +108,9 @@ func NewClient() *Client {
 
 func NewClientWithUrl(url string) *Client {
 	return &Client{
-		Address:       url,
-		closed:        true,
-		onError:       func(err error) { fmt.Printf("ERROR: %v\n", err) },
-		reconnectChan: make(chan struct{}, 1),
+		Address:     url,
+		reconnected: make(chan struct{}),
+		onError:     func(err error) { fmt.Printf("ERROR: %v\n", err) },
 	}
 }
 
@@ -126,10 +124,12 @@ func (c *Client) ConnectWithContext(ctx context.Context) error {
 	}
 
 	c.ctx = ctx
-	err := c.dial()
+	ws, err := c.dial()
 	if err != nil {
 		return err
 	}
+	c.ws = ws
+	c.connected = true
 
 	for {
 		_, data, err := c.ws.Read(ctx)
@@ -138,17 +138,11 @@ func (c *Client) ConnectWithContext(ctx context.Context) error {
 				return nil
 			}
 
-			var closeError websocket.CloseError
-			if c.closed && errors.As(err, &closeError) {
+			if websocket.CloseStatus(err) == websocket.StatusNormalClosure {
 				if c.reconnecting {
 					c.reconnecting = false
-					t := 5 * time.Second
-					select {
-					case <-c.reconnectChan:
-						continue
-					case <-time.After(t):
-						return fmt.Errorf("client was marked for reconnecting and took longer than %s to reconnect: %w", t, err)
-					}
+					<-c.reconnected
+					continue
 				}
 				return nil
 			}
@@ -164,32 +158,238 @@ func (c *Client) ConnectWithContext(ctx context.Context) error {
 }
 
 func (c *Client) Close() error {
-	if c.closed {
+	defer func() { c.ws = nil }()
+	if !c.connected {
 		return nil
 	}
-	c.closed = true
+	c.connected = false
 
 	err := c.ws.Close(websocket.StatusNormalClosure, "Stopping Connection")
 
 	var closeError websocket.CloseError
-	if err != nil && !(c.closed && errors.As(err, &closeError)) {
+	if err != nil && !errors.As(err, &closeError) {
 		return fmt.Errorf("could not close websocket connection: %w", err)
 	}
 	return nil
 }
 
-func (c *Client) Reconnect(url string) error {
-	c.reconnecting = true
-	c.Address = url
-
-	c.Close()
-	err := c.dial()
+func (c *Client) handleMessage(data []byte) error {
+	metadata, err := parseBaseMessage(data)
 	if err != nil {
-		return fmt.Errorf("could not reconnect websocket: %w", err)
+		return err
 	}
 
-	c.reconnectChan <- struct{}{}
+	messageType := metadata.MessageType
+	genMessage, ok := messageTypeMap[messageType]
+	if !ok {
+		return fmt.Errorf("unknown message type %s: %s", messageType, string(data))
+	}
+
+	message := genMessage()
+	err = json.Unmarshal(data, message)
+	if err != nil {
+		return fmt.Errorf("could not unmarshal message into %s: %w", messageType, err)
+	}
+
+	switch msg := message.(type) {
+	case *WelcomeMessage:
+		callFunc(c.onWelcome, *msg)
+	case *KeepAliveMessage:
+		callFunc(c.onKeepAlive, *msg)
+	case *NotificationMessage:
+		callFunc(c.onNotification, *msg)
+
+		err = c.handleNotification(*msg)
+		if err != nil {
+			return fmt.Errorf("could not handle notification: %w", err)
+		}
+	case *ReconnectMessage:
+		callFunc(c.onReconnect, *msg)
+
+		err = c.reconnect(*msg)
+		if err != nil {
+			return fmt.Errorf("could not handle reconnect: %w", err)
+		}
+	case *RevokeMessage:
+		callFunc(c.onRevoke, *msg)
+	default:
+		return fmt.Errorf("unhandled %T message: %v", msg, msg)
+	}
+
 	return nil
+}
+
+func (c *Client) reconnect(message ReconnectMessage) error {
+	c.Address = message.Payload.Session.ReconnectUrl
+	ws, err := c.dial()
+	if err != nil {
+		return fmt.Errorf("could not dial to reconnect")
+	}
+
+	go func() {
+		_, data, err := ws.Read(c.ctx)
+		if err != nil {
+			c.onError(fmt.Errorf("reconnect failed: could not read reconnect websocket for welcome: %w", err))
+		}
+
+		metadata, err := parseBaseMessage(data)
+		if err != nil {
+			c.onError(fmt.Errorf("reconnect failed: could parse base message: %w", err))
+		}
+
+		if metadata.MessageType != "session_welcome" {
+			c.onError(fmt.Errorf("reconnect failed: did not get a session_welcome message first: got message %s", metadata.MessageType))
+			return
+		}
+
+		c.reconnecting = true
+		c.ws.Close(websocket.StatusNormalClosure, "Stopping Connection")
+		c.ws = ws
+		c.reconnected <- struct{}{}
+	}()
+
+	return nil
+}
+
+func (c *Client) handleNotification(message NotificationMessage) error {
+	data, err := message.Payload.Event.MarshalJSON()
+	if err != nil {
+		return fmt.Errorf("could not get event json: %w", err)
+	}
+
+	subType := message.Payload.Subscription.Type
+	metadata, ok := subMetadata[subType]
+	if !ok {
+		return fmt.Errorf("unknown subscription type %s", subType)
+	}
+
+	if c.onRawEvent != nil {
+		c.onRawEvent(string(data), message.Metadata, subType)
+	}
+
+	var newEvent any
+	if metadata.EventGen != nil {
+		newEvent = metadata.EventGen()
+		err = json.Unmarshal(data, newEvent)
+		if err != nil {
+			return fmt.Errorf("could not unmarshal %s into %T: %w", subType, newEvent, err)
+		}
+	}
+
+	switch event := newEvent.(type) {
+	case *EventChannelUpdate:
+		callFunc(c.onEventChannelUpdate, *event)
+	case *EventChannelFollow:
+		callFunc(c.onEventChannelFollow, *event)
+	case *EventChannelSubscribe:
+		callFunc(c.onEventChannelSubscribe, *event)
+	case *EventChannelSubscriptionEnd:
+		callFunc(c.onEventChannelSubscriptionEnd, *event)
+	case *EventChannelSubscriptionGift:
+		callFunc(c.onEventChannelSubscriptionGift, *event)
+	case *EventChannelSubscriptionMessage:
+		callFunc(c.onEventChannelSubscriptionMessage, *event)
+	case *EventChannelCheer:
+		callFunc(c.onEventChannelCheer, *event)
+	case *EventChannelRaid:
+		callFunc(c.onEventChannelRaid, *event)
+	case *EventChannelBan:
+		callFunc(c.onEventChannelBan, *event)
+	case *EventChannelUnban:
+		callFunc(c.onEventChannelUnban, *event)
+	case *EventChannelModeratorAdd:
+		callFunc(c.onEventChannelModeratorAdd, *event)
+	case *EventChannelModeratorRemove:
+		callFunc(c.onEventChannelModeratorRemove, *event)
+	case *EventChannelChannelPointsCustomRewardAdd:
+		callFunc(c.onEventChannelChannelPointsCustomRewardAdd, *event)
+	case *EventChannelChannelPointsCustomRewardUpdate:
+		callFunc(c.onEventChannelChannelPointsCustomRewardUpdate, *event)
+	case *EventChannelChannelPointsCustomRewardRemove:
+		callFunc(c.onEventChannelChannelPointsCustomRewardRemove, *event)
+	case *EventChannelChannelPointsCustomRewardRedemptionAdd:
+		callFunc(c.onEventChannelChannelPointsCustomRewardRedemptionAdd, *event)
+	case *EventChannelChannelPointsCustomRewardRedemptionUpdate:
+		callFunc(c.onEventChannelChannelPointsCustomRewardRedemptionUpdate, *event)
+	case *EventChannelPollBegin:
+		callFunc(c.onEventChannelPollBegin, *event)
+	case *EventChannelPollProgress:
+		callFunc(c.onEventChannelPollProgress, *event)
+	case *EventChannelPollEnd:
+		callFunc(c.onEventChannelPollEnd, *event)
+	case *EventChannelPredictionBegin:
+		callFunc(c.onEventChannelPredictionBegin, *event)
+	case *EventChannelPredictionProgress:
+		callFunc(c.onEventChannelPredictionProgress, *event)
+	case *EventChannelPredictionLock:
+		callFunc(c.onEventChannelPredictionLock, *event)
+	case *EventChannelPredictionEnd:
+		callFunc(c.onEventChannelPredictionEnd, *event)
+	case *[]EventDropEntitlementGrant:
+		callFunc(c.onEventDropEntitlementGrant, *event)
+	case *EventExtensionBitsTransactionCreate:
+		callFunc(c.onEventExtensionBitsTransactionCreate, *event)
+	case *EventChannelGoalBegin:
+		callFunc(c.onEventChannelGoalBegin, *event)
+	case *EventChannelGoalProgress:
+		callFunc(c.onEventChannelGoalProgress, *event)
+	case *EventChannelGoalEnd:
+		callFunc(c.onEventChannelGoalEnd, *event)
+	case *EventChannelHypeTrainBegin:
+		callFunc(c.onEventChannelHypeTrainBegin, *event)
+	case *EventChannelHypeTrainProgress:
+		callFunc(c.onEventChannelHypeTrainProgress, *event)
+	case *EventChannelHypeTrainEnd:
+		callFunc(c.onEventChannelHypeTrainEnd, *event)
+	case *EventStreamOnline:
+		callFunc(c.onEventStreamOnline, *event)
+	case *EventStreamOffline:
+		callFunc(c.onEventStreamOffline, *event)
+	case *EventUserAuthorizationGrant:
+		callFunc(c.onEventUserAuthorizationGrant, *event)
+	case *EventUserAuthorizationRevoke:
+		callFunc(c.onEventUserAuthorizationRevoke, *event)
+	case *EventUserUpdate:
+		callFunc(c.onEventUserUpdate, *event)
+	case *EventChannelCharityCampaignDonate:
+		callFunc(c.onEventChannelCharityCampaignDonate, *event)
+	case *EventChannelCharityCampaignProgress:
+		callFunc(c.onEventChannelCharityCampaignProgress, *event)
+	case *EventChannelCharityCampaignStart:
+		callFunc(c.onEventChannelCharityCampaignStart, *event)
+	case *EventChannelCharityCampaignStop:
+		callFunc(c.onEventChannelCharityCampaignStop, *event)
+	case *EventChannelShieldModeBegin:
+		callFunc(c.onEventChannelShieldModeBegin, *event)
+	case *EventChannelShieldModeEnd:
+		callFunc(c.onEventChannelShieldModeEnd, *event)
+	default:
+		c.onError(fmt.Errorf("unknown event type %s", subType))
+	}
+
+	return nil
+}
+
+func (c *Client) dial() (*websocket.Conn, error) {
+	ws, _, err := websocket.Dial(c.ctx, c.Address, nil)
+	if err != nil {
+		return nil, fmt.Errorf("could not dial %s: %w", c.Address, err)
+	}
+	return ws, nil
+}
+
+func parseBaseMessage(data []byte) (MessageMetadata, error) {
+	type BaseMessage struct {
+		Metadata MessageMetadata `json:"metadata"`
+	}
+
+	var baseMessage BaseMessage
+	err := json.Unmarshal(data, &baseMessage)
+	if err != nil {
+		return MessageMetadata{}, fmt.Errorf("could not unmarshal basemessage to get message type: %w", err)
+	}
+
+	return baseMessage.Metadata, nil
 }
 
 func (c *Client) OnError(callback func(err error)) {
@@ -390,181 +590,4 @@ func (c *Client) OnEventChannelShieldModeBegin(callback func(event EventChannelS
 
 func (c *Client) OnEventChannelShieldModeEnd(callback func(event EventChannelShieldModeEnd)) {
 	c.onEventChannelShieldModeEnd = callback
-}
-
-func (c *Client) handleMessage(data []byte) error {
-	type BaseMessage struct {
-		Metadata MessageMetadata `json:"metadata"`
-	}
-
-	var baseMessage BaseMessage
-	err := json.Unmarshal(data, &baseMessage)
-	if err != nil {
-		return fmt.Errorf("could not unmarshal basemessage to get message type: %w", err)
-	}
-
-	messageType := baseMessage.Metadata.MessageType
-	genMessage, ok := messageTypeMap[messageType]
-	if !ok {
-		return fmt.Errorf("unknown message type %s: %s", messageType, string(data))
-	}
-
-	message := genMessage()
-	err = json.Unmarshal(data, message)
-	if err != nil {
-		return fmt.Errorf("could not unmarshal message into %s: %w", messageType, err)
-	}
-
-	switch msg := message.(type) {
-	case *WelcomeMessage:
-		c.onWelcome(*msg)
-	case *KeepAliveMessage:
-		callFunc(c.onKeepAlive, *msg)
-	case *NotificationMessage:
-		callFunc(c.onNotification, *msg)
-
-		err = c.handleNotification(*msg)
-		if err != nil {
-			return fmt.Errorf("could not handle notification: %w", err)
-		}
-	case *ReconnectMessage:
-		callFunc(c.onReconnect, *msg)
-	case *RevokeMessage:
-		callFunc(c.onRevoke, *msg)
-	default:
-		return fmt.Errorf("unhandled %T message: %v", msg, msg)
-	}
-
-	return nil
-}
-
-func (c *Client) handleNotification(message NotificationMessage) error {
-	data, err := message.Payload.Event.MarshalJSON()
-	if err != nil {
-		return fmt.Errorf("could not get event json: %w", err)
-	}
-
-	subType := message.Payload.Subscription.Type
-	metadata, ok := subMetadata[subType]
-	if !ok {
-		return fmt.Errorf("unknown subscription type %s", subType)
-	}
-
-	if c.onRawEvent != nil {
-		c.onRawEvent(string(data), message.Metadata, subType)
-	}
-
-	var newEvent any
-	if metadata.EventGen != nil {
-		newEvent = metadata.EventGen()
-		err = json.Unmarshal(data, newEvent)
-		if err != nil {
-			return fmt.Errorf("could not unmarshal %s into %T: %w", subType, newEvent, err)
-		}
-	}
-
-	switch event := newEvent.(type) {
-	case *EventChannelUpdate:
-		callFunc(c.onEventChannelUpdate, *event)
-	case *EventChannelFollow:
-		callFunc(c.onEventChannelFollow, *event)
-	case *EventChannelSubscribe:
-		callFunc(c.onEventChannelSubscribe, *event)
-	case *EventChannelSubscriptionEnd:
-		callFunc(c.onEventChannelSubscriptionEnd, *event)
-	case *EventChannelSubscriptionGift:
-		callFunc(c.onEventChannelSubscriptionGift, *event)
-	case *EventChannelSubscriptionMessage:
-		callFunc(c.onEventChannelSubscriptionMessage, *event)
-	case *EventChannelCheer:
-		callFunc(c.onEventChannelCheer, *event)
-	case *EventChannelRaid:
-		callFunc(c.onEventChannelRaid, *event)
-	case *EventChannelBan:
-		callFunc(c.onEventChannelBan, *event)
-	case *EventChannelUnban:
-		callFunc(c.onEventChannelUnban, *event)
-	case *EventChannelModeratorAdd:
-		callFunc(c.onEventChannelModeratorAdd, *event)
-	case *EventChannelModeratorRemove:
-		callFunc(c.onEventChannelModeratorRemove, *event)
-	case *EventChannelChannelPointsCustomRewardAdd:
-		callFunc(c.onEventChannelChannelPointsCustomRewardAdd, *event)
-	case *EventChannelChannelPointsCustomRewardUpdate:
-		callFunc(c.onEventChannelChannelPointsCustomRewardUpdate, *event)
-	case *EventChannelChannelPointsCustomRewardRemove:
-		callFunc(c.onEventChannelChannelPointsCustomRewardRemove, *event)
-	case *EventChannelChannelPointsCustomRewardRedemptionAdd:
-		callFunc(c.onEventChannelChannelPointsCustomRewardRedemptionAdd, *event)
-	case *EventChannelChannelPointsCustomRewardRedemptionUpdate:
-		callFunc(c.onEventChannelChannelPointsCustomRewardRedemptionUpdate, *event)
-	case *EventChannelPollBegin:
-		callFunc(c.onEventChannelPollBegin, *event)
-	case *EventChannelPollProgress:
-		callFunc(c.onEventChannelPollProgress, *event)
-	case *EventChannelPollEnd:
-		callFunc(c.onEventChannelPollEnd, *event)
-	case *EventChannelPredictionBegin:
-		callFunc(c.onEventChannelPredictionBegin, *event)
-	case *EventChannelPredictionProgress:
-		callFunc(c.onEventChannelPredictionProgress, *event)
-	case *EventChannelPredictionLock:
-		callFunc(c.onEventChannelPredictionLock, *event)
-	case *EventChannelPredictionEnd:
-		callFunc(c.onEventChannelPredictionEnd, *event)
-	case *[]EventDropEntitlementGrant:
-		callFunc(c.onEventDropEntitlementGrant, *event)
-	case *EventExtensionBitsTransactionCreate:
-		callFunc(c.onEventExtensionBitsTransactionCreate, *event)
-	case *EventChannelGoalBegin:
-		callFunc(c.onEventChannelGoalBegin, *event)
-	case *EventChannelGoalProgress:
-		callFunc(c.onEventChannelGoalProgress, *event)
-	case *EventChannelGoalEnd:
-		callFunc(c.onEventChannelGoalEnd, *event)
-	case *EventChannelHypeTrainBegin:
-		callFunc(c.onEventChannelHypeTrainBegin, *event)
-	case *EventChannelHypeTrainProgress:
-		callFunc(c.onEventChannelHypeTrainProgress, *event)
-	case *EventChannelHypeTrainEnd:
-		callFunc(c.onEventChannelHypeTrainEnd, *event)
-	case *EventStreamOnline:
-		callFunc(c.onEventStreamOnline, *event)
-	case *EventStreamOffline:
-		callFunc(c.onEventStreamOffline, *event)
-	case *EventUserAuthorizationGrant:
-		callFunc(c.onEventUserAuthorizationGrant, *event)
-	case *EventUserAuthorizationRevoke:
-		callFunc(c.onEventUserAuthorizationRevoke, *event)
-	case *EventUserUpdate:
-		callFunc(c.onEventUserUpdate, *event)
-	case *EventChannelCharityCampaignDonate:
-		callFunc(c.onEventChannelCharityCampaignDonate, *event)
-	case *EventChannelCharityCampaignProgress:
-		callFunc(c.onEventChannelCharityCampaignProgress, *event)
-	case *EventChannelCharityCampaignStart:
-		callFunc(c.onEventChannelCharityCampaignStart, *event)
-	case *EventChannelCharityCampaignStop:
-		callFunc(c.onEventChannelCharityCampaignStop, *event)
-	case *EventChannelShieldModeBegin:
-		callFunc(c.onEventChannelShieldModeBegin, *event)
-	case *EventChannelShieldModeEnd:
-		callFunc(c.onEventChannelShieldModeEnd, *event)
-	default:
-		c.onError(fmt.Errorf("unknown event type %s", subType))
-	}
-
-	return nil
-}
-
-func (c *Client) dial() error {
-	ws, _, err := websocket.Dial(c.ctx, c.Address, nil)
-	if err != nil {
-		return fmt.Errorf("could not dial %s: %w", c.Address, err)
-	}
-
-	c.ws = ws
-	c.closed = false
-
-	return nil
 }

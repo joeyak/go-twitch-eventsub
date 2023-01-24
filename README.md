@@ -77,16 +77,3 @@ func main() {
 	}
 }
 ```
-
-### Reconnecting
-
-Twitch will send a reconnect event shortly before it shuts down a connection. The payload will have the new url to connect to. Use `client.Reconnect` to seamlessly reconnect to the url. If there is an issue dialing the twitch url, then the `Reconnect` and `Connect/ConnectWithContext` commands will return an error. If the dialing takes too long, the `Connect/ConnectWithContext` will return an error.
-
-```go
-client.OnReconnect(func(message twitch.ReconnectMessage) {
-	err := client.Reconnect(message.Payload.Session.ReconnectUrl)
-	if err != nil {
-		fmt.Printf("Error reconnecting: %v\n", err)
-	}
-})
-```

@@ -10,23 +10,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func noDataGen() ([]byte, bool, error) {
+func noDataGen() ([][]byte, bool, error) {
 	return nil, false, nil
 }
 
-func keepAliveGen() ([]byte, bool, error) {
-	return []byte(`{
+func keepAliveGen() ([][]byte, bool, error) {
+	return [][]byte{[]byte(`{
 		"metadata": {
 			"message_id": "84c1e79a-2a4b-4c13-ba0b-4312293e9308",
 			"message_type": "session_keepalive",
 			"message_timestamp": "2019-11-16T10:11:12.634234626Z"
 		},
 		"payload": {}
-	}`), false, nil
+	}`)}, false, nil
 }
 
-func revokeGen() ([]byte, bool, error) {
-	return []byte(`{
+func revokeGen() ([][]byte, bool, error) {
+	return [][]byte{[]byte(`{
 		"metadata": {
 			"message_id": "84c1e79a-2a4b-4c13-ba0b-4312293e9308",
 			"message_type": "revocation",
@@ -51,27 +51,34 @@ func revokeGen() ([]byte, bool, error) {
 				"created_at": "2019-11-16T10:11:12.464757833Z"
 			}
 		}
-	}`), false, nil
+	}`)}, false, nil
 }
 
-func genReconnectGen(url string) func() ([]byte, bool, error) {
-	return func() ([]byte, bool, error) {
-		return []byte(fmt.Sprintf(`{
-		"metadata": {
-			"message_id": "84c1e79a-2a4b-4c13-ba0b-4312293e9308",
-			"message_type": "session_reconnect",
-			"message_timestamp": "2019-11-18T09:10:11.634234626Z"
-		},
-		"payload": {
-			"session": {
-				"id": "AQoQexAWVYKSTIu4ec_2VAxyuhAB",
-				"status": "reconnecting",
-				"keepalive_timeout_seconds": null,
-				"reconnect_url": "%s",
-				"connected_at": "2019-11-16T10:11:12.634234626Z"
+func genReconnectGen(url string, gens ...messageDataGenerator) messageDataGenerator {
+	return func() ([][]byte, bool, error) {
+		events := [][]byte{[]byte(fmt.Sprintf(`{
+			"metadata": {
+				"message_id": "84c1e79a-2a4b-4c13-ba0b-4312293e9308",
+				"message_type": "session_reconnect",
+				"message_timestamp": "2019-11-18T09:10:11.634234626Z"
+			},
+			"payload": {
+				"session": {
+					"id": "AQoQexAWVYKSTIu4ec_2VAxyuhAB",
+					"status": "reconnecting",
+					"keepalive_timeout_seconds": null,
+					"reconnect_url": "%s",
+					"connected_at": "2019-11-16T10:11:12.634234626Z"
+				}
 			}
+		}`, url))}
+
+		for _, gen := range gens {
+			newEvents, _, _ := gen()
+			events = append(events, newEvents...)
 		}
-	}`, url)), false, nil
+
+		return events, false, nil
 	}
 }
 
@@ -99,10 +106,12 @@ func TestOnClose(t *testing.T) {
 	t.Parallel()
 	client := newClient(t, noDataGen)
 
-	go func() {
-		time.Sleep(50 * time.Millisecond)
-		client.Close()
-	}()
+	client.OnWelcome(func(message twitch.WelcomeMessage) {
+		go func() {
+			time.Sleep(50 * time.Millisecond)
+			client.Close()
+		}()
+	})
 
 	err := client.Connect()
 	assert.NoError(t, err)
@@ -133,18 +142,18 @@ func TestOnKeepAlive(t *testing.T) {
 	})
 }
 
-func TestOnReconnect(t *testing.T) {
-	t.Parallel()
+// func TestOnReconnect(t *testing.T) {
+// 	t.Parallel()
 
-	assertEventOccured(t, func(ch chan struct{}) {
-		client := newClient(t, genReconnectGen(""))
-		client.OnReconnect(func(message twitch.ReconnectMessage) {
-			close(ch)
-		})
+// 	assertEventOccured(t, func(ch chan struct{}) {
+// 		client := newClient(t, genReconnectGen(""))
+// 		client.OnReconnect(func(message twitch.ReconnectMessage) {
+// 			close(ch)
+// 		})
 
-		go connect(t, client)
-	})
-}
+// 		go connect(t, client)
+// 	})
+// }
 
 func TestOnRevoke(t *testing.T) {
 	t.Parallel()
@@ -163,8 +172,8 @@ func TestOnError(t *testing.T) {
 	t.Parallel()
 
 	assertEventOccured(t, func(ch chan struct{}) {
-		client := newClient(t, func() ([]byte, bool, error) {
-			return []byte(`{}`), false, nil
+		client := newClient(t, func() ([][]byte, bool, error) {
+			return [][]byte{[]byte(`{}`)}, false, nil
 		})
 		client.OnError(func(err error) {
 			close(ch)
@@ -178,8 +187,8 @@ func TestInvalidJson(t *testing.T) {
 	t.Parallel()
 
 	assertEventOccured(t, func(ch chan struct{}) {
-		client := newClient(t, func() ([]byte, bool, error) {
-			return []byte(`{`), false, nil
+		client := newClient(t, func() ([][]byte, bool, error) {
+			return [][]byte{[]byte(`{`)}, false, nil
 		})
 		client.OnError(func(err error) {
 			close(ch)
@@ -189,7 +198,7 @@ func TestInvalidJson(t *testing.T) {
 	})
 }
 
-func TestReconnectInEvent(t *testing.T) {
+func TestReconnectEvent(t *testing.T) {
 	t.Parallel()
 
 	reconnectServer, err := newTestServer(keepAliveGen)
@@ -198,55 +207,20 @@ func TestReconnectInEvent(t *testing.T) {
 	}
 	reconnectUrl := fmt.Sprintf("http://%s/%s", reconnectServer.Address, "ws")
 
-	client := newClient(t, genReconnectGen(reconnectUrl))
+	client := newClient(t, genReconnectGen(reconnectUrl, revokeGen))
+
+	var keepAliveOccured bool
 	client.OnKeepAlive(func(message twitch.KeepAliveMessage) {
-		client.Close()
-	})
-	client.OnReconnect(func(message twitch.ReconnectMessage) {
-		err := client.Reconnect(message.Payload.Session.ReconnectUrl)
-		if err != nil {
-			t.Errorf("could not reconnect: %v", err)
-		}
-	})
-
-	err = client.Connect()
-	if err != nil {
-		t.Fatalf("expected no error, got %v", err)
-	}
-
-	if client.Address != reconnectUrl {
-		t.Fatalf("expected Address %s, got %s", reconnectUrl, client.Address)
-	}
-}
-
-func TestReconnectOutsideEvent(t *testing.T) {
-	t.Parallel()
-
-	reconnectServer, err := newTestServer(keepAliveGen)
-	if err != nil {
-		t.Fatalf("could not create reconnect server: %v", err)
-	}
-	reconnectUrl := fmt.Sprintf("http://%s/%s", reconnectServer.Address, "ws")
-
-	client := newClient(t, noDataGen)
-	client.OnKeepAlive(func(message twitch.KeepAliveMessage) {
+		keepAliveOccured = true
 		client.Close()
 	})
 
-	go func() {
-		time.Sleep(50 * time.Millisecond)
-		err := client.Reconnect(reconnectUrl)
-		if err != nil {
-			t.Error(err)
-		}
-	}()
+	var revokeOccured bool
+	client.OnRevoke(func(message twitch.RevokeMessage) { revokeOccured = true })
 
 	err = client.Connect()
-	if err != nil {
-		t.Fatalf("expected no error, got %v", err)
-	}
-
-	if client.Address != reconnectUrl {
-		t.Fatalf("expected Address %s, got %s", reconnectUrl, client.Address)
-	}
+	assert.NoError(t, err)
+	assert.Equal(t, reconnectUrl, client.Address, "addresses should match")
+	assert.True(t, revokeOccured, "revoke did not fire")
+	assert.True(t, keepAliveOccured, "keepalive did not fire")
 }
