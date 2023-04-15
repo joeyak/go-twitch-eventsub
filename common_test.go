@@ -119,7 +119,6 @@ func (s *TestServer) handleWebsocket(w http.ResponseWriter, r *http.Request) {
 	if !s.sendInSubscription {
 		for _, data := range s.data {
 			s.conn.Write(r.Context(), websocket.MessageText, data)
-			fmt.Println(string(data))
 		}
 	}
 
@@ -146,7 +145,6 @@ func (s *TestServer) handleSubscription(w http.ResponseWriter, r *http.Request) 
 
 	for _, data := range s.data {
 		err = s.conn.Write(r.Context(), websocket.MessageText, data)
-		fmt.Println(string(data))
 		if err != nil {
 			panic(err)
 		}

@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	twitchWebsocketUrl = "wss://eventsub-beta.wss.twitch.tv/ws"
+	twitchWebsocketUrl = "wss://eventsub.wss.twitch.tv/ws"
 )
 
 var (
