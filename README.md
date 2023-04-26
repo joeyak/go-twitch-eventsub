@@ -10,6 +10,8 @@ Implements a Twitch EventSub Websocket connection
 
 If a websocket connection has no subscriptions, then it will close automatically on twitch's end so call `client.OnWelcome` and subscribe there after getting the subscription ID.
 
+## Authorization
+
 For authorization, a user access token must be used. An app access token will cause an error. See the Authorization section in the [Twitch Docs](https://dev.twitch.tv/docs/eventsub/manage-subscriptions/#subscribing-to-events)
 
 > When subscribing to events using WebSockets, you must use a user access token only. The request fails if you use an app access token.
