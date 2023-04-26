@@ -10,6 +10,20 @@ Implements a Twitch EventSub Websocket connection
 
 If a websocket connection has no subscriptions, then it will close automatically on twitch's end so call `client.OnWelcome` and subscribe there after getting the subscription ID.
 
+For authorization, a user access token must be used. An app access token will cause an error. See the Authorization section in the [Twitch Docs](https://dev.twitch.tv/docs/eventsub/manage-subscriptions/#subscribing-to-events)
+
+> When subscribing to events using WebSockets, you must use a user access token only. The request fails if you use an app access token.
+>
+> ...
+>
+> When subscribing to events using webhooks, you must use an app access token. The request fails if you use a user access token.
+
+If the error below occurs, it's likely an app access token is being used instead of a user app token.
+
+```
+ERROR: could not subscribe to event: 400 Bad Request: {"error":"Bad Request","status":400,"message":"invalid transport and auth combination"}
+```
+
 ## Example
 
 ```go
@@ -67,7 +81,7 @@ func main() {
 	client.OnRevoke(func(message twitch.RevokeMessage) {
 		fmt.Printf("REVOKE: %v\n", message)
 	})
-	client.OnRawEvent(func(event string, metadata MessageMetadata, eventType EventSubscription) {
+	client.OnRawEvent(func(event string, metadata twitch.MessageMetadata, eventType twitch.EventSubscription) {
 		fmt.Printf("EVENT[%s]: %s: %s\n", eventType, metadata, event)
 	})
 
