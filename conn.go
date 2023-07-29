@@ -56,7 +56,7 @@ type Client struct {
 	onRevoke       func(message RevokeMessage)
 
 	// Events
-	onRawEvent                                              func(event string, metadata MessageMetadata, eventType EventSubscription)
+	onRawEvent                                              func(event string, metadata MessageMetadata, subscription PayloadSubscription)
 	onEventChannelUpdate                                    func(event EventChannelUpdate)
 	onEventChannelFollow                                    func(event EventChannelFollow)
 	onEventChannelSubscribe                                 func(event EventChannelSubscribe)
@@ -257,14 +257,14 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		return fmt.Errorf("could not get event json: %w", err)
 	}
 
-	subType := message.Payload.Subscription.Type
-	metadata, ok := subMetadata[subType]
+	subscription := message.Payload.Subscription
+	metadata, ok := subMetadata[subscription.Type]
 	if !ok {
-		return fmt.Errorf("unknown subscription type %s", subType)
+		return fmt.Errorf("unknown subscription type %s", subscription.Type)
 	}
 
 	if c.onRawEvent != nil {
-		c.onRawEvent(string(data), message.Metadata, subType)
+		c.onRawEvent(string(data), message.Metadata, subscription)
 	}
 
 	var newEvent any
@@ -272,7 +272,7 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		newEvent = metadata.EventGen()
 		err = json.Unmarshal(data, newEvent)
 		if err != nil {
-			return fmt.Errorf("could not unmarshal %s into %T: %w", subType, newEvent, err)
+			return fmt.Errorf("could not unmarshal %s into %T: %w", subscription.Type, newEvent, err)
 		}
 	}
 
@@ -364,7 +364,7 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 	case *EventChannelShieldModeEnd:
 		callFunc(c.onEventChannelShieldModeEnd, *event)
 	default:
-		c.onError(fmt.Errorf("unknown event type %s", subType))
+		c.onError(fmt.Errorf("unknown event type %s", subscription.Type))
 	}
 
 	return nil
@@ -416,7 +416,7 @@ func (c *Client) OnRevoke(callback func(message RevokeMessage)) {
 	c.onRevoke = callback
 }
 
-func (c *Client) OnRawEvent(callback func(event string, metadata MessageMetadata, eventType EventSubscription)) {
+func (c *Client) OnRawEvent(callback func(event string, metadata MessageMetadata, subscription PayloadSubscription)) {
 	c.onRawEvent = callback
 }
 

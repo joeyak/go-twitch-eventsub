@@ -8,7 +8,7 @@ import (
 
 func assertSpecificEventOccured(t *testing.T, register func(client *twitch.Client, ch chan struct{}), event twitch.EventSubscription, suffixes ...string) {
 	assertEventOccured(t, func(ch chan struct{}) {
-		client := newClientWithWelcome(t, event, getTestEventData(event, suffixes...))
+		client := newClientWithWelcome(t, "", event, getTestEventData(event, suffixes...))
 		register(client, ch)
 		go connect(t, client)
 	})

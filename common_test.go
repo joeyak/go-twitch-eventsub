@@ -198,16 +198,17 @@ func newClient(t *testing.T, gen messageDataGenerator) *twitch.Client {
 	return client
 }
 
-func newClientWithWelcome(t *testing.T, event twitch.EventSubscription, gen messageDataGenerator) *twitch.Client {
+func newClientWithWelcome(t *testing.T, version string, event twitch.EventSubscription, gen messageDataGenerator) *twitch.Client {
 	client := newClient(t, gen)
 
 	client.OnWelcome(func(message twitch.WelcomeMessage) {
 		_, err := twitch.SubscribeEventUrl(twitch.SubscribeRequest{
-			SessionID:   message.Payload.Session.ID,
-			ClientID:    "",
-			AccessToken: "",
-			Event:       event,
-			Condition:   map[string]string{},
+			SessionID:       message.Payload.Session.ID,
+			ClientID:        "",
+			AccessToken:     "",
+			VersionOverride: version,
+			Event:           event,
+			Condition:       map[string]string{},
 		}, strings.ReplaceAll(client.Address, "/ws", "/subscriptions"))
 		if err != nil {
 			t.Errorf("could not subscribe: %v", err)
