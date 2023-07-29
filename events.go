@@ -26,11 +26,11 @@ type Moderator struct {
 type EventChannelUpdate struct {
 	Broadcaster
 
-	Title        string `json:"title"`
-	Language     string `json:"language"`
-	CategoryID   string `json:"category_id"`
-	CategoryName string `json:"category_name"`
-	IsMature     bool   `json:"is_mature"`
+	Title                       string   `json:"title"`
+	Language                    string   `json:"language"`
+	CategoryID                  string   `json:"category_id"`
+	CategoryName                string   `json:"category_name"`
+	ContentClassificationLabels []string `json:"content_classification_labels"`
 }
 
 type EventChannelFollow struct {

@@ -73,7 +73,7 @@ var (
 
 	subMetadata = map[EventSubscription]subscriptionMetadata{
 		SubChannelUpdate: {
-			Version:  "1",
+			Version:  "2",
 			EventGen: zeroPtrGen[EventChannelUpdate](),
 		},
 		SubChannelFollow: {

@@ -18,7 +18,7 @@ func TestEventVersion(t *testing.T) {
 		Expected string
 	}{
 		{"Override", "-1", "-1"},
-		{"Default", "", "1"},
+		{"Default", "", "2"},
 	}
 
 	for _, tc := range testCases {

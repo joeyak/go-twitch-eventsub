@@ -8,7 +8,7 @@
         "language": "en",
         "category_id": "21779",
         "category_name": "Fortnite",
-        "is_mature": false
+        "content_classification_labels": [ "MatureGame" ]
     },
     "channel.follow": {
         "user_id": "1234",
