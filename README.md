@@ -10,6 +10,10 @@ Implements a Twitch EventSub Websocket connection
 
 If a websocket connection has no subscriptions, then it will close automatically on twitch's end so call `client.OnWelcome` and subscribe there after getting the subscription ID.
 
+## Major Version Changes
+
+v2 changes `OnRawEvent` from passing `EventSubscription` to `PayloadSubscription`. This allows extra information to be passed in the event instead of just the type.
+
 ## Authorization
 
 For authorization, a user access token must be used. An app access token will cause an error. See the Authorization section in the [Twitch Docs](https://dev.twitch.tv/docs/eventsub/manage-subscriptions/#subscribing-to-events)
@@ -34,7 +38,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/joeyak/go-twitch-eventsub"
+	"github.com/joeyak/go-twitch-eventsub/v2"
 )
 
 var (
@@ -83,8 +87,8 @@ func main() {
 	client.OnRevoke(func(message twitch.RevokeMessage) {
 		fmt.Printf("REVOKE: %v\n", message)
 	})
-	client.OnRawEvent(func(event string, metadata twitch.MessageMetadata, eventType twitch.EventSubscription) {
-		fmt.Printf("EVENT[%s]: %s: %s\n", eventType, metadata, event)
+	client.OnRawEvent(func(event string, metadata twitch.MessageMetadata, subscription twitch.PayloadSubscription) {
+		fmt.Printf("EVENT[%s]: %s: %s\n", subscription.Type, metadata, event)
 	})
 
 	err := client.Connect()

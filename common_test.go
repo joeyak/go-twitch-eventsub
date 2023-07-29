@@ -15,7 +15,7 @@ import (
 	_ "embed"
 
 	"github.com/google/uuid"
-	"github.com/joeyak/go-twitch-eventsub"
+	"github.com/joeyak/go-twitch-eventsub/v2"
 	"nhooyr.io/websocket"
 )
 

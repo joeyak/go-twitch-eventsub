@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/joeyak/go-twitch-eventsub"
+	"github.com/joeyak/go-twitch-eventsub/v2"
 	"github.com/stretchr/testify/assert"
 )
 

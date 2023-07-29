@@ -1,4 +1,4 @@
-module github.com/joeyak/go-twitch-eventsub
+module github.com/joeyak/go-twitch-eventsub/v2
 
 go 1.19
 
@@ -14,5 +14,3 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-retract v0.1.9 // Build error when refactoring type to be exposed

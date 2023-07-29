@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/joeyak/go-twitch-eventsub"
+	"github.com/joeyak/go-twitch-eventsub/v2"
 )
 
 func TestEventVersion(t *testing.T) {
