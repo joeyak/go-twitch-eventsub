@@ -253,11 +253,13 @@ type subscriptionMetadata struct {
 }
 
 type SubscribeRequest struct {
-	SessionID   string
-	ClientID    string
-	AccessToken string
-	Event       EventSubscription
-	Condition   map[string]string
+	SessionID       string
+	ClientID        string
+	AccessToken     string
+	VersionOverride string
+
+	Event     EventSubscription
+	Condition map[string]string
 }
 
 type SubscribeResponse struct {
@@ -280,11 +282,14 @@ func SubscribeEventWithContext(ctx context.Context, request SubscribeRequest) (S
 }
 
 func SubscribeEventUrlWithContext(ctx context.Context, request SubscribeRequest, url string) (SubscribeResponse, error) {
-	metadata := subMetadata[request.Event]
+	version := subMetadata[request.Event].Version
+	if request.VersionOverride != "" {
+		version = request.VersionOverride
+	}
 
 	b, err := json.Marshal(SubscriptionRequest{
 		Type:      request.Event,
-		Version:   metadata.Version,
+		Version:   version,
 		Condition: request.Condition,
 		Transport: SubscriptionTransport{
 			Method:    "websocket",
