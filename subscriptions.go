@@ -77,7 +77,7 @@ var (
 			EventGen: zeroPtrGen[EventChannelUpdate](),
 		},
 		SubChannelFollow: {
-			Version:  "1",
+			Version:  "2",
 			EventGen: zeroPtrGen[EventChannelFollow](),
 		},
 		SubChannelSubscribe: {
