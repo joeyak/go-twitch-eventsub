@@ -513,3 +513,23 @@ func TestEventChannelShieldModeEnd(t *testing.T) {
 		})
 	}, twitch.SubChannelShieldModeEnd)
 }
+
+func TestEventChannelShoutoutCreate(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelShoutoutCreate(func(event twitch.EventChannelShoutoutCreate) {
+			close(ch)
+		})
+	}, twitch.SubChannelShoutoutCreate)
+}
+
+func TestEventChannelShoutoutReceive(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelShoutoutReceive(func(event twitch.EventChannelShoutoutReceive) {
+			close(ch)
+		})
+	}, twitch.SubChannelShoutoutReceive)
+}

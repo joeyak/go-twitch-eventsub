@@ -440,3 +440,27 @@ type EventChannelShieldModeBegin struct {
 }
 
 type EventChannelShieldModeEnd EventChannelShieldModeBegin
+
+type EventChannelShoutoutCreate struct {
+	Broadcaster
+	Moderator
+
+	ToBroadcasterUserId    string    `json:"to_broadcaster_user_id"`
+	ToBroadcasterUserLogin string    `json:"to_broadcaster_user_login"`
+	ToBroadcasterUserName  string    `json:"to_broadcaster_user_name"`
+	StartedAt              time.Time `json:"started_at"`
+	ViewerCount            int       `json:"viewer_count"`
+	CooldownEndsAt         time.Time `json:"cooldown_ends_at"`
+	TargetCooldownEndsAt   time.Time `json:"target_cooldown_ends_at"`
+}
+
+type EventChannelShoutoutReceive struct {
+	Broadcaster
+	Moderator
+
+	FromBroadcasterUserId    string    `json:"from_broadcaster_user_id"`
+	FromBroadcasterUserLogin string    `json:"from_broadcaster_user_login"`
+	FromBroadcasterUserName  string    `json:"from_broadcaster_user_name"`
+	ViewerCount              int       `json:"viewer_count"`
+	StartedAt                time.Time `json:"started_at"`
+}

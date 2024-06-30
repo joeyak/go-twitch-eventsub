@@ -71,6 +71,9 @@ var (
 	SubChannelShieldModeBegin EventSubscription = "channel.shield_mode.begin"
 	SubChannelShieldModeEnd   EventSubscription = "channel.shield_mode.end"
 
+	SubChannelShoutoutCreate  EventSubscription = "channel.shoutout.create"
+	SubChannelShoutoutReceive EventSubscription = "channel.shoutout.receive"
+
 	subMetadata = map[EventSubscription]subscriptionMetadata{
 		SubChannelUpdate: {
 			Version:  "2",
@@ -243,6 +246,14 @@ var (
 		SubChannelShieldModeEnd: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventChannelShieldModeEnd](),
+		},
+		SubChannelShoutoutCreate: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelShoutoutCreate](),
+		},
+		SubChannelShoutoutReceive: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelShoutoutReceive](),
 		},
 	}
 )
