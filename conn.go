@@ -100,6 +100,8 @@ type Client struct {
 	onEventChannelCharityCampaignStop                       func(event EventChannelCharityCampaignStop)
 	onEventChannelShieldModeBegin                           func(event EventChannelShieldModeBegin)
 	onEventChannelShieldModeEnd                             func(event EventChannelShieldModeEnd)
+	onEventChannelShoutoutCreate                            func(event EventChannelShoutoutCreate)
+	onEventChannelShoutoutReceive                           func(event EventChannelShoutoutReceive)
 }
 
 func NewClient() *Client {
@@ -363,6 +365,10 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelShieldModeBegin, *event)
 	case *EventChannelShieldModeEnd:
 		callFunc(c.onEventChannelShieldModeEnd, *event)
+	case *EventChannelShoutoutCreate:
+		callFunc(c.onEventChannelShoutoutCreate, *event)
+	case *EventChannelShoutoutReceive:
+		callFunc(c.onEventChannelShoutoutReceive, *event)
 	default:
 		c.onError(fmt.Errorf("unknown event type %s", subscription.Type))
 	}
@@ -590,4 +596,12 @@ func (c *Client) OnEventChannelShieldModeBegin(callback func(event EventChannelS
 
 func (c *Client) OnEventChannelShieldModeEnd(callback func(event EventChannelShieldModeEnd)) {
 	c.onEventChannelShieldModeEnd = callback
+}
+
+func (c *Client) OnEventChannelShoutoutCreate(callback func(event EventChannelShoutoutCreate)) {
+	c.onEventChannelShoutoutCreate = callback
+}
+
+func (c *Client) OnEventChannelShoutoutReceive(callback func(event EventChannelShoutoutReceive)) {
+	c.onEventChannelShoutoutReceive = callback
 }
