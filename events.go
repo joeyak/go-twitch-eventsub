@@ -23,6 +23,52 @@ type Moderator struct {
 	ModeratorUserName  string `json:"moderator_user_name"`
 }
 
+type SourceBroadcaster struct {
+	SourceBroadcasterUserId    string `json:"source_broadcaster_user_id"`
+	SourceBroadcasterUserLogin string `json:"source_broadcaster_user_login"`
+	SourceBroadcasterUserName  string `json:"source_broadcaster_user_name"`
+}
+
+type Ban struct {
+	User
+	Reason *string `json:"reason,omitempty"`
+}
+
+type Timeout struct {
+	Ban
+	ExpiresAt time.Time `json:"expires_at"`
+}
+
+type Raid struct {
+	User
+	ViewerCount int `json:"viewer_count"`
+}
+
+type DeletedMessage struct {
+	User
+	MessageId   string `json:"message_id"`
+	MessageBody string `json:"message_body"`
+}
+
+type AutomodTerms struct {
+	Action      string   `json:"action"`
+	List        string   `json:"list"`
+	Terms       []string `json:"terms"`
+	FromAutomod bool     `json:"from_automod"`
+}
+
+type UnbanRequest struct {
+	User
+	IsApproved       bool   `json:"is_approved"`
+	ModeratorMessage string `json:"moderator_message"`
+}
+
+type Warning struct {
+	User
+	Reason         string   `json:"reason"`
+	ChatRulesCited []string `json:"chat_rules_cited"`
+}
+
 type EventChannelUpdate struct {
 	Broadcaster
 
@@ -463,4 +509,33 @@ type EventChannelShoutoutReceive struct {
 	FromBroadcasterUserName  string    `json:"from_broadcaster_user_name"`
 	ViewerCount              int       `json:"viewer_count"`
 	StartedAt                time.Time `json:"started_at"`
+}
+
+type EventChannelModerate struct {
+	Broadcaster
+	SourceBroadcaster
+	Moderator
+
+	Action              string          `json:"action"`
+	Followers           *int            `json:"followers,omitempty"`
+	Slow                *int            `json:"slow,omitempty"`
+	Vip                 *User           `json:"vip,omitempty"`
+	Unvip               *User           `json:"unvip,omitempty"`
+	Mod                 *User           `json:"mod,omitempty"`
+	Unmod               *User           `json:"unmod,omitempty"`
+	Ban                 *Ban            `json:"ban,omitempty"`
+	Unban               *User           `json:"unban,omitempty"`
+	Timeout             *Timeout        `json:"timeout,omitempty"`
+	Untimeout           *User           `json:"untimeout,omitempty"`
+	Raid                *Raid           `json:"raid,omitempty"`
+	Unraid              *User           `json:"unraid,omitempty"`
+	Delete              *DeletedMessage `json:"delete,omitempty"`
+	AutomodTerms        *AutomodTerms   `json:"automod_terms,omitempty"`
+	UnbanRequest        *UnbanRequest   `json:"unban_request,omitempty"`
+	Warn                *Warning        `json:"warn,omitempty"`
+	SharedChatBan       *Ban            `json:"shared_chat_ban,omitempty"`
+	SharedChatUnban     *User           `json:"shared_chat_unban,omitempty"`
+	SharedChatTimeout   *Timeout        `json:"shared_chat_timeout,omitempty"`
+	SharedChatuntimeout *User           `json:"shared_chat_untimeout,omitempty"`
+	SharedChatDelete    *DeletedMessage `json:"shared_chat_delete,omitempty"`
 }

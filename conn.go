@@ -102,6 +102,7 @@ type Client struct {
 	onEventChannelShieldModeEnd                             func(event EventChannelShieldModeEnd)
 	onEventChannelShoutoutCreate                            func(event EventChannelShoutoutCreate)
 	onEventChannelShoutoutReceive                           func(event EventChannelShoutoutReceive)
+	onEventChannelModerate                                  func(event EventChannelModerate)
 }
 
 func NewClient() *Client {
@@ -369,6 +370,8 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelShoutoutCreate, *event)
 	case *EventChannelShoutoutReceive:
 		callFunc(c.onEventChannelShoutoutReceive, *event)
+	case *EventChannelModerate:
+		callFunc(c.onEventChannelModerate, *event)
 	default:
 		c.onError(fmt.Errorf("unknown event type %s", subscription.Type))
 	}
@@ -604,4 +607,8 @@ func (c *Client) OnEventChannelShoutoutCreate(callback func(event EventChannelSh
 
 func (c *Client) OnEventChannelShoutoutReceive(callback func(event EventChannelShoutoutReceive)) {
 	c.onEventChannelShoutoutReceive = callback
+}
+
+func (c *Client) OnEventChannelModerate(callback func(event EventChannelModerate)) {
+	c.onEventChannelModerate = callback
 }

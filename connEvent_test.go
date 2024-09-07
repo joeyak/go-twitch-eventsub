@@ -533,3 +533,13 @@ func TestEventChannelShoutoutReceive(t *testing.T) {
 		})
 	}, twitch.SubChannelShoutoutReceive)
 }
+
+func TestEventChannelModerate(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelModerate(func(event twitch.EventChannelModerate) {
+			close(ch)
+		})
+	}, twitch.SubChannelModerate)
+}
