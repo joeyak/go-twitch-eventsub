@@ -63,6 +63,14 @@ type UnbanRequest struct {
 	ModeratorMessage string `json:"moderator_message"`
 }
 
+type Followers struct {
+	FollowDurationMinutes int `json:"follow_duration_minutes"`
+}
+
+type SlowMode struct {
+	WaitTimeSeconds int `json:"wait_time_seconds"`
+}
+
 type Warning struct {
 	User
 	Reason         string   `json:"reason"`
@@ -517,8 +525,8 @@ type EventChannelModerate struct {
 	Moderator
 
 	Action              string          `json:"action"`
-	Followers           *int            `json:"followers,omitempty"`
-	Slow                *int            `json:"slow,omitempty"`
+	Followers           *Followers      `json:"followers,omitempty"`
+	Slow                *SlowMode       `json:"slow,omitempty"`
 	Vip                 *User           `json:"vip,omitempty"`
 	Unvip               *User           `json:"unvip,omitempty"`
 	Mod                 *User           `json:"mod,omitempty"`

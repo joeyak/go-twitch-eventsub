@@ -983,7 +983,9 @@
         "moderator_user_login": "quotrok",
         "moderator_user_name": "quotrok",
         "action": "warn",
-        "followers": null,
+        "followers": {
+            "follow_duration_minutes": 1
+        },
         "slow": null,
         "vip": null,
         "unvip": null,
