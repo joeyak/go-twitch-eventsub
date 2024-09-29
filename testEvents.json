@@ -974,77 +974,53 @@
     },
     "automod.message.hold": {
         "broadcaster_user_id": "1337",
-        "broadcaster_user_name": "blah",
-        "broadcaster_user_login": "blahblah",
-        "user_id": "456789012",
-        "user_name": "baduser",
-        "user_login": "baduserbla",
-        "message_id": "bad-message-id",
-        "message": "This is a bad message… ",
-        "level": 5,
-        "category": "aggressive",
-        "held_at": "2022-12-02T15:00:00.00Z",
-        "fragments": {
-            "emotes": [
+        "broadcaster_user_login": "broadcaster",
+        "broadcaster_user_name": "broadcaster",
+        "user_id": "85749836",
+        "user_login": "isabelcoolaf",
+        "user_name": "isabelcoolaf",
+        "message_id": "message-id",
+        "message": {
+            "text": "This is a bad message...",
+            "fragments": [
                 {
-                    "text": "badtextemote1",
-                    "id": "emote-123",
-                    "set-id": "set-emote-1"
-                },
-                {
-                    "text": "badtextemote2",
-                    "id": "emote-234",
-                    "set-id": "set-emote-2"
-                }
-            ],
-            "cheermotes": [
-                {
-                    "text": "badtextcheermote1",
-                    "amount": 1000,
-                    "prefix": "prefix",
-                    "tier": 1
+                    "type": "text",
+                    "text": "This is a bad message...",
+                    "cheermote": null,
+                    "emote": null
                 }
             ]
-        }
+        },
+        "category": "namecalling",
+        "level": 2,
+        "held_at": "2024-09-29T20:33:48.641725498Z"
     },
     "automod.message.update": {
-        "broadcaster_user_id": "1337",
-        "broadcaster_user_name": "blah",
-        "broadcaster_user_login": "blahblah",
-        "user_id": "456789012",
-        "user_name": "baduser",
-        "user_login": "baduserbla",
-        "moderator_user_id": "9001",
-        "moderator_user_login": "the_mod",
-        "moderator_user_name": "The_Mod",
-        "message_id": "bad-message-id",
-        "message": "This is a bad message… ",
-        "level": 5,
-        "category": "aggressive",
-        "status": "approved",
-        "held_at": "2022-12-02T15:00:00.00Z",
-        "fragments": {
-            "emotes": [
+        "broadcaster_user_id": "1234",
+        "broadcaster_user_login": "broadcaster",
+        "broadcaster_user_name": "broadcaster",
+        "user_id": "4321",
+        "user_login": "bad-user",
+        "user_name": "bad-user",
+        "moderator_user_id": "85749836",
+        "moderator_user_login": "isabelcoolaf",
+        "moderator_user_name": "isabelcoolaf",
+        "message_id": "message-id",
+        "message": {
+            "text": "This is a bad message...",
+            "fragments": [
                 {
-                    "text": "badtextemote1",
-                    "id": "emote-123",
-                    "set-id": "set-emote-1"
-                },
-                {
-                    "text": "badtextemote2",
-                    "id": "emote-234",
-                    "set-id": "set-emote-2"
-                }
-            ],
-            "cheermotes": [
-                {
-                    "text": "badtextcheermote1",
-                    "amount": 1000,
-                    "prefix": "prefix",
-                    "tier": 1
+                    "type": "text",
+                    "text": "This is a bad message...",
+                    "cheermote": null,
+                    "emote": null
                 }
             ]
-        }
+        },
+        "category": "namecalling",
+        "level": 2,
+        "status": "approved",
+        "held_at": "2024-09-29T21:06:15.199609857Z"
     },
     "automod.settings.update": {
         "broadcaster_user_id": "1337",

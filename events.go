@@ -465,34 +465,43 @@ type EventChannelShoutoutReceive struct {
 	StartedAt                time.Time `json:"started_at"`
 }
 
-type AutomodMessageEmoteFragment struct {
-	Text  string `json:"text"`
-	Id    string `json:"id"`
-	SetId string `json:"set-id"`
-}
-
-type AutomodMessageCheermoteFragment struct {
-	Text   string `json:"text"`
-	Amount int    `json:"amount"`
+type ChatMessageFragmentCheermote struct {
 	Prefix string `json:"prefix"`
+	Bits   int    `json:"bits"`
 	Tier   int    `json:"tier"`
 }
 
-type AutomodMessageFragments struct {
-	Emotes     []AutomodMessageEmoteFragment     `json:"emotes"`
-	Cheermotes []AutomodMessageCheermoteFragment `json:"cheermotes"`
+type ChatMessageFragmentEmote struct {
+	Id         string   `json:"id"`
+	EmoteSetId string   `json:"emote_set_id"`
+	OwnerId    string   `json:"owner_id"`
+	Format     []string `json:"format"`
+}
+
+type ChatMessageFragmentMention User
+
+type ChatMessageFragment struct {
+	Type      string                        `json:"type"`
+	Text      string                        `json:"text"`
+	Cheermote *ChatMessageFragmentCheermote `json:"cheermote,omitempty"`
+	Emote     *ChatMessageFragmentEmote     `json:"emote,omitempty"`
+	Mention   *ChatMessageFragmentMention   `json:"mention,omitempty"`
+}
+
+type ChatMessage struct {
+	Text      string                `json:"text"`
+	Fragments []ChatMessageFragment `json:"fragments"`
 }
 
 type EventAutomodMessageHold struct {
 	Broadcaster
 	User
 
-	MessageId string                  `json:"message_id"`
-	Message   string                  `json:"message"`
-	Level     int                     `json:"level"`
-	Category  string                  `json:"category"`
-	HeldAt    time.Time               `json:"held_at"`
-	Fragments AutomodMessageFragments `json:"fragments"`
+	MessageId string      `json:"message_id"`
+	Message   ChatMessage `json:"message"`
+	Level     int         `json:"level"`
+	Category  string      `json:"category"`
+	HeldAt    time.Time   `json:"held_at"`
 }
 
 type EventAutomodMessageUpdate struct {
@@ -500,13 +509,12 @@ type EventAutomodMessageUpdate struct {
 	User
 	Moderator
 
-	MessageId string                  `json:"message_id"`
-	Message   string                  `json:"message"`
-	Level     int                     `json:"level"`
-	Category  string                  `json:"category"`
-	Status    string                  `json:"status"`
-	HeldAt    time.Time               `json:"held_at"`
-	Fragments AutomodMessageFragments `json:"fragments"`
+	MessageId string      `json:"message_id"`
+	Message   ChatMessage `json:"message"`
+	Level     int         `json:"level"`
+	Category  string      `json:"category"`
+	Status    string      `json:"status"`
+	HeldAt    time.Time   `json:"held_at"`
 }
 
 type EventAutomodSettingsUpdate struct {
