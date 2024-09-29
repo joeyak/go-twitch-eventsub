@@ -573,3 +573,23 @@ func TestEventAutomodTermsUpdate(t *testing.T) {
 		})
 	}, twitch.SubAutomodTermsUpdate)
 }
+
+func TestEventChannelChatUserMessageHold(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelChatUserMessageHold(func(event twitch.EventChannelChatUserMessageHold) {
+			close(ch)
+		})
+	}, twitch.SubChannelChatUserMessageHold)
+}
+
+func TestEventChannelChatUserMessageUpdate(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelChatUserMessageUpdate(func(event twitch.EventChannelChatUserMessageUpdate) {
+			close(ch)
+		})
+	}, twitch.SubChannelChatUserMessageUpdate)
+}

@@ -106,6 +106,8 @@ type Client struct {
 	onEventAutomodMessageUpdate                             func(event EventAutomodMessageUpdate)
 	onEventAutomodSettingsUpdate                            func(event EventAutomodSettingsUpdate)
 	onEventAutomodTermsUpdate                               func(event EventAutomodTermsUpdate)
+	onEventChannelChatUserMessageHold                       func(event EventChannelChatUserMessageHold)
+	onEventChannelChatUserMessageUpdate                     func(event EventChannelChatUserMessageUpdate)
 }
 
 func NewClient() *Client {
@@ -381,6 +383,10 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventAutomodSettingsUpdate, *event)
 	case *EventAutomodTermsUpdate:
 		callFunc(c.onEventAutomodTermsUpdate, *event)
+	case *EventChannelChatUserMessageHold:
+		callFunc(c.onEventChannelChatUserMessageHold, *event)
+	case *EventChannelChatUserMessageUpdate:
+		callFunc(c.onEventChannelChatUserMessageUpdate, *event)
 	default:
 		c.onError(fmt.Errorf("unknown event type %s", subscription.Type))
 	}
@@ -632,4 +638,12 @@ func (c *Client) OnEventAutomodSettingsUpdate(callback func(event EventAutomodSe
 
 func (c *Client) OnEventAutomodTermsUpdate(callback func(event EventAutomodTermsUpdate)) {
 	c.onEventAutomodTermsUpdate = callback
+}
+
+func (c *Client) OnEventChannelChatUserMessageHold(callback func(event EventChannelChatUserMessageHold)) {
+	c.onEventChannelChatUserMessageHold = callback
+}
+
+func (c *Client) OnEventChannelChatUserMessageUpdate(callback func(event EventChannelChatUserMessageUpdate)) {
+	c.onEventChannelChatUserMessageUpdate = callback
 }

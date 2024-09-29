@@ -540,3 +540,20 @@ type EventAutomodTermsUpdate struct {
 	FromAutomod bool     `json:"from_automod"`
 	Terms       []string `json:"terms"`
 }
+
+type EventChannelChatUserMessageHold struct {
+	Broadcaster
+	User
+
+	MessageId string      `json:"message_id"`
+	Message   ChatMessage `json:"message"`
+}
+
+type EventChannelChatUserMessageUpdate struct {
+	Broadcaster
+	User
+
+	Status    string      `json:"status"`
+	MessageId string      `json:"message_id"`
+	Message   ChatMessage `json:"message"`
+}

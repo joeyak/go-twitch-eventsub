@@ -1049,5 +1049,46 @@
         "action": "add_blocked",
         "from_automod": true,
         "terms": ["automodterm1", "automodterm2", "automodterm3"]
+    },
+    "channel.chat.user_message_hold": {
+        "broadcaster_user_id": "1234",
+        "broadcaster_user_login": "broadcaster",
+        "broadcaster_user_name": "broadcaster",
+        "user_id": "85749836",
+        "user_login": "isabelcoolaf",
+        "user_name": "isabelcoolaf",
+        "message_id": "message-id",
+        "message": {
+            "text": "This is a bad message...",
+            "fragments": [
+                {
+                    "type": "text",
+                    "text": "This is a bad message...",
+                    "cheermote": null,
+                    "emote": null
+                }
+            ]
+        }
+    },
+    "channel.chat.user_message_update": {
+        "broadcaster_user_id": "1234",
+        "broadcaster_user_login": "broadcaster",
+        "broadcaster_user_name": "broadcaster",
+        "user_id": "85749836",
+        "user_login": "isabelcoolaf",
+        "user_name": "isabelcoolaf",
+        "status": "approved",
+        "message_id": "message-id",
+        "message": {
+            "text": "This is a bad message...",
+            "fragments": [
+                {
+                    "type": "text",
+                    "text": "This is a bad message...",
+                    "cheermote": null,
+                    "emote": null
+                }
+            ]
+        }
     }
 }
