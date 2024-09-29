@@ -533,3 +533,43 @@ func TestEventChannelShoutoutReceive(t *testing.T) {
 		})
 	}, twitch.SubChannelShoutoutReceive)
 }
+
+func TestEventAutomodMessageHold(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventAutomodMessageHold(func(event twitch.EventAutomodMessageHold) {
+			close(ch)
+		})
+	}, twitch.SubAutomodMessageHold)
+}
+
+func TestEventAutomodMessageUpdate(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventAutomodMessageUpdate(func(event twitch.EventAutomodMessageUpdate) {
+			close(ch)
+		})
+	}, twitch.SubAutomodMessageUpdate)
+}
+
+func TestEventAutomodSettingsUpdate(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventAutomodSettingsUpdate(func(event twitch.EventAutomodSettingsUpdate) {
+			close(ch)
+		})
+	}, twitch.SubAutomodSettingsUpdate)
+}
+
+func TestEventAutomodTermsUpdate(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventAutomodTermsUpdate(func(event twitch.EventAutomodTermsUpdate) {
+			close(ch)
+		})
+	}, twitch.SubAutomodTermsUpdate)
+}

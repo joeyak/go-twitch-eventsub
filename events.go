@@ -464,3 +464,75 @@ type EventChannelShoutoutReceive struct {
 	ViewerCount              int       `json:"viewer_count"`
 	StartedAt                time.Time `json:"started_at"`
 }
+
+type AutomodMessageEmoteFragment struct {
+	Text  string `json:"text"`
+	Id    string `json:"id"`
+	SetId string `json:"set-id"`
+}
+
+type AutomodMessageCheermoteFragment struct {
+	Text   string `json:"text"`
+	Amount int    `json:"amount"`
+	Prefix string `json:"prefix"`
+	Tier   int    `json:"tier"`
+}
+
+type AutomodMessageFragments struct {
+	Emotes     []AutomodMessageEmoteFragment     `json:"emotes"`
+	Cheermotes []AutomodMessageCheermoteFragment `json:"cheermotes"`
+}
+
+type EventAutomodMessageHold struct {
+	Broadcaster
+	User
+
+	MessageId string                  `json:"message_id"`
+	Message   string                  `json:"message"`
+	Level     int                     `json:"level"`
+	Category  string                  `json:"category"`
+	HeldAt    time.Time               `json:"held_at"`
+	Fragments AutomodMessageFragments `json:"fragments"`
+}
+
+type EventAutomodMessageUpdate struct {
+	Broadcaster
+	User
+	Moderator
+
+	MessageId string                  `json:"message_id"`
+	Message   string                  `json:"message"`
+	Level     int                     `json:"level"`
+	Category  string                  `json:"category"`
+	Status    string                  `json:"status"`
+	HeldAt    time.Time               `json:"held_at"`
+	Fragments AutomodMessageFragments `json:"fragments"`
+}
+
+type AutomodSettingsDatum struct {
+	Broadcaster
+	Moderator
+
+	OverallLevel            *int `json:"overall_level"`
+	Disability              int  `json:"disability"`
+	Aggression              int  `json:"aggression"`
+	SexualitySexOrGender    int  `json:"sexuality_sex_or_gender"`
+	Misogyny                int  `json:"misogyny"`
+	Bullying                int  `json:"bullying"`
+	Swearing                int  `json:"swearing"`
+	RaceEthnicityOrReligion int  `json:"race_ethnicity_or_religion"`
+	SexBasedTerms           int  `json:"sex_based_terms"`
+}
+
+type EventAutomodSettingsUpdate struct {
+	Data []AutomodSettingsDatum `json:"data"`
+}
+
+type EventAutomodTermsUpdate struct {
+	Broadcaster
+	Moderator
+
+	Action      string   `json:"action"`
+	FromAutomod bool     `json:"from_automod"`
+	Terms       []string `json:"terms"`
+}

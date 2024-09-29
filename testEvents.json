@@ -962,7 +962,6 @@
         "cooldown_ends_at": "2022-07-26T17:02:03.17106713Z",
         "target_cooldown_ends_at": "2022-07-26T18:00:03.17106713Z"
     },
-    
     "channel.shoutout.receive": {
         "broadcaster_user_id": "626262",
         "broadcaster_user_name": "SandySanderman",
@@ -972,5 +971,111 @@
         "from_broadcaster_user_login": "simplysimple",
         "viewer_count": 860,
         "started_at": "2022-07-26T17:00:03.17106713Z"
+    },
+    "automod.message.hold": {
+        "broadcaster_user_id": "1337",
+        "broadcaster_user_name": "blah",
+        "broadcaster_user_login": "blahblah",
+        "user_id": "456789012",
+        "user_name": "baduser",
+        "user_login": "baduserbla",
+        "message_id": "bad-message-id",
+        "message": "This is a bad message… ",
+        "level": 5,
+        "category": "aggressive",
+        "held_at": "2022-12-02T15:00:00.00Z",
+        "fragments": {
+            "emotes": [
+                {
+                    "text": "badtextemote1",
+                    "id": "emote-123",
+                    "set-id": "set-emote-1"
+                },
+                {
+                    "text": "badtextemote2",
+                    "id": "emote-234",
+                    "set-id": "set-emote-2"
+                }
+            ],
+            "cheermotes": [
+                {
+                    "text": "badtextcheermote1",
+                    "amount": 1000,
+                    "prefix": "prefix",
+                    "tier": 1
+                }
+            ]
+        }
+    },
+    "automod.message.update": {
+        "broadcaster_user_id": "1337",
+        "broadcaster_user_name": "blah",
+        "broadcaster_user_login": "blahblah",
+        "user_id": "456789012",
+        "user_name": "baduser",
+        "user_login": "baduserbla",
+        "moderator_user_id": "9001",
+        "moderator_user_login": "the_mod",
+        "moderator_user_name": "The_Mod",
+        "message_id": "bad-message-id",
+        "message": "This is a bad message… ",
+        "level": 5,
+        "category": "aggressive",
+        "status": "approved",
+        "held_at": "2022-12-02T15:00:00.00Z",
+        "fragments": {
+            "emotes": [
+                {
+                    "text": "badtextemote1",
+                    "id": "emote-123",
+                    "set-id": "set-emote-1"
+                },
+                {
+                    "text": "badtextemote2",
+                    "id": "emote-234",
+                    "set-id": "set-emote-2"
+                }
+            ],
+            "cheermotes": [
+                {
+                    "text": "badtextcheermote1",
+                    "amount": 1000,
+                    "prefix": "prefix",
+                    "tier": 1
+                }
+            ]
+        }
+    },
+    "automod.settings.update": {
+        "data": [
+            {
+                "broadcaster_user_id": "1337",
+                "broadcaster_user_name": "CoolUser",
+                "broadcaster_user_login": "cooluser",
+                "moderator_user_id": "9001",
+                "moderator_user_name": "CoolMod",
+                "moderator_user_login": "coolmod",
+                "overall_level": null,
+                "disability": 3,
+                "aggression": 3,
+                "sexuality_sex_or_gender": 3,
+                "misogyny": 3,
+                "bullying": 3,
+                "swearing": 0,
+                "race_ethnicity_or_religion": 3,
+                "sex_based_terms":30
+            }
+        ]
+    },
+    "automod.terms.update": {
+        "broadcaster_user_id": "1337",
+        "broadcaster_user_name": "blah",
+        "broadcaster_user_login": "blahblah",
+        "moderator_user_id": "9001",
+        "moderator_user_login": "the_mod",
+        "moderator_user_name": "The_Mod",
+        "action": "add_blocked",
+        "from_automod": true,
+        "terms": ["automodterm1", "automodterm2", "automodterm3"]
     }
 }

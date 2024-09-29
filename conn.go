@@ -102,6 +102,10 @@ type Client struct {
 	onEventChannelShieldModeEnd                             func(event EventChannelShieldModeEnd)
 	onEventChannelShoutoutCreate                            func(event EventChannelShoutoutCreate)
 	onEventChannelShoutoutReceive                           func(event EventChannelShoutoutReceive)
+	onEventAutomodMessageHold                               func(event EventAutomodMessageHold)
+	onEventAutomodMessageUpdate                             func(event EventAutomodMessageUpdate)
+	onEventAutomodSettingsUpdate                            func(event EventAutomodSettingsUpdate)
+	onEventAutomodTermsUpdate                               func(event EventAutomodTermsUpdate)
 }
 
 func NewClient() *Client {
@@ -369,6 +373,14 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelShoutoutCreate, *event)
 	case *EventChannelShoutoutReceive:
 		callFunc(c.onEventChannelShoutoutReceive, *event)
+	case *EventAutomodMessageHold:
+		callFunc(c.onEventAutomodMessageHold, *event)
+	case *EventAutomodMessageUpdate:
+		callFunc(c.onEventAutomodMessageUpdate, *event)
+	case *EventAutomodSettingsUpdate:
+		callFunc(c.onEventAutomodSettingsUpdate, *event)
+	case *EventAutomodTermsUpdate:
+		callFunc(c.onEventAutomodTermsUpdate, *event)
 	default:
 		c.onError(fmt.Errorf("unknown event type %s", subscription.Type))
 	}
@@ -604,4 +616,20 @@ func (c *Client) OnEventChannelShoutoutCreate(callback func(event EventChannelSh
 
 func (c *Client) OnEventChannelShoutoutReceive(callback func(event EventChannelShoutoutReceive)) {
 	c.onEventChannelShoutoutReceive = callback
+}
+
+func (c *Client) OnEventAutomodMessageHold(callback func(event EventAutomodMessageHold)) {
+	c.onEventAutomodMessageHold = callback
+}
+
+func (c *Client) OnEventAutomodMessageUpdate(callback func(event EventAutomodMessageUpdate)) {
+	c.onEventAutomodMessageUpdate = callback
+}
+
+func (c *Client) OnEventAutomodSettingsUpdate(callback func(event EventAutomodSettingsUpdate)) {
+	c.onEventAutomodSettingsUpdate = callback
+}
+
+func (c *Client) OnEventAutomodTermsUpdate(callback func(event EventAutomodTermsUpdate)) {
+	c.onEventAutomodTermsUpdate = callback
 }
