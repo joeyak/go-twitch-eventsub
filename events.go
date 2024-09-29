@@ -509,7 +509,7 @@ type EventAutomodMessageUpdate struct {
 	Fragments AutomodMessageFragments `json:"fragments"`
 }
 
-type AutomodSettingsDatum struct {
+type EventAutomodSettingsUpdate struct {
 	Broadcaster
 	Moderator
 
@@ -522,10 +522,6 @@ type AutomodSettingsDatum struct {
 	Swearing                int  `json:"swearing"`
 	RaceEthnicityOrReligion int  `json:"race_ethnicity_or_religion"`
 	SexBasedTerms           int  `json:"sex_based_terms"`
-}
-
-type EventAutomodSettingsUpdate struct {
-	Data []AutomodSettingsDatum `json:"data"`
 }
 
 type EventAutomodTermsUpdate struct {
