@@ -333,6 +333,32 @@
         },
         "redeemed_at": "2020-07-15T17:16:03.17106713Z"
     },
+    "channel.channel_points_automatic_reward_redemption.add": {
+        "broadcaster_user_id": "12826",
+        "broadcaster_user_name": "Twitch",
+        "broadcaster_user_login": "twitch",
+        "user_id": "141981764",
+        "user_name": "TwitchDev",
+        "user_login": "twitchdev",
+        "id": "f024099a-e0fe-4339-9a0a-a706fb59f353",
+        "reward": {
+            "type": "send_highlighted_message",
+            "cost": 100,
+            "unlocked_emote": null
+        },
+        "message": {
+            "text": "Hello world! VoHiYo",
+            "emotes": [
+                {
+                    "id": "81274",
+                    "begin": 13,
+                    "end": 18
+                }
+            ]
+        },
+        "user_input": "Hello world! VoHiYo ",
+        "redeemed_at": "2024-02-23T21:14:34.260398045Z"
+    },
     "channel.poll.begin": {
         "id": "1243456",
         "broadcaster_user_id": "1337",

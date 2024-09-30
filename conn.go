@@ -74,6 +74,7 @@ type Client struct {
 	onEventChannelChannelPointsCustomRewardRemove           func(event EventChannelChannelPointsCustomRewardRemove)
 	onEventChannelChannelPointsCustomRewardRedemptionAdd    func(event EventChannelChannelPointsCustomRewardRedemptionAdd)
 	onEventChannelChannelPointsCustomRewardRedemptionUpdate func(event EventChannelChannelPointsCustomRewardRedemptionUpdate)
+	onEventChannelChannelPointsAutomaticRewardRedemptionAdd func(event EventChannelChannelPointsAutomaticRewardRedemptionAdd)
 	onEventChannelPollBegin                                 func(event EventChannelPollBegin)
 	onEventChannelPollProgress                              func(event EventChannelPollProgress)
 	onEventChannelPollEnd                                   func(event EventChannelPollEnd)
@@ -314,6 +315,8 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelChannelPointsCustomRewardRedemptionAdd, *event)
 	case *EventChannelChannelPointsCustomRewardRedemptionUpdate:
 		callFunc(c.onEventChannelChannelPointsCustomRewardRedemptionUpdate, *event)
+	case *EventChannelChannelPointsAutomaticRewardRedemptionAdd:
+		callFunc(c.onEventChannelChannelPointsAutomaticRewardRedemptionAdd, *event)
 	case *EventChannelPollBegin:
 		callFunc(c.onEventChannelPollBegin, *event)
 	case *EventChannelPollProgress:
@@ -495,6 +498,10 @@ func (c *Client) OnEventChannelChannelPointsCustomRewardRedemptionAdd(callback f
 
 func (c *Client) OnEventChannelChannelPointsCustomRewardRedemptionUpdate(callback func(event EventChannelChannelPointsCustomRewardRedemptionUpdate)) {
 	c.onEventChannelChannelPointsCustomRewardRedemptionUpdate = callback
+}
+
+func (c *Client) OnEventChannelChannelPointsAutomaticRewardRedemptionAdd(callback func(event EventChannelChannelPointsAutomaticRewardRedemptionAdd)) {
+	c.onEventChannelChannelPointsAutomaticRewardRedemptionAdd = callback
 }
 
 func (c *Client) OnEventChannelPollBegin(callback func(event EventChannelPollBegin)) {

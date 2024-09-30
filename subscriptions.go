@@ -35,6 +35,7 @@ var (
 	SubChannelChannelPointsCustomRewardRemove           EventSubscription = "channel.channel_points_custom_reward.remove"
 	SubChannelChannelPointsCustomRewardRedemptionAdd    EventSubscription = "channel.channel_points_custom_reward_redemption.add"
 	SubChannelChannelPointsCustomRewardRedemptionUpdate EventSubscription = "channel.channel_points_custom_reward_redemption.update"
+	SubChannelChannelPointsAutomaticRewardRedemptionAdd EventSubscription = "channel.channel_points_automatic_reward_redemption.add"
 
 	SubChannelPollBegin    EventSubscription = "channel.poll.begin"
 	SubChannelPollProgress EventSubscription = "channel.poll.progress"
@@ -144,6 +145,10 @@ var (
 		SubChannelChannelPointsCustomRewardRedemptionUpdate: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventChannelChannelPointsCustomRewardRedemptionUpdate](),
+		},
+		SubChannelChannelPointsAutomaticRewardRedemptionAdd: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChannelPointsAutomaticRewardRedemptionAdd](),
 		},
 		SubChannelPollBegin: {
 			Version:  "1",

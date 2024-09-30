@@ -234,6 +234,16 @@ func TestEventChannelChannelPointsCustomRewardRedemptionUpdate(t *testing.T) {
 	}, twitch.SubChannelChannelPointsCustomRewardRedemptionUpdate)
 }
 
+func TestEventChannelChannelPointsAutomaticRewardRedemptionAdd(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelChannelPointsAutomaticRewardRedemptionAdd(func(event twitch.EventChannelChannelPointsAutomaticRewardRedemptionAdd) {
+			close(ch)
+		})
+	}, twitch.SubChannelChannelPointsAutomaticRewardRedemptionAdd)
+}
+
 func TestEventChannelPollBegin(t *testing.T) {
 	t.Parallel()
 

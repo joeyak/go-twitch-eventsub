@@ -176,7 +176,7 @@ type EventChannelChannelPointsCustomRewardUpdate EventChannelChannelPointsCustom
 
 type EventChannelChannelPointsCustomRewardRemove EventChannelChannelPointsCustomRewardAdd
 
-type ChannelPointReward struct {
+type CustomChannelPointReward struct {
 	ID     string `json:"id"`
 	Title  string `json:"title"`
 	Cost   int    `json:"cost"`
@@ -187,14 +187,36 @@ type EventChannelChannelPointsCustomRewardRedemptionAdd struct {
 	Broadcaster
 	User
 
-	ID         string             `json:"id"`
-	UserInput  string             `json:"user_input"`
-	Status     string             `json:"status"`
-	Reward     ChannelPointReward `json:"reward"`
-	RedeemedAt time.Time          `json:"redeemed_at"`
+	ID         string                   `json:"id"`
+	UserInput  string                   `json:"user_input"`
+	Status     string                   `json:"status"`
+	Reward     CustomChannelPointReward `json:"reward"`
+	RedeemedAt time.Time                `json:"redeemed_at"`
 }
 
 type EventChannelChannelPointsCustomRewardRedemptionUpdate EventChannelChannelPointsCustomRewardRedemptionAdd
+
+type AutomaticChannelPointRewardUnlockedEmote struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+type AutomaticChannelPointReward struct {
+	Type          string                                    `json:"type"`
+	Cost          int                                       `json:"cost"`
+	UnlockedEmote *AutomaticChannelPointRewardUnlockedEmote `json:"unlocked_emote"`
+}
+
+type EventChannelChannelPointsAutomaticRewardRedemptionAdd struct {
+	Broadcaster
+	User
+
+	ID         string                      `json:"id"`
+	Reward     AutomaticChannelPointReward `json:"reward"`
+	Message    Message                     `json:"message"`
+	UserInput  string                      `json:"user_input"`
+	RedeemedAt time.Time                   `json:"redeemed_at"`
+}
 
 type PollChoice struct {
 	ID                string `json:"id"`
