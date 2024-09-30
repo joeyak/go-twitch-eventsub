@@ -108,6 +108,8 @@ type Client struct {
 	onEventChannelAdBreakBegin                              func(event EventChannelAdBreakBegin)
 	onEventChannelWarningAcknowledge                        func(event EventChannelWarningAcknowledge)
 	onEventChannelWarningSend                               func(event EventChannelWarningSend)
+	onEventChannelUnbanRequestCreate                        func(event EventChannelUnbanRequestCreate)
+	onEventChannelUnbanRequestResolve                       func(event EventChannelUnbanRequestResolve)
 }
 
 func NewClient() *Client {
@@ -387,6 +389,10 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelWarningAcknowledge, *event)
 	case *EventChannelWarningSend:
 		callFunc(c.onEventChannelWarningSend, *event)
+	case *EventChannelUnbanRequestCreate:
+		callFunc(c.onEventChannelUnbanRequestCreate, *event)
+	case *EventChannelUnbanRequestResolve:
+		callFunc(c.onEventChannelUnbanRequestResolve, *event)
 	default:
 		c.onError(fmt.Errorf("unknown event type %s", subscription.Type))
 	}
@@ -646,4 +652,12 @@ func (c *Client) OnEventChannelWarningAcknowledge(callback func(event EventChann
 
 func (c *Client) OnEventChannelWarningSend(callback func(event EventChannelWarningSend)) {
 	c.onEventChannelWarningSend = callback
+}
+
+func (c *Client) OnEventChannelUnbanRequestCreate(callback func(event EventChannelUnbanRequestCreate)) {
+	c.onEventChannelUnbanRequestCreate = callback
+}
+
+func (c *Client) OnEventChannelUnbanRequestResolve(callback func(event EventChannelUnbanRequestResolve)) {
+	c.onEventChannelUnbanRequestResolve = callback
 }

@@ -592,5 +592,24 @@ func TestEventChannelWarningSend(t *testing.T) {
 			close(ch)
 		})
 	}, twitch.SubChannelWarningSend)
+}
 
+func TestEventChannelUnbanRequestCreate(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelUnbanRequestCreate(func(event twitch.EventChannelUnbanRequestCreate) {
+			close(ch)
+		})
+	}, twitch.SubChannelUnbanRequestCreate)
+}
+
+func TestEventChannelUnbanRequestResolve(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelUnbanRequestResolve(func(event twitch.EventChannelUnbanRequestResolve) {
+			close(ch)
+		})
+	}, twitch.SubChannelUnbanRequestResolve)
 }

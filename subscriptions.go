@@ -82,6 +82,9 @@ var (
 	SubChannelWarningAcknowledge EventSubscription = "channel.warning.acknowledge"
 	SubChannelWarningSend        EventSubscription = "channel.warning.send"
 
+	SubChannelUnbanRequestCreate  EventSubscription = "channel.unban_request.create"
+	SubChannelUnbanRequestResolve EventSubscription = "channel.unban_request.resolve"
+
 	subMetadata = map[EventSubscription]subscriptionMetadata{
 		SubChannelUpdate: {
 			Version:  "2",
@@ -286,6 +289,14 @@ var (
 		SubChannelWarningSend: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventChannelWarningSend](),
+		},
+		SubChannelUnbanRequestCreate: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelUnbanRequestCreate](),
+		},
+		SubChannelUnbanRequestResolve: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelUnbanRequestResolve](),
 		},
 	}
 )

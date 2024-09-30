@@ -521,3 +521,22 @@ type EventChannelWarningSend struct {
 	Reason         string   `json:"reason"`
 	ChatRulesCited []string `json:"chat_rules_cited"`
 }
+
+type EventChannelUnbanRequestCreate struct {
+	Broadcaster
+	User
+
+	Id        string    `json:"id"`
+	Text      string    `json:"text"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type EventChannelUnbanRequestResolve struct {
+	Broadcaster
+	Moderator
+	User
+
+	Id             string `json:"id"`
+	ResolutionText string `json:"resolution_text"`
+	Status         string `json:"status"`
+}
