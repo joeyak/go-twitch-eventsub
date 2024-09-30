@@ -593,3 +593,63 @@ func TestEventChannelChatUserMessageUpdate(t *testing.T) {
 		})
 	}, twitch.SubChannelChatUserMessageUpdate)
 }
+
+func TestEventChannelChatClear(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelChatClear(func(event twitch.EventChannelChatClear) {
+			close(ch)
+		})
+	}, twitch.SubChannelChatClear)
+}
+
+func TestEventChannelChatClearUserMessages(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelChatClearUserMessages(func(event twitch.EventChannelChatClearUserMessages) {
+			close(ch)
+		})
+	}, twitch.SubChannelChatClearUserMessages)
+}
+
+func TestEventChannelChatMessage(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelChatMessage(func(event twitch.EventChannelChatMessage) {
+			close(ch)
+		})
+	}, twitch.SubChannelChatMessage)
+}
+
+func TestEventChannelChatMessageDelete(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelChatMessageDelete(func(event twitch.EventChannelChatMessageDelete) {
+			close(ch)
+		})
+	}, twitch.SubChannelChatMessageDelete)
+}
+
+func TestEventChannelChatNotification(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelChatNotification(func(event twitch.EventChannelChatNotification) {
+			close(ch)
+		})
+	}, twitch.SubChannelChatNotification)
+}
+
+func TestEventChannelChatSettingsUpdate(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelChatSettingsUpdate(func(event twitch.EventChannelChatSettingsUpdate) {
+			close(ch)
+		})
+	}, twitch.SubChannelChatSettingsUpdate)
+}

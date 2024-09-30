@@ -23,6 +23,24 @@ type Moderator struct {
 	ModeratorUserName  string `json:"moderator_user_name"`
 }
 
+type Target struct {
+	TargetUserId    string `json:"target_user_id"`
+	TargetUserLogin string `json:"target_user_login"`
+	TargetUserName  string `json:"target_user_name"`
+}
+
+type SourceBroadcaster struct {
+	SourceBroadcasterUserId    string `json:"source_broadcaster_user_id"`
+	SourceBroadcasterUserLogin string `json:"source_broadcaster_user_login"`
+	SourceBroadcasterUserName  string `json:"source_broadcaster_user_name"`
+}
+
+type Chatter struct {
+	ChatterUserId    string `json:"chatter_user_id"`
+	ChatterUserLogin string `json:"chatter_user_login"`
+	ChatterUserName  string `json:"chatter_user_name"`
+}
+
 type EventChannelUpdate struct {
 	Broadcaster
 
@@ -556,4 +574,190 @@ type EventChannelChatUserMessageUpdate struct {
 	Status    string      `json:"status"`
 	MessageId string      `json:"message_id"`
 	Message   ChatMessage `json:"message"`
+}
+
+type EventChannelChatClear Broadcaster
+
+type EventChannelChatClearUserMessages struct {
+	Broadcaster
+	Target
+}
+
+type ChatMessageUserBadge struct {
+	SetId string `json:"set_id"`
+	Id    string `json:"id"`
+	Info  string `json:"info"`
+}
+
+type ChatMessageCheer struct {
+	Bits int `json:"bits"`
+}
+
+type ChatMessageReply struct {
+	ParentMessageId   string `json:"parent_message_id"`
+	ParentMessageBody string `json:"parent_message_body"`
+	ParentUserId      string `json:"parent_user_id"`
+	ParentUserName    string `json:"parent_user_name"`
+	ParentUserLogin   string `json:"parent_user_login"`
+	ThreadMessageId   string `json:"thread_message_id"`
+	ThreadUserId      string `json:"thread_user_id"`
+	ThreadUserName    string `json:"thread_user_name"`
+	ThreadUserLogin   string `json:"thread_user_login"`
+}
+
+type EventChannelChatMessage struct {
+	Broadcaster
+	SourceBroadcaster
+	Chatter
+
+	MessageId                   string                  `json:"message_id"`
+	SourceMessageId             string                  `json:"source_message_id"`
+	Message                     ChatMessage             `json:"message"`
+	Color                       string                  `json:"color"`
+	Badges                      []ChatMessageUserBadge  `json:"badges"`
+	SourceBadges                *[]ChatMessageUserBadge `json:"source_badges,omitempty"`
+	MessageType                 string                  `json:"message_type"`
+	Cheer                       *ChatMessageCheer       `json:"cheer,omitempty"`
+	Reply                       *ChatMessageReply       `json:"reply,omitempty"`
+	ChannelPointsCustomRewardId string                  `json:"channel_points_custom_reward_id"`
+	ChannelPointsAnimationId    string                  `json:"channel_points_animation_id"`
+}
+
+type EventChannelChatMessageDelete struct {
+	Broadcaster
+	Target
+
+	MessageId string `json:"message_id"`
+}
+
+type ChatNotificationSub struct {
+	SubTier        string `json:"sub_tier"`
+	IsPrime        bool   `json:"is_prime"`
+	DurationMonths int    `json:"duration_months"`
+}
+
+type ChatNotificationResub struct {
+	CumulativeMonths  int    `json:"cumulative_months"`
+	DurationMonths    int    `json:"duration_months"`
+	StreakMonths      int    `json:"streak_months"`
+	SubTier           string `json:"sub_tier"`
+	IsPrime           bool   `json:"is_prime"`
+	IsGift            bool   `json:"is_gift"`
+	GifterIsAnonymous bool   `json:"gifter_is_anonymous"`
+	GifterUserId      string `json:"gifter_user_id"`
+	GifterUserName    string `json:"gifter_user_name"`
+	GifterUserLogin   string `json:"gifter_user_login"`
+}
+
+type ChatNotificationSubGift struct {
+	DurationMonths     int    `json:"duration_months"`
+	CumulativeTotal    int    `json:"cumulative_total"`
+	RecipientUserId    string `json:"recipient_user_id"`
+	RecipientUserName  string `json:"recipient_user_name"`
+	RecipientUserLogin string `json:"recipient_user_login"`
+	SubTier            string `json:"sub_tier"`
+	CommunityGiftId    string `json:"community_gift_id"`
+}
+
+type ChatNotificationCommunitySubGift struct {
+	Id              string `json:"id"`
+	Total           int    `json:"total"`
+	SubTier         string `json:"sub_tier"`
+	CumulativeTotal int    `json:"cumulative_total"`
+}
+
+type ChatNotificationGiftPaidUpgrade struct {
+	GifterIsAnonymous bool   `json:"gifter_is_anonymous"`
+	GifterUserId      string `json:"gifter_user_id"`
+	GifterUserName    string `json:"gifter_user_name"`
+}
+
+type ChatNotificationPrimePaidUpgrade struct {
+	SubTier string `json:"sub_tier"`
+}
+
+type ChatNotificationPayItForward struct {
+	GifterIsAnonymous bool   `json:"gifter_is_anonymous"`
+	GifterUserId      string `json:"gifter_user_id"`
+	GifterUserName    string `json:"gifter_user_name"`
+	GifterUserLogin   string `json:"gifter_user_login"`
+}
+
+type ChatNotificationRaid struct {
+	User
+
+	ViewerCount     string `json:"viewer_count"`
+	ProfileImageUrl string `json:"profile_image_url"`
+}
+
+type ChatNotificationUnraid struct{}
+
+type ChatNotificationAnnouncement struct {
+	Color string `json:"color"`
+}
+
+type ChatNotificationBitsBadgeTier struct {
+	Tier int `json:"tier"`
+}
+
+type ChatNotificationCharityDonationAmount struct {
+	Value        int    `json:"value"`
+	DecimalPlace int    `json:"decimal_place"`
+	Currency     string `json:"currency"`
+}
+
+type ChatNotificationCharityDonation struct {
+	CharityName string                                `json:"charity_name"`
+	Amount      ChatNotificationCharityDonationAmount `json:"amount"`
+}
+
+type EventChannelChatNotification struct {
+	Broadcaster
+	SourceBroadcaster
+	Chatter
+
+	ChatterIsAnonymous bool                    `json:"chatter_is_anonymous"`
+	Color              string                  `json:"color"`
+	Badges             []ChatMessageUserBadge  `json:"badges"`
+	SourceBadges       *[]ChatMessageUserBadge `json:"source_badges"`
+	SystemMessage      string                  `json:"system_message"`
+	MessageId          string                  `json:"message_id"`
+	SourceMessageId    string                  `json:"source_message_id"`
+	Message            ChatMessage             `json:"message"`
+
+	NoticeType       string                            `json:"notice_type"`
+	Sub              *ChatNotificationSub              `json:"sub,omitempty"`
+	Resub            *ChatNotificationResub            `json:"resub,omitempty"`
+	SubGift          *ChatNotificationSubGift          `json:"sub_gift,omitempty"`
+	CommunitySubGift *ChatNotificationCommunitySubGift `json:"community_sub_gift,omitempty"`
+	GiftPaidUpgrade  *ChatNotificationGiftPaidUpgrade  `json:"gift_paid_upgrade,omitempty"`
+	PrimePaidUpgrade *ChatNotificationPrimePaidUpgrade `json:"prime_paid_upgrade,omitempty"`
+	PayItForward     *ChatNotificationPayItForward     `json:"pay_it_forward,omitempty"`
+	Raid             *ChatNotificationRaid             `json:"raid,omitempty"`
+	Unraid           *ChatNotificationUnraid           `json:"unraid,omitempty"`
+	Announcement     *ChatNotificationAnnouncement     `json:"announcement,omitempty"`
+	BitsBadgeTier    *ChatNotificationBitsBadgeTier    `json:"bits_badge_tier,omitempty"`
+	CharityDonation  *ChatNotificationCharityDonation  `json:"charity_donation,omitempty"`
+
+	SharedChatSub              *ChatNotificationSub              `json:"shared_chat_sub"`
+	SharedChatResub            *ChatNotificationResub            `json:"shared_chat_resub"`
+	SharedChatSubGift          *ChatNotificationSubGift          `json:"shared_chat_sub_gift"`
+	SharedChatCommunitySubGift *ChatNotificationCommunitySubGift `json:"shared_chat_community_sub_gift"`
+	SharedChatGiftPaidUpgrade  *ChatNotificationGiftPaidUpgrade  `json:"shared_chat_gift_paid_upgrade"`
+	SharedChatPrimePaidUpgrade *ChatNotificationPrimePaidUpgrade `json:"shared_chat_prime_paid_upgrade"`
+	SharedChatPayItForward     *ChatNotificationPayItForward     `json:"shared_chat_pay_it_forward"`
+	SharedChatRaid             *ChatNotificationRaid             `json:"shared_chat_raid"`
+	SharedChatAnnouncement     *ChatNotificationAnnouncement     `json:"shared_chat_announcement"`
+}
+
+type EventChannelChatSettingsUpdate struct {
+	Broadcaster
+
+	EmoteMode                   bool `json:"emote_mode"`
+	FollowerMode                bool `json:"follower_mode"`
+	FollowerModeDurationMinutes int  `json:"follower_mode_duration_minutes"`
+	SlowMode                    bool `json:"slow_mode"`
+	SlowModeWaitTimeSeconds     int  `json:"slow_mode_wait_time_seconds"`
+	SubscriberMode              bool `json:"subscriber_mode"`
+	UniqueChatMode              bool `json:"unique_chat_mode"`
 }

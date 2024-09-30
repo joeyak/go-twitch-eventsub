@@ -81,6 +81,13 @@ var (
 	SubChannelChatUserMessageHold   EventSubscription = "channel.chat.user_message_hold"
 	SubChannelChatUserMessageUpdate EventSubscription = "channel.chat.user_message_update"
 
+	SubChannelChatClear             EventSubscription = "channel.chat.clear"
+	SubChannelChatClearUserMessages EventSubscription = "channel.chat.clear_user_messages"
+	SubChannelChatMessage           EventSubscription = "channel.chat.message"
+	SubChannelChatMessageDelete     EventSubscription = "channel.chat.message_delete"
+	SubChannelChatNotification      EventSubscription = "channel.chat.notification"
+	SubChannelChatSettingsUpdate    EventSubscription = "channel.chat_settings.update"
+
 	subMetadata = map[EventSubscription]subscriptionMetadata{
 		SubChannelUpdate: {
 			Version:  "2",
@@ -285,6 +292,30 @@ var (
 		SubChannelChatUserMessageUpdate: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventChannelChatUserMessageUpdate](),
+		},
+		SubChannelChatClear: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChatClear](),
+		},
+		SubChannelChatClearUserMessages: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChatClearUserMessages](),
+		},
+		SubChannelChatMessage: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChatMessage](),
+		},
+		SubChannelChatMessageDelete: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChatMessageDelete](),
+		},
+		SubChannelChatNotification: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChatNotification](),
+		},
+		SubChannelChatSettingsUpdate: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChatSettingsUpdate](),
 		},
 	}
 )

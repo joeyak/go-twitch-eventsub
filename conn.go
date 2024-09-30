@@ -108,6 +108,12 @@ type Client struct {
 	onEventAutomodTermsUpdate                               func(event EventAutomodTermsUpdate)
 	onEventChannelChatUserMessageHold                       func(event EventChannelChatUserMessageHold)
 	onEventChannelChatUserMessageUpdate                     func(event EventChannelChatUserMessageUpdate)
+	onEventChannelChatClear                                 func(event EventChannelChatClear)
+	onEventChannelChatClearUserMessages                     func(event EventChannelChatClearUserMessages)
+	onEventChannelChatMessage                               func(event EventChannelChatMessage)
+	onEventChannelChatMessageDelete                         func(event EventChannelChatMessageDelete)
+	onEventChannelChatNotification                          func(event EventChannelChatNotification)
+	onEventChannelChatSettingsUpdate                        func(event EventChannelChatSettingsUpdate)
 }
 
 func NewClient() *Client {
@@ -387,6 +393,18 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelChatUserMessageHold, *event)
 	case *EventChannelChatUserMessageUpdate:
 		callFunc(c.onEventChannelChatUserMessageUpdate, *event)
+	case *EventChannelChatClear:
+		callFunc(c.onEventChannelChatClear, *event)
+	case *EventChannelChatClearUserMessages:
+		callFunc(c.onEventChannelChatClearUserMessages, *event)
+	case *EventChannelChatMessage:
+		callFunc(c.onEventChannelChatMessage, *event)
+	case *EventChannelChatMessageDelete:
+		callFunc(c.onEventChannelChatMessageDelete, *event)
+	case *EventChannelChatNotification:
+		callFunc(c.onEventChannelChatNotification, *event)
+	case *EventChannelChatSettingsUpdate:
+		callFunc(c.onEventChannelChatSettingsUpdate, *event)
 	default:
 		c.onError(fmt.Errorf("unknown event type %s", subscription.Type))
 	}
@@ -646,4 +664,28 @@ func (c *Client) OnEventChannelChatUserMessageHold(callback func(event EventChan
 
 func (c *Client) OnEventChannelChatUserMessageUpdate(callback func(event EventChannelChatUserMessageUpdate)) {
 	c.onEventChannelChatUserMessageUpdate = callback
+}
+
+func (c *Client) OnEventChannelChatClear(callback func(event EventChannelChatClear)) {
+	c.onEventChannelChatClear = callback
+}
+
+func (c *Client) OnEventChannelChatClearUserMessages(callback func(event EventChannelChatClearUserMessages)) {
+	c.onEventChannelChatClearUserMessages = callback
+}
+
+func (c *Client) OnEventChannelChatMessage(callback func(event EventChannelChatMessage)) {
+	c.onEventChannelChatMessage = callback
+}
+
+func (c *Client) OnEventChannelChatMessageDelete(callback func(event EventChannelChatMessageDelete)) {
+	c.onEventChannelChatMessageDelete = callback
+}
+
+func (c *Client) OnEventChannelChatNotification(callback func(event EventChannelChatNotification)) {
+	c.onEventChannelChatNotification = callback
+}
+
+func (c *Client) OnEventChannelChatSettingsUpdate(callback func(event EventChannelChatSettingsUpdate)) {
+	c.onEventChannelChatSettingsUpdate = callback
 }

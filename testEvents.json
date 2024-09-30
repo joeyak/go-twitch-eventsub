@@ -1090,5 +1090,141 @@
                 }
             ]
         }
+    },
+    "channel.chat.clear": {
+        "broadcaster_user_id": "1337",
+        "broadcaster_user_name": "Cool_User",
+        "broadcaster_user_login": "cool_user"
+    },
+    "channel.chat.clear_user_messages": {
+        "broadcaster_user_id": "1337",
+        "broadcaster_user_name": "Cool_User",
+        "broadcaster_user_login": "cool_user",
+        "target_user_id": "7734",
+        "target_user_name": "Uncool_viewer",
+        "target_user_login": "uncool_viewer"
+    },
+    "channel.chat.message": {
+        "broadcaster_user_id": "1971641",
+        "broadcaster_user_login": "streamer",
+        "broadcaster_user_name": "streamer",
+        "chatter_user_id": "4145994",
+        "chatter_user_login": "viewer32",
+        "chatter_user_name": "viewer32",
+        "message_id": "cc106a89-1814-919d-454c-f4f2f970aae7",
+        "message": {
+            "text": "Hi chat",
+            "fragments": [
+                {
+                    "type": "text",
+                    "text": "Hi chat",
+                    "cheermote": null,
+                    "emote": null,
+                    "mention": null
+                }
+            ]
+        },
+        "color": "#00FF7F",
+        "badges": [
+            {
+                "set_id": "moderator",
+                "id": "1",
+                "info": ""
+            },
+            {
+                "set_id": "subscriber",
+                "id": "12",
+                "info": "16"
+            },
+            {
+                "set_id": "sub-gifter",
+                "id": "1",
+                "info": ""
+            }
+        ],
+        "message_type": "text",
+        "cheer": null,
+        "reply": null,
+        "channel_points_custom_reward_id": null,
+        "source_broadcaster_user_id": null,
+        "source_broadcaster_user_login": null,
+        "source_broadcaster_user_name": null,
+        "source_message_id": null,
+        "source_badges": null
+    },
+    "channel.chat.message_delete": {
+        "broadcaster_user_id": "1337",
+        "broadcaster_user_name": "Cool_User",
+        "broadcaster_user_login": "cool_user",
+        "target_user_id": "7734",
+        "target_user_name": "Uncool_viewer",
+        "target_user_login": "uncool_viewer",
+        "message_id": "ab24e0b0-2260-4bac-94e4-05eedd4ecd0e"
+    },
+    "channel.chat.notification": {
+        "broadcaster_user_id": "1971641",
+        "broadcaster_user_login": "streamer",
+        "broadcaster_user_name": "streamer",
+        "chatter_user_id": "49912639",
+        "chatter_user_login": "viewer23",
+        "chatter_user_name": "viewer23",
+        "chatter_is_anonymous": false,
+        "color": "",
+        "badges": [],
+        "system_message": "viewer23 subscribed at Tier 1. They've subscribed for 10 months!",
+        "message_id": "d62235c8-47ff-a4f4--84e8-5a29a65a9c03",
+        "message": {
+            "text": "",
+            "fragments": []
+        },
+        "notice_type": "resub",
+        "sub": null,
+        "resub": {
+            "cumulative_months": 10,
+            "duration_months": 0,
+            "streak_months": null,
+            "sub_plan": "1000",
+            "is_gift": false,
+            "gifter_is_anonymous": null,
+            "gifter_user_id": null,
+            "gifter_user_name": null,
+            "gifter_user_login": null
+        },
+        "sub_gift": null,
+        "community_sub_gift": null,
+        "gift_paid_upgrade": null,
+        "prime_paid_upgrade": null,
+        "pay_it_forward": null,
+        "raid": null,
+        "unraid": null,
+        "announcement": null,
+        "bits_badge_tier": null,
+        "charity_donation": null,
+        "shared_chat_sub": null,
+        "shared_chat_resub": null,
+        "shared_chat_sub_gift": null,
+        "shared_chat_community_sub_gift": null,
+        "shared_chat_gift_paid_upgrade": null,
+        "shared_chat_prime_paid_upgrade": null,
+        "shared_chat_pay_it_forward": null,
+        "shared_chat_raid": null,
+        "shared_chat_announcement": null,
+        "source_broadcaster_user_id": null,
+        "source_broadcaster_user_login": null,
+        "source_broadcaster_user_name": null,
+        "source_message_id": null,
+        "source_badges": null
+    },
+    "channel.chat_settings.update": {
+        "broadcaster_user_id": "1337",
+        "broadcaster_user_login": "cool_user",
+        "broadcaster_user_name": "Cool_User",
+        "emote_mode": true,
+        "follower_mode": false,
+        "follower_mode_duration_minutes": null,
+        "slow_mode": true,
+        "slow_mode_wait_time_seconds": 10,
+        "subscriber_mode": false,
+        "unique_chat_mode": false
     }
 }
