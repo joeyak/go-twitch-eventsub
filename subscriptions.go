@@ -29,6 +29,8 @@ var (
 
 	SubChannelModeratorAdd    EventSubscription = "channel.moderator.add"
 	SubChannelModeratorRemove EventSubscription = "channel.moderator.remove"
+	SubChannelVIPAdd          EventSubscription = "channel.vip.add"
+	SubChannelVIPRemove       EventSubscription = "channel.vip.remove"
 
 	SubChannelChannelPointsCustomRewardAdd              EventSubscription = "channel.channel_points_custom_reward.add"
 	SubChannelChannelPointsCustomRewardUpdate           EventSubscription = "channel.channel_points_custom_reward.update"
@@ -125,6 +127,14 @@ var (
 		SubChannelModeratorRemove: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventChannelModeratorRemove](),
+		},
+		SubChannelVIPAdd: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelVIPAdd](),
+		},
+		SubChannelVIPRemove: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelVIPRemove](),
 		},
 		SubChannelChannelPointsCustomRewardAdd: {
 			Version:  "1",

@@ -69,6 +69,8 @@ type Client struct {
 	onEventChannelUnban                                     func(event EventChannelUnban)
 	onEventChannelModeratorAdd                              func(event EventChannelModeratorAdd)
 	onEventChannelModeratorRemove                           func(event EventChannelModeratorRemove)
+	onEventChannelVIPAdd                                    func(event EventChannelVIPAdd)
+	onEventChannelVIPRemove                                 func(event EventChannelVIPRemove)
 	onEventChannelChannelPointsCustomRewardAdd              func(event EventChannelChannelPointsCustomRewardAdd)
 	onEventChannelChannelPointsCustomRewardUpdate           func(event EventChannelChannelPointsCustomRewardUpdate)
 	onEventChannelChannelPointsCustomRewardRemove           func(event EventChannelChannelPointsCustomRewardRemove)
@@ -305,6 +307,10 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelModeratorAdd, *event)
 	case *EventChannelModeratorRemove:
 		callFunc(c.onEventChannelModeratorRemove, *event)
+	case *EventChannelVIPAdd:
+		callFunc(c.onEventChannelVIPAdd, *event)
+	case *EventChannelVIPRemove:
+		callFunc(c.onEventChannelVIPRemove, *event)
 	case *EventChannelChannelPointsCustomRewardAdd:
 		callFunc(c.onEventChannelChannelPointsCustomRewardAdd, *event)
 	case *EventChannelChannelPointsCustomRewardUpdate:
@@ -478,6 +484,14 @@ func (c *Client) OnEventChannelModeratorAdd(callback func(event EventChannelMode
 
 func (c *Client) OnEventChannelModeratorRemove(callback func(event EventChannelModeratorRemove)) {
 	c.onEventChannelModeratorRemove = callback
+}
+
+func (c *Client) OnEventChannelVIPAdd(callback func(event EventChannelVIPAdd)) {
+	c.onEventChannelVIPAdd = callback
+}
+
+func (c *Client) OnEventChannelVIPRemove(callback func(event EventChannelVIPRemove)) {
+	c.onEventChannelVIPRemove = callback
 }
 
 func (c *Client) OnEventChannelChannelPointsCustomRewardAdd(callback func(event EventChannelChannelPointsCustomRewardAdd)) {

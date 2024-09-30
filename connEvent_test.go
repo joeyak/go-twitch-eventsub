@@ -184,6 +184,26 @@ func TestEventChannelModeratorRemove(t *testing.T) {
 	}, twitch.SubChannelModeratorRemove)
 }
 
+func TestEventChannelVIPAdd(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelVIPAdd(func(event twitch.EventChannelVIPAdd) {
+			close(ch)
+		})
+	}, twitch.SubChannelVIPAdd)
+}
+
+func TestEventChannelVIPRemove(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelVIPRemove(func(event twitch.EventChannelVIPRemove) {
+			close(ch)
+		})
+	}, twitch.SubChannelVIPRemove)
+}
+
 func TestEventChannelChannelPointsCustomRewardAdd(t *testing.T) {
 	t.Parallel()
 

@@ -134,6 +134,16 @@ type EventChannelModeratorRemove struct {
 	User
 }
 
+type EventChannelVIPAdd struct {
+	Broadcaster
+	User
+}
+
+type EventChannelVIPRemove struct {
+	Broadcaster
+	User
+}
+
 type MaxChannelPointsPerStream struct {
 	IsEnabled bool `json:"is_enabled"`
 	Value     int  `json:"value"`

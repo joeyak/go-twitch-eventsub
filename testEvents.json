@@ -180,6 +180,22 @@
         "broadcaster_user_login": "cooler_user",
         "broadcaster_user_name": "Cooler_User"
     },
+    "channel.vip.add": {
+        "user_id": "1234",
+        "user_login": "vip_user",
+        "user_name": "VIP_User",
+        "broadcaster_user_id": "1337",
+        "broadcaster_user_login": "cooler_user",
+        "broadcaster_user_name": "Cooler_User"
+    },
+    "channel.vip.remove": {
+        "user_id": "1234",
+        "user_login": "not_vip_user",
+        "user_name": "Not_VIP_User",
+        "broadcaster_user_id": "1337",
+        "broadcaster_user_login": "cooler_user",
+        "broadcaster_user_name": "Cooler_User"
+    },
     "channel.channel_points_custom_reward.add": {
         "id": "9001",
         "broadcaster_user_id": "1337",
