@@ -664,6 +664,16 @@ func TestEventChannelSuspiciousUserMessage(t *testing.T) {
 	}, twitch.SubChannelSuspiciousUserMessage)
 }
 
+func TestEventChannelSuspiciousUserUpdate(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelSuspiciousUserUpdate(func(event twitch.EventChannelSuspiciousUserUpdate) {
+			close(ch)
+		})
+	}, twitch.SubChannelSuspiciousUserUpdate)
+}
+
 func TestEventChannelSharedChatBegin(t *testing.T) {
 	t.Parallel()
 

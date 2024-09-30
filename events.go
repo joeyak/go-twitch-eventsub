@@ -785,6 +785,14 @@ type EventChannelSuspiciousUserMessage struct {
 	Message              SuspiciousUserChatMessage `json:"message"`
 }
 
+type EventChannelSuspiciousUserUpdate struct {
+	Broadcaster
+	Moderator
+	User
+
+	LowTrustStatus string `json:"low_trust_status"`
+}
+
 type EventChannelSharedChatBegin struct {
 	Broadcaster
 	HostBroadcaster

@@ -88,6 +88,7 @@ var (
 	SubChannelChatNotification      EventSubscription = "channel.chat.notification"
 	SubChannelChatSettingsUpdate    EventSubscription = "channel.chat_settings.update"
 	SubChannelSuspiciousUserMessage EventSubscription = "channel.suspicious_user.message"
+	SubChannelSuspiciousUserUpdate  EventSubscription = "channel.suspicious_user.update"
 
 	SubChannelSharedChatBegin  EventSubscription = "channel.shared_chat.begin"
 	SubChannelSharedChatUpdate EventSubscription = "channel.shared_chat.update"
@@ -327,6 +328,10 @@ var (
 		SubChannelSuspiciousUserMessage: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventChannelSuspiciousUserMessage](),
+		},
+		SubChannelSuspiciousUserUpdate: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelSuspiciousUserUpdate](),
 		},
 		SubChannelSharedChatBegin: {
 			Version:  "1",

@@ -1269,6 +1269,18 @@
             ]
         }
     },
+    "channel.suspicious_user.update": {
+        "broadcaster_user_id": "1050263435",
+        "broadcaster_user_name": "77f111cbb75341449f5",
+        "broadcaster_user_login": "77f111cbb75341449f5",
+        "moderator_user_id": "1050263436",
+        "moderator_user_name": "29087e59dfc441968f6",
+        "moderator_user_login": "29087e59dfc441968f6",
+        "user_id": "1050263437",
+        "user_name": "06fbcc75952245c5a87",
+        "user_login": "06fbcc75952245c5a87",
+        "low_trust_status": "restricted"
+    },
     "channel.shared_chat.begin": {
         "session_id": "2b64a92a-dbb8-424e-b1c3-304423ba1b6f",
         "broadcaster_user_id": "1971641",
