@@ -507,3 +507,17 @@ type EventChannelAdBreakBegin struct {
 	RequesterUserLogin string    `json:"requester_user_login"`
 	RequesterUserName  string    `json:"requester_user_name"`
 }
+
+type EventChannelWarningAcknowledge struct {
+	Broadcaster
+	User
+}
+
+type EventChannelWarningSend struct {
+	Broadcaster
+	Moderator
+	User
+
+	Reason         string   `json:"reason"`
+	ChatRulesCited []string `json:"chat_rules_cited"`
+}

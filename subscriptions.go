@@ -79,6 +79,9 @@ var (
 
 	SubChannelAdBreakBegin EventSubscription = "channel.ad_break.begin"
 
+	SubChannelWarningAcknowledge EventSubscription = "channel.warning.acknowledge"
+	SubChannelWarningSend        EventSubscription = "channel.warning.send"
+
 	subMetadata = map[EventSubscription]subscriptionMetadata{
 		SubChannelUpdate: {
 			Version:  "2",
@@ -275,6 +278,14 @@ var (
 		SubChannelAdBreakBegin: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventChannelAdBreakBegin](),
+		},
+		SubChannelWarningAcknowledge: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelWarningAcknowledge](),
+		},
+		SubChannelWarningSend: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelWarningSend](),
 		},
 	}
 )

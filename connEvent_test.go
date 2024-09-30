@@ -573,3 +573,24 @@ func TestEventChannelAdBreakBegin(t *testing.T) {
 		})
 	}, twitch.SubChannelAdBreakBegin)
 }
+
+func TestEventChannelWarningAcknowledge(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelWarningAcknowledge(func(event twitch.EventChannelWarningAcknowledge) {
+			close(ch)
+		})
+	}, twitch.SubChannelWarningAcknowledge)
+}
+
+func TestEventChannelWarningSend(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelWarningSend(func(event twitch.EventChannelWarningSend) {
+			close(ch)
+		})
+	}, twitch.SubChannelWarningSend)
+
+}

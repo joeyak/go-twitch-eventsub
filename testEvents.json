@@ -1024,5 +1024,26 @@
         "requester_user_id": "1337",
         "requester_user_login": "cool_user",
         "requester_user_name": "Cool_User"
+    },
+    "channel.warning.acknowledge": {
+        "broadcaster_user_id": "423374343",
+        "broadcaster_user_login": "glowillig",
+        "broadcaster_user_name": "glowillig",
+        "user_id": "141981764",
+        "user_login": "twitchdev",
+        "user_name": "TwitchDev"
+    },
+    "channel.warning.send": {
+        "broadcaster_user_id": "423374343",
+        "broadcaster_user_login": "glowillig",
+        "broadcaster_user_name": "glowillig",
+        "moderator_user_id": "424596340",
+        "moderator_user_login": "quotrok",
+        "moderator_user_name": "quotrok",
+        "user_id": "141981764",
+        "user_login": "twitchdev",
+        "user_name": "TwitchDev",
+        "reason": "cut it out",
+        "chat_rules_cited": null
     }
 }

@@ -106,6 +106,8 @@ type Client struct {
 	onEventChannelShoutoutCreate                            func(event EventChannelShoutoutCreate)
 	onEventChannelShoutoutReceive                           func(event EventChannelShoutoutReceive)
 	onEventChannelAdBreakBegin                              func(event EventChannelAdBreakBegin)
+	onEventChannelWarningAcknowledge                        func(event EventChannelWarningAcknowledge)
+	onEventChannelWarningSend                               func(event EventChannelWarningSend)
 }
 
 func NewClient() *Client {
@@ -381,6 +383,10 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelShoutoutReceive, *event)
 	case *EventChannelAdBreakBegin:
 		callFunc(c.onEventChannelAdBreakBegin, *event)
+	case *EventChannelWarningAcknowledge:
+		callFunc(c.onEventChannelWarningAcknowledge, *event)
+	case *EventChannelWarningSend:
+		callFunc(c.onEventChannelWarningSend, *event)
 	default:
 		c.onError(fmt.Errorf("unknown event type %s", subscription.Type))
 	}
@@ -632,4 +638,12 @@ func (c *Client) OnEventChannelShoutoutReceive(callback func(event EventChannelS
 
 func (c *Client) OnEventChannelAdBreakBegin(callback func(event EventChannelAdBreakBegin)) {
 	c.onEventChannelAdBreakBegin = callback
+}
+
+func (c *Client) OnEventChannelWarningAcknowledge(callback func(event EventChannelWarningAcknowledge)) {
+	c.onEventChannelWarningAcknowledge = callback
+}
+
+func (c *Client) OnEventChannelWarningSend(callback func(event EventChannelWarningSend)) {
+	c.onEventChannelWarningSend = callback
 }
