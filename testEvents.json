@@ -973,9 +973,9 @@
         "started_at": "2022-07-26T17:00:03.17106713Z"
     },
     "channel.ad_break.begin": {
-        "duration_seconds": "60",
+        "duration_seconds": 60,
         "started_at": "2019-11-16T10:11:12.634234626Z",
-        "is_automatic": "false",
+        "is_automatic": false,
         "broadcaster_user_id": "1337",
         "broadcaster_user_login": "cool_user",
         "broadcaster_user_name": "Cool_User",
