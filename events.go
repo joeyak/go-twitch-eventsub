@@ -745,15 +745,15 @@ type EventChannelChatNotification struct {
 	BitsBadgeTier    *ChatNotificationBitsBadgeTier    `json:"bits_badge_tier,omitempty"`
 	CharityDonation  *ChatNotificationCharityDonation  `json:"charity_donation,omitempty"`
 
-	SharedChatSub              *ChatNotificationSub              `json:"shared_chat_sub"`
-	SharedChatResub            *ChatNotificationResub            `json:"shared_chat_resub"`
-	SharedChatSubGift          *ChatNotificationSubGift          `json:"shared_chat_sub_gift"`
-	SharedChatCommunitySubGift *ChatNotificationCommunitySubGift `json:"shared_chat_community_sub_gift"`
-	SharedChatGiftPaidUpgrade  *ChatNotificationGiftPaidUpgrade  `json:"shared_chat_gift_paid_upgrade"`
-	SharedChatPrimePaidUpgrade *ChatNotificationPrimePaidUpgrade `json:"shared_chat_prime_paid_upgrade"`
-	SharedChatPayItForward     *ChatNotificationPayItForward     `json:"shared_chat_pay_it_forward"`
-	SharedChatRaid             *ChatNotificationRaid             `json:"shared_chat_raid"`
-	SharedChatAnnouncement     *ChatNotificationAnnouncement     `json:"shared_chat_announcement"`
+	SharedChatSub              *ChatNotificationSub              `json:"shared_chat_sub,omitempty"`
+	SharedChatResub            *ChatNotificationResub            `json:"shared_chat_resub,omitempty"`
+	SharedChatSubGift          *ChatNotificationSubGift          `json:"shared_chat_sub_gift,omitempty"`
+	SharedChatCommunitySubGift *ChatNotificationCommunitySubGift `json:"shared_chat_community_sub_gift,omitempty"`
+	SharedChatGiftPaidUpgrade  *ChatNotificationGiftPaidUpgrade  `json:"shared_chat_gift_paid_upgrade,omitempty"`
+	SharedChatPrimePaidUpgrade *ChatNotificationPrimePaidUpgrade `json:"shared_chat_prime_paid_upgrade,omitempty"`
+	SharedChatPayItForward     *ChatNotificationPayItForward     `json:"shared_chat_pay_it_forward,omitempty"`
+	SharedChatRaid             *ChatNotificationRaid             `json:"shared_chat_raid,omitempty"`
+	SharedChatAnnouncement     *ChatNotificationAnnouncement     `json:"shared_chat_announcement,omitempty"`
 }
 
 type EventChannelChatSettingsUpdate struct {
