@@ -93,6 +93,8 @@ var (
 	SubChannelSharedChatUpdate EventSubscription = "channel.shared_chat.update"
 	SubChannelSharedChatEnd    EventSubscription = "channel.shared_chat.end"
 
+	SubUserWhisperMessage EventSubscription = "user.whisper.message"
+
 	subMetadata = map[EventSubscription]subscriptionMetadata{
 		SubChannelUpdate: {
 			Version:  "2",
@@ -337,6 +339,10 @@ var (
 		SubChannelSharedChatEnd: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventChannelSharedChatEnd](),
+		},
+		SubUserWhisperMessage: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventUserWhisperMessage](),
 		},
 	}
 )

@@ -693,3 +693,13 @@ func TestEventChannelSharedChatEnd(t *testing.T) {
 		})
 	}, twitch.SubChannelSharedChatEnd)
 }
+
+func TestEventUserWhisperMessage(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventUserWhisperMessage(func(event twitch.EventUserWhisperMessage) {
+			close(ch)
+		})
+	}, twitch.SubUserWhisperMessage)
+}

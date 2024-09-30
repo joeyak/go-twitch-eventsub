@@ -801,3 +801,18 @@ type EventChannelSharedChatEnd struct {
 
 	SessionId string `json:"session_id"`
 }
+
+type UserWhisper struct {
+	Text string `json:"text"`
+}
+
+type EventUserWhisperMessage struct {
+	FromUserId    string      `json:"from_user_id"`
+	FromUserLogin string      `json:"from_user_login"`
+	FromUserName  string      `json:"from_user_name"`
+	ToUserId      string      `json:"to_user_id"`
+	ToUserLogin   string      `json:"to_user_login"`
+	ToUserName    string      `json:"to_user_name"`
+	WhisperId     string      `json:"whisper_id"`
+	Whisper       UserWhisper `json:"whisper"`
+}
