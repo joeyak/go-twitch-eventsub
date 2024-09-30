@@ -115,6 +115,9 @@ type Client struct {
 	onEventChannelChatNotification                          func(event EventChannelChatNotification)
 	onEventChannelChatSettingsUpdate                        func(event EventChannelChatSettingsUpdate)
 	onEventChannelSuspiciousUserMessage                     func(event EventChannelSuspiciousUserMessage)
+	onEventChannelSharedChatBegin                           func(event EventChannelSharedChatBegin)
+	onEventChannelSharedChatUpdate                          func(event EventChannelSharedChatUpdate)
+	onEventChannelSharedChatEnd                             func(event EventChannelSharedChatEnd)
 }
 
 func NewClient() *Client {
@@ -408,6 +411,12 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelChatSettingsUpdate, *event)
 	case *EventChannelSuspiciousUserMessage:
 		callFunc(c.onEventChannelSuspiciousUserMessage, *event)
+	case *EventChannelSharedChatBegin:
+		callFunc(c.onEventChannelSharedChatBegin, *event)
+	case *EventChannelSharedChatUpdate:
+		callFunc(c.onEventChannelSharedChatUpdate, *event)
+	case *EventChannelSharedChatEnd:
+		callFunc(c.onEventChannelSharedChatEnd, *event)
 	default:
 		c.onError(fmt.Errorf("unknown event type %s", subscription.Type))
 	}
@@ -695,4 +704,16 @@ func (c *Client) OnEventChannelChatSettingsUpdate(callback func(event EventChann
 
 func (c *Client) OnEventChannelSuspiciousUserMessage(callback func(event EventChannelSuspiciousUserMessage)) {
 	c.onEventChannelSuspiciousUserMessage = callback
+}
+
+func (c *Client) OnEventChannelSharedChatBegin(callback func(event EventChannelSharedChatBegin)) {
+	c.onEventChannelSharedChatBegin = callback
+}
+
+func (c *Client) OnEventChannelSharedChatUpdate(callback func(event EventChannelSharedChatUpdate)) {
+	c.onEventChannelSharedChatUpdate = callback
+}
+
+func (c *Client) OnEventChannelSharedChatEnd(callback func(event EventChannelSharedChatEnd)) {
+	c.onEventChannelSharedChatEnd = callback
 }

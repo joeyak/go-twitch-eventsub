@@ -89,6 +89,10 @@ var (
 	SubChannelChatSettingsUpdate    EventSubscription = "channel.chat_settings.update"
 	SubChannelSuspiciousUserMessage EventSubscription = "channel.suspicious_user.message"
 
+	SubChannelSharedChatBegin  EventSubscription = "channel.shared_chat.begin"
+	SubChannelSharedChatUpdate EventSubscription = "channel.shared_chat.update"
+	SubChannelSharedChatEnd    EventSubscription = "channel.shared_chat.end"
+
 	subMetadata = map[EventSubscription]subscriptionMetadata{
 		SubChannelUpdate: {
 			Version:  "2",
@@ -321,6 +325,18 @@ var (
 		SubChannelSuspiciousUserMessage: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventChannelSuspiciousUserMessage](),
+		},
+		SubChannelSharedChatBegin: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelSharedChatBegin](),
+		},
+		SubChannelSharedChatUpdate: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelSharedChatUpdate](),
+		},
+		SubChannelSharedChatEnd: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelSharedChatEnd](),
 		},
 	}
 )

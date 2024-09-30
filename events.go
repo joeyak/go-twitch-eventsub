@@ -41,6 +41,12 @@ type Chatter struct {
 	ChatterUserName  string `json:"chatter_user_name"`
 }
 
+type HostBroadcaster struct {
+	HostBroadcasterUserId    string `json:"host_broadcaster_user_id"`
+	HostBroadcasterUserLogin string `json:"host_broadcaster_user_login"`
+	HostBroadcasterUserName  string `json:"host_broadcaster_user_name"`
+}
+
 type EventChannelUpdate struct {
 	Broadcaster
 
@@ -777,4 +783,21 @@ type EventChannelSuspiciousUserMessage struct {
 	Types                []string                  `json:"types"`
 	BanEvasionEvaluation string                    `json:"ban_evasion_evaluation"`
 	Message              SuspiciousUserChatMessage `json:"message"`
+}
+
+type EventChannelSharedChatBegin struct {
+	Broadcaster
+	HostBroadcaster
+
+	SessionId    string        `json:"session_id"`
+	Participants []Broadcaster `json:"participants"`
+}
+
+type EventChannelSharedChatUpdate EventChannelSharedChatBegin
+
+type EventChannelSharedChatEnd struct {
+	Broadcaster
+	HostBroadcaster
+
+	SessionId string `json:"session_id"`
 }

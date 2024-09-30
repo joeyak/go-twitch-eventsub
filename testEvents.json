@@ -1268,5 +1268,61 @@
                 }
             ]
         }
+    },
+    "channel.shared_chat.begin": {
+        "session_id": "2b64a92a-dbb8-424e-b1c3-304423ba1b6f",
+        "broadcaster_user_id": "1971641",
+        "broadcaster_user_login": "streamer",
+        "broadcaster_user_name": "streamer",
+        "host_broadcaster_user_id": "1971641",
+        "host_broadcaster_user_login": "streamer",
+        "host_broadcaster_user_name": "streamer",
+        "participants": [
+            {
+                "broadcaster_user_id": "1971641",
+                "broadcaster_user_name": "streamer",
+                "broadcaster_user_login": "streamer"
+            },
+            {
+                "broadcaster_user_id": "112233",
+                "broadcaster_user_name": "streamer33",
+                "broadcaster_user_login": "streamer33"
+            }
+        ]
+    },
+    "channel.shared_chat.update": {
+        "session_id": "2b64a92a-dbb8-424e-b1c3-304423ba1b6f",
+        "broadcaster_user_id": "1971641",
+        "broadcaster_user_login": "streamer",
+        "broadcaster_user_name": "streamer",
+        "host_broadcaster_user_id": "1971641",
+        "host_broadcaster_user_login": "streamer",
+        "host_broadcaster_user_name": "streamer",
+        "participants": [
+            {
+                "broadcaster_user_id": "1971641",
+                "broadcaster_user_name": "streamer",
+                "broadcaster_user_login": "streamer"
+            },
+            {
+                "broadcaster_user_id": "112233",
+                "broadcaster_user_name": "streamer33",
+                "broadcaster_user_login": "streamer33"
+            },
+            {
+                "broadcaster_user_id": "332211",
+                "broadcaster_user_name": "streamer11",
+                "broadcaster_user_login": "streamer11"
+            }
+        ]
+    },
+    "channel.shared_chat.end": {
+        "session_id": "2b64a92a-dbb8-424e-b1c3-304423ba1b6f",
+        "broadcaster_user_id": "1971641",
+        "broadcaster_user_login": "streamer",
+        "broadcaster_user_name": "streamer",
+        "host_broadcaster_user_id": "1971641",
+        "host_broadcaster_user_login": "streamer",
+        "host_broadcaster_user_name": "streamer"
     }
 }
