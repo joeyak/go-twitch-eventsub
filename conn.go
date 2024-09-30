@@ -114,6 +114,7 @@ type Client struct {
 	onEventChannelChatMessageDelete                         func(event EventChannelChatMessageDelete)
 	onEventChannelChatNotification                          func(event EventChannelChatNotification)
 	onEventChannelChatSettingsUpdate                        func(event EventChannelChatSettingsUpdate)
+	onEventChannelSuspiciousUserMessage                     func(event EventChannelSuspiciousUserMessage)
 }
 
 func NewClient() *Client {
@@ -405,6 +406,8 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelChatNotification, *event)
 	case *EventChannelChatSettingsUpdate:
 		callFunc(c.onEventChannelChatSettingsUpdate, *event)
+	case *EventChannelSuspiciousUserMessage:
+		callFunc(c.onEventChannelSuspiciousUserMessage, *event)
 	default:
 		c.onError(fmt.Errorf("unknown event type %s", subscription.Type))
 	}
@@ -688,4 +691,8 @@ func (c *Client) OnEventChannelChatNotification(callback func(event EventChannel
 
 func (c *Client) OnEventChannelChatSettingsUpdate(callback func(event EventChannelChatSettingsUpdate)) {
 	c.onEventChannelChatSettingsUpdate = callback
+}
+
+func (c *Client) OnEventChannelSuspiciousUserMessage(callback func(event EventChannelSuspiciousUserMessage)) {
+	c.onEventChannelSuspiciousUserMessage = callback
 }

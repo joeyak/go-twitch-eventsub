@@ -87,6 +87,7 @@ var (
 	SubChannelChatMessageDelete     EventSubscription = "channel.chat.message_delete"
 	SubChannelChatNotification      EventSubscription = "channel.chat.notification"
 	SubChannelChatSettingsUpdate    EventSubscription = "channel.chat_settings.update"
+	SubChannelSuspiciousUserMessage EventSubscription = "channel.suspicious_user.message"
 
 	subMetadata = map[EventSubscription]subscriptionMetadata{
 		SubChannelUpdate: {
@@ -316,6 +317,10 @@ var (
 		SubChannelChatSettingsUpdate: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventChannelChatSettingsUpdate](),
+		},
+		SubChannelSuspiciousUserMessage: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelSuspiciousUserMessage](),
 		},
 	}
 )

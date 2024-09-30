@@ -1226,5 +1226,47 @@
         "slow_mode_wait_time_seconds": 10,
         "subscriber_mode": false,
         "unique_chat_mode": false
+    },
+    "channel.suspicious_user.message": {
+        "broadcaster_user_id": "1050263432",
+        "broadcaster_user_name": "dcf9dd9336034d23b65",
+        "broadcaster_user_login": "dcf9dd9336034d23b65",
+        "user_id": "1050263434",
+        "user_name": "4a46e2cf2e2f4d6a9e6",
+        "user_login": "4a46e2cf2e2f4d6a9e6",
+        "low_trust_status": "active_monitoring",
+        "shared_ban_channel_ids": [
+            "100",
+            "200"
+        ],
+        "types": [
+            "ban_evader"
+        ],
+        "ban_evasion_evaluation": "likely",
+        "message": {
+            "message_id": "101010",
+            "text": "bad stuff pogchamp",
+            "fragments": [
+                {
+                    "type": "emote",
+                    "text": "bad stuff",
+                    "cheermote": null,
+                    "emote": {
+                        "id": "899",
+                        "emote_set_id": "1"
+                    }
+                },
+                {
+                    "type": "cheermote",
+                    "text": "pogchamp",
+                    "cheermote": {
+                        "prefix": "pogchamp",
+                        "bits": 100,
+                        "tier": 1
+                    },
+                    "emote": null
+                }
+            ]
+        }
     }
 }

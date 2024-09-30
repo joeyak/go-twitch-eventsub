@@ -761,3 +761,20 @@ type EventChannelChatSettingsUpdate struct {
 	SubscriberMode              bool `json:"subscriber_mode"`
 	UniqueChatMode              bool `json:"unique_chat_mode"`
 }
+
+type SuspiciousUserChatMessage struct {
+	ChatMessage
+
+	MessageId string `json:"message_id"`
+}
+
+type EventChannelSuspiciousUserMessage struct {
+	Broadcaster
+	User
+
+	LowTrustStatus       string                    `json:"low_trust_status"`
+	SharedBanChannelIds  []string                  `json:"shared_ban_channel_ids"`
+	Types                []string                  `json:"types"`
+	BanEvasionEvaluation string                    `json:"ban_evasion_evaluation"`
+	Message              SuspiciousUserChatMessage `json:"message"`
+}
