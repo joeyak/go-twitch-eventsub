@@ -464,3 +464,14 @@ type EventChannelShoutoutReceive struct {
 	ViewerCount              int       `json:"viewer_count"`
 	StartedAt                time.Time `json:"started_at"`
 }
+
+type EventChannelAdBreakBegin struct {
+	Broadcaster
+
+	DurationSeconds    int       `json:"duration_seconds"`
+	StartedAt          time.Time `json:"started_at"`
+	IsAutomatic        bool      `json:"is_automatic"`
+	RequesterUserId    string    `json:"requester_user_id"`
+	RequesterUserLogin string    `json:"requester_user_login"`
+	RequesterUserName  string    `json:"requester_user_name"`
+}

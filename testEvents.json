@@ -962,7 +962,6 @@
         "cooldown_ends_at": "2022-07-26T17:02:03.17106713Z",
         "target_cooldown_ends_at": "2022-07-26T18:00:03.17106713Z"
     },
-    
     "channel.shoutout.receive": {
         "broadcaster_user_id": "626262",
         "broadcaster_user_name": "SandySanderman",
@@ -972,5 +971,16 @@
         "from_broadcaster_user_login": "simplysimple",
         "viewer_count": 860,
         "started_at": "2022-07-26T17:00:03.17106713Z"
+    },
+    "channel.ad_break.begin": {
+        "duration_seconds": "60",
+        "started_at": "2019-11-16T10:11:12.634234626Z",
+        "is_automatic": "false",
+        "broadcaster_user_id": "1337",
+        "broadcaster_user_login": "cool_user",
+        "broadcaster_user_name": "Cool_User",
+        "requester_user_id": "1337",
+        "requester_user_login": "cool_user",
+        "requester_user_name": "Cool_User"
     }
 }

@@ -74,6 +74,8 @@ var (
 	SubChannelShoutoutCreate  EventSubscription = "channel.shoutout.create"
 	SubChannelShoutoutReceive EventSubscription = "channel.shoutout.receive"
 
+	SubChannelAdBreakBegin EventSubscription = "channel.ad_break.begin"
+
 	subMetadata = map[EventSubscription]subscriptionMetadata{
 		SubChannelUpdate: {
 			Version:  "2",
@@ -254,6 +256,10 @@ var (
 		SubChannelShoutoutReceive: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventChannelShoutoutReceive](),
+		},
+		SubChannelAdBreakBegin: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelAdBreakBegin](),
 		},
 	}
 )

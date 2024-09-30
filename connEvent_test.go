@@ -533,3 +533,13 @@ func TestEventChannelShoutoutReceive(t *testing.T) {
 		})
 	}, twitch.SubChannelShoutoutReceive)
 }
+
+func TestEventChannelAdBreakBegin(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelAdBreakBegin(func(event twitch.EventChannelAdBreakBegin) {
+			close(ch)
+		})
+	}, twitch.SubChannelAdBreakBegin)
+}
