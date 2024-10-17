@@ -2,7 +2,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/joeyak/go-twitch-eventsub)](https://goreportcard.com/report/github.com/joeyak/go-twitch-eventsub)
 ![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)
-[![GoDoc](https://godoc.org/github.com/joeyak/go-twitch-eventsub?status.svg)](https://godoc.org/github.com/joeyak/go-twitch-eventsub)
+[![GoDoc](https://godoc.org/github.com/joeyak/go-twitch-eventsub?status.svg)](https://godoc.org/github.com/joeyak/go-twitch-eventsub/v2)
 ![tests](https://github.com/joeyak/go-twitch-eventsub/actions/workflows/main.yaml/badge.svg)
 
 
