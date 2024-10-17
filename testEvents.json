@@ -180,6 +180,22 @@
         "broadcaster_user_login": "cooler_user",
         "broadcaster_user_name": "Cooler_User"
     },
+    "channel.vip.add": {
+        "user_id": "1234",
+        "user_login": "vip_user",
+        "user_name": "VIP_User",
+        "broadcaster_user_id": "1337",
+        "broadcaster_user_login": "cooler_user",
+        "broadcaster_user_name": "Cooler_User"
+    },
+    "channel.vip.remove": {
+        "user_id": "1234",
+        "user_login": "not_vip_user",
+        "user_name": "Not_VIP_User",
+        "broadcaster_user_id": "1337",
+        "broadcaster_user_login": "cooler_user",
+        "broadcaster_user_name": "Cooler_User"
+    },
     "channel.channel_points_custom_reward.add": {
         "id": "9001",
         "broadcaster_user_id": "1337",
@@ -332,6 +348,32 @@
             "prompt": "reward prompt"
         },
         "redeemed_at": "2020-07-15T17:16:03.17106713Z"
+    },
+    "channel.channel_points_automatic_reward_redemption.add": {
+        "broadcaster_user_id": "12826",
+        "broadcaster_user_name": "Twitch",
+        "broadcaster_user_login": "twitch",
+        "user_id": "141981764",
+        "user_name": "TwitchDev",
+        "user_login": "twitchdev",
+        "id": "f024099a-e0fe-4339-9a0a-a706fb59f353",
+        "reward": {
+            "type": "send_highlighted_message",
+            "cost": 100,
+            "unlocked_emote": null
+        },
+        "message": {
+            "text": "Hello world! VoHiYo",
+            "emotes": [
+                {
+                    "id": "81274",
+                    "begin": 13,
+                    "end": 18
+                }
+            ]
+        },
+        "user_input": "Hello world! VoHiYo ",
+        "redeemed_at": "2024-02-23T21:14:34.260398045Z"
     },
     "channel.poll.begin": {
         "id": "1243456",
@@ -1388,5 +1430,62 @@
         "whisper": {
             "text": "a secret"
         }
+    },
+    "channel.ad_break.begin": {
+        "duration_seconds": 60,
+        "started_at": "2019-11-16T10:11:12.634234626Z",
+        "is_automatic": false,
+        "broadcaster_user_id": "1337",
+        "broadcaster_user_login": "cool_user",
+        "broadcaster_user_name": "Cool_User",
+        "requester_user_id": "1337",
+        "requester_user_login": "cool_user",
+        "requester_user_name": "Cool_User"
+    },
+    "channel.warning.acknowledge": {
+        "broadcaster_user_id": "423374343",
+        "broadcaster_user_login": "glowillig",
+        "broadcaster_user_name": "glowillig",
+        "user_id": "141981764",
+        "user_login": "twitchdev",
+        "user_name": "TwitchDev"
+    },
+    "channel.warning.send": {
+        "broadcaster_user_id": "423374343",
+        "broadcaster_user_login": "glowillig",
+        "broadcaster_user_name": "glowillig",
+        "moderator_user_id": "424596340",
+        "moderator_user_login": "quotrok",
+        "moderator_user_name": "quotrok",
+        "user_id": "141981764",
+        "user_login": "twitchdev",
+        "user_name": "TwitchDev",
+        "reason": "cut it out",
+        "chat_rules_cited": null
+    },
+    "channel.unban_request.create": {
+        "id": "60",
+        "broadcaster_user_id": "1337",
+        "broadcaster_user_login": "cool_user",
+        "broadcaster_user_name": "Cool_User",
+        "user_id": "1339",
+        "user_login": "not_cool_user",
+        "user_name": "Not_Cool_User",
+        "text": "unban me",
+        "created_at": "2023-11-16T10:11:12.634234626Z"
+    },
+    "channel.unban_request.resolve": {
+        "id": "60",
+        "broadcaster_user_id": "1337",
+        "broadcaster_user_login": "cool_user",
+        "broadcaster_user_name": "Cool_User",
+        "moderator_user_id": "1337",
+        "moderator_user_login": "cool_user",
+        "moderator_user_name": "Cool_User",
+        "user_id": "1339",
+        "user_login": "not_cool_user",
+        "user_name": "Not_Cool_User",
+        "resolution_text": "no",
+        "status": "denied"
     }
 }

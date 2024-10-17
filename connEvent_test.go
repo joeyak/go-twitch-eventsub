@@ -184,6 +184,26 @@ func TestEventChannelModeratorRemove(t *testing.T) {
 	}, twitch.SubChannelModeratorRemove)
 }
 
+func TestEventChannelVIPAdd(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelVIPAdd(func(event twitch.EventChannelVIPAdd) {
+			close(ch)
+		})
+	}, twitch.SubChannelVIPAdd)
+}
+
+func TestEventChannelVIPRemove(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelVIPRemove(func(event twitch.EventChannelVIPRemove) {
+			close(ch)
+		})
+	}, twitch.SubChannelVIPRemove)
+}
+
 func TestEventChannelChannelPointsCustomRewardAdd(t *testing.T) {
 	t.Parallel()
 
@@ -232,6 +252,16 @@ func TestEventChannelChannelPointsCustomRewardRedemptionUpdate(t *testing.T) {
 			close(ch)
 		})
 	}, twitch.SubChannelChannelPointsCustomRewardRedemptionUpdate)
+}
+
+func TestEventChannelChannelPointsAutomaticRewardRedemptionAdd(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelChannelPointsAutomaticRewardRedemptionAdd(func(event twitch.EventChannelChannelPointsAutomaticRewardRedemptionAdd) {
+			close(ch)
+		})
+	}, twitch.SubChannelChannelPointsAutomaticRewardRedemptionAdd)
 }
 
 func TestEventChannelPollBegin(t *testing.T) {
@@ -722,4 +752,54 @@ func TestEventUserWhisperMessage(t *testing.T) {
 			close(ch)
 		})
 	}, twitch.SubUserWhisperMessage)
+}
+
+func TestEventChannelAdBreakBegin(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelAdBreakBegin(func(event twitch.EventChannelAdBreakBegin) {
+			close(ch)
+		})
+	}, twitch.SubChannelAdBreakBegin)
+}
+
+func TestEventChannelWarningAcknowledge(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelWarningAcknowledge(func(event twitch.EventChannelWarningAcknowledge) {
+			close(ch)
+		})
+	}, twitch.SubChannelWarningAcknowledge)
+}
+
+func TestEventChannelWarningSend(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelWarningSend(func(event twitch.EventChannelWarningSend) {
+			close(ch)
+		})
+	}, twitch.SubChannelWarningSend)
+}
+
+func TestEventChannelUnbanRequestCreate(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelUnbanRequestCreate(func(event twitch.EventChannelUnbanRequestCreate) {
+			close(ch)
+		})
+	}, twitch.SubChannelUnbanRequestCreate)
+}
+
+func TestEventChannelUnbanRequestResolve(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventChannelUnbanRequestResolve(func(event twitch.EventChannelUnbanRequestResolve) {
+			close(ch)
+		})
+	}, twitch.SubChannelUnbanRequestResolve)
 }
