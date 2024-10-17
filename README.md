@@ -97,3 +97,9 @@ func main() {
 	}
 }
 ```
+
+## Events that won't be handled
+
+Events that are in beta will not be handled since it could change, thus possibly breaking code.
+
+The goals event will not be handled because there is no subscription type to request it.
