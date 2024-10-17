@@ -76,6 +76,28 @@ var (
 
 	SubChannelModerate EventSubscription = "channel.moderate"
 
+	SubAutomodMessageHold           EventSubscription = "automod.message.hold"
+	SubAutomodMessageUpdate         EventSubscription = "automod.message.update"
+	SubAutomodSettingsUpdate        EventSubscription = "automod.settings.update"
+	SubAutomodTermsUpdate           EventSubscription = "automod.terms.update"
+	SubChannelChatUserMessageHold   EventSubscription = "channel.chat.user_message_hold"
+	SubChannelChatUserMessageUpdate EventSubscription = "channel.chat.user_message_update"
+
+	SubChannelChatClear             EventSubscription = "channel.chat.clear"
+	SubChannelChatClearUserMessages EventSubscription = "channel.chat.clear_user_messages"
+	SubChannelChatMessage           EventSubscription = "channel.chat.message"
+	SubChannelChatMessageDelete     EventSubscription = "channel.chat.message_delete"
+	SubChannelChatNotification      EventSubscription = "channel.chat.notification"
+	SubChannelChatSettingsUpdate    EventSubscription = "channel.chat_settings.update"
+	SubChannelSuspiciousUserMessage EventSubscription = "channel.suspicious_user.message"
+	SubChannelSuspiciousUserUpdate  EventSubscription = "channel.suspicious_user.update"
+
+	SubChannelSharedChatBegin  EventSubscription = "channel.shared_chat.begin"
+	SubChannelSharedChatUpdate EventSubscription = "channel.shared_chat.update"
+	SubChannelSharedChatEnd    EventSubscription = "channel.shared_chat.end"
+
+	SubUserWhisperMessage EventSubscription = "user.whisper.message"
+
 	subMetadata = map[EventSubscription]subscriptionMetadata{
 		SubChannelUpdate: {
 			Version:  "2",
@@ -260,6 +282,78 @@ var (
 		SubChannelModerate: {
 			Version:  "2",
 			EventGen: zeroPtrGen[EventChannelModerate](),
+    },
+		SubAutomodMessageHold: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventAutomodMessageHold](),
+		},
+		SubAutomodMessageUpdate: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventAutomodMessageUpdate](),
+		},
+		SubAutomodSettingsUpdate: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventAutomodSettingsUpdate](),
+		},
+		SubAutomodTermsUpdate: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventAutomodTermsUpdate](),
+		},
+		SubChannelChatUserMessageHold: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChatUserMessageHold](),
+		},
+		SubChannelChatUserMessageUpdate: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChatUserMessageUpdate](),
+		},
+		SubChannelChatClear: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChatClear](),
+		},
+		SubChannelChatClearUserMessages: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChatClearUserMessages](),
+		},
+		SubChannelChatMessage: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChatMessage](),
+		},
+		SubChannelChatMessageDelete: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChatMessageDelete](),
+		},
+		SubChannelChatNotification: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChatNotification](),
+		},
+		SubChannelChatSettingsUpdate: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelChatSettingsUpdate](),
+		},
+		SubChannelSuspiciousUserMessage: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelSuspiciousUserMessage](),
+		},
+		SubChannelSuspiciousUserUpdate: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelSuspiciousUserUpdate](),
+		},
+		SubChannelSharedChatBegin: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelSharedChatBegin](),
+		},
+		SubChannelSharedChatUpdate: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelSharedChatUpdate](),
+		},
+		SubChannelSharedChatEnd: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventChannelSharedChatEnd](),
+		},
+		SubUserWhisperMessage: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventUserWhisperMessage](),
 		},
 	}
 )
