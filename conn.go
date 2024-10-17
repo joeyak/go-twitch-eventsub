@@ -105,6 +105,25 @@ type Client struct {
 	onEventChannelShieldModeEnd                             func(event EventChannelShieldModeEnd)
 	onEventChannelShoutoutCreate                            func(event EventChannelShoutoutCreate)
 	onEventChannelShoutoutReceive                           func(event EventChannelShoutoutReceive)
+	onEventChannelModerate                                  func(event EventChannelModerate)
+	onEventAutomodMessageHold                               func(event EventAutomodMessageHold)
+	onEventAutomodMessageUpdate                             func(event EventAutomodMessageUpdate)
+	onEventAutomodSettingsUpdate                            func(event EventAutomodSettingsUpdate)
+	onEventAutomodTermsUpdate                               func(event EventAutomodTermsUpdate)
+	onEventChannelChatUserMessageHold                       func(event EventChannelChatUserMessageHold)
+	onEventChannelChatUserMessageUpdate                     func(event EventChannelChatUserMessageUpdate)
+	onEventChannelChatClear                                 func(event EventChannelChatClear)
+	onEventChannelChatClearUserMessages                     func(event EventChannelChatClearUserMessages)
+	onEventChannelChatMessage                               func(event EventChannelChatMessage)
+	onEventChannelChatMessageDelete                         func(event EventChannelChatMessageDelete)
+	onEventChannelChatNotification                          func(event EventChannelChatNotification)
+	onEventChannelChatSettingsUpdate                        func(event EventChannelChatSettingsUpdate)
+	onEventChannelSuspiciousUserMessage                     func(event EventChannelSuspiciousUserMessage)
+	onEventChannelSuspiciousUserUpdate                      func(event EventChannelSuspiciousUserUpdate)
+	onEventChannelSharedChatBegin                           func(event EventChannelSharedChatBegin)
+	onEventChannelSharedChatUpdate                          func(event EventChannelSharedChatUpdate)
+	onEventChannelSharedChatEnd                             func(event EventChannelSharedChatEnd)
+	onEventUserWhisperMessage                               func(event EventUserWhisperMessage)
 	onEventChannelAdBreakBegin                              func(event EventChannelAdBreakBegin)
 	onEventChannelWarningAcknowledge                        func(event EventChannelWarningAcknowledge)
 	onEventChannelWarningSend                               func(event EventChannelWarningSend)
@@ -383,6 +402,44 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelShoutoutCreate, *event)
 	case *EventChannelShoutoutReceive:
 		callFunc(c.onEventChannelShoutoutReceive, *event)
+	case *EventChannelModerate:
+		callFunc(c.onEventChannelModerate, *event)
+	case *EventAutomodMessageHold:
+		callFunc(c.onEventAutomodMessageHold, *event)
+	case *EventAutomodMessageUpdate:
+		callFunc(c.onEventAutomodMessageUpdate, *event)
+	case *EventAutomodSettingsUpdate:
+		callFunc(c.onEventAutomodSettingsUpdate, *event)
+	case *EventAutomodTermsUpdate:
+		callFunc(c.onEventAutomodTermsUpdate, *event)
+	case *EventChannelChatUserMessageHold:
+		callFunc(c.onEventChannelChatUserMessageHold, *event)
+	case *EventChannelChatUserMessageUpdate:
+		callFunc(c.onEventChannelChatUserMessageUpdate, *event)
+	case *EventChannelChatClear:
+		callFunc(c.onEventChannelChatClear, *event)
+	case *EventChannelChatClearUserMessages:
+		callFunc(c.onEventChannelChatClearUserMessages, *event)
+	case *EventChannelChatMessage:
+		callFunc(c.onEventChannelChatMessage, *event)
+	case *EventChannelChatMessageDelete:
+		callFunc(c.onEventChannelChatMessageDelete, *event)
+	case *EventChannelChatNotification:
+		callFunc(c.onEventChannelChatNotification, *event)
+	case *EventChannelChatSettingsUpdate:
+		callFunc(c.onEventChannelChatSettingsUpdate, *event)
+	case *EventChannelSuspiciousUserMessage:
+		callFunc(c.onEventChannelSuspiciousUserMessage, *event)
+	case *EventChannelSuspiciousUserUpdate:
+		callFunc(c.onEventChannelSuspiciousUserUpdate, *event)
+	case *EventChannelSharedChatBegin:
+		callFunc(c.onEventChannelSharedChatBegin, *event)
+	case *EventChannelSharedChatUpdate:
+		callFunc(c.onEventChannelSharedChatUpdate, *event)
+	case *EventChannelSharedChatEnd:
+		callFunc(c.onEventChannelSharedChatEnd, *event)
+	case *EventUserWhisperMessage:
+		callFunc(c.onEventUserWhisperMessage, *event)
 	case *EventChannelAdBreakBegin:
 		callFunc(c.onEventChannelAdBreakBegin, *event)
 	case *EventChannelWarningAcknowledge:
@@ -640,6 +697,82 @@ func (c *Client) OnEventChannelShoutoutCreate(callback func(event EventChannelSh
 
 func (c *Client) OnEventChannelShoutoutReceive(callback func(event EventChannelShoutoutReceive)) {
 	c.onEventChannelShoutoutReceive = callback
+}
+
+func (c *Client) OnEventChannelModerate(callback func(event EventChannelModerate)) {
+	c.onEventChannelModerate = callback
+}
+
+func (c *Client) OnEventAutomodMessageHold(callback func(event EventAutomodMessageHold)) {
+	c.onEventAutomodMessageHold = callback
+}
+
+func (c *Client) OnEventAutomodMessageUpdate(callback func(event EventAutomodMessageUpdate)) {
+	c.onEventAutomodMessageUpdate = callback
+}
+
+func (c *Client) OnEventAutomodSettingsUpdate(callback func(event EventAutomodSettingsUpdate)) {
+	c.onEventAutomodSettingsUpdate = callback
+}
+
+func (c *Client) OnEventAutomodTermsUpdate(callback func(event EventAutomodTermsUpdate)) {
+	c.onEventAutomodTermsUpdate = callback
+}
+
+func (c *Client) OnEventChannelChatUserMessageHold(callback func(event EventChannelChatUserMessageHold)) {
+	c.onEventChannelChatUserMessageHold = callback
+}
+
+func (c *Client) OnEventChannelChatUserMessageUpdate(callback func(event EventChannelChatUserMessageUpdate)) {
+	c.onEventChannelChatUserMessageUpdate = callback
+}
+
+func (c *Client) OnEventChannelChatClear(callback func(event EventChannelChatClear)) {
+	c.onEventChannelChatClear = callback
+}
+
+func (c *Client) OnEventChannelChatClearUserMessages(callback func(event EventChannelChatClearUserMessages)) {
+	c.onEventChannelChatClearUserMessages = callback
+}
+
+func (c *Client) OnEventChannelChatMessage(callback func(event EventChannelChatMessage)) {
+	c.onEventChannelChatMessage = callback
+}
+
+func (c *Client) OnEventChannelChatMessageDelete(callback func(event EventChannelChatMessageDelete)) {
+	c.onEventChannelChatMessageDelete = callback
+}
+
+func (c *Client) OnEventChannelChatNotification(callback func(event EventChannelChatNotification)) {
+	c.onEventChannelChatNotification = callback
+}
+
+func (c *Client) OnEventChannelChatSettingsUpdate(callback func(event EventChannelChatSettingsUpdate)) {
+	c.onEventChannelChatSettingsUpdate = callback
+}
+
+func (c *Client) OnEventChannelSuspiciousUserMessage(callback func(event EventChannelSuspiciousUserMessage)) {
+	c.onEventChannelSuspiciousUserMessage = callback
+}
+
+func (c *Client) OnEventChannelSuspiciousUserUpdate(callback func(event EventChannelSuspiciousUserUpdate)) {
+	c.onEventChannelSuspiciousUserUpdate = callback
+}
+
+func (c *Client) OnEventChannelSharedChatBegin(callback func(event EventChannelSharedChatBegin)) {
+	c.onEventChannelSharedChatBegin = callback
+}
+
+func (c *Client) OnEventChannelSharedChatUpdate(callback func(event EventChannelSharedChatUpdate)) {
+	c.onEventChannelSharedChatUpdate = callback
+}
+
+func (c *Client) OnEventChannelSharedChatEnd(callback func(event EventChannelSharedChatEnd)) {
+	c.onEventChannelSharedChatEnd = callback
+}
+
+func (c *Client) OnEventUserWhisperMessage(callback func(event EventUserWhisperMessage)) {
+	c.onEventUserWhisperMessage = callback
 }
 
 func (c *Client) OnEventChannelAdBreakBegin(callback func(event EventChannelAdBreakBegin)) {
