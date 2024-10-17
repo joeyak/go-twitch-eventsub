@@ -35,6 +35,18 @@ type SourceBroadcaster struct {
 	SourceBroadcasterUserName  string `json:"source_broadcaster_user_name"`
 }
 
+type FromBroadcaster struct {
+	FromBroadcasterUserId    string `json:"from_broadcaster_user_id"`
+	FromBroadcasterUserLogin string `json:"from_broadcaster_user_login"`
+	FromBroadcasterUserName  string `json:"from_broadcaster_user_name"`
+}
+
+type ToBroadcaster struct {
+	ToBroadcasterUserId    string `json:"to_broadcaster_user_id"`
+	ToBroadcasterUserLogin string `json:"to_broadcaster_user_login"`
+	ToBroadcasterUserName  string `json:"to_broadcaster_user_name"`
+}
+
 type Chatter struct {
 	ChatterUserId    string `json:"chatter_user_id"`
 	ChatterUserLogin string `json:"chatter_user_login"`
@@ -49,7 +61,7 @@ type HostBroadcaster struct {
 
 type Ban struct {
 	User
-	Reason *string `json:"reason,omitempty"`
+	Reason string `json:"reason"`
 }
 
 type Timeout struct {
@@ -170,13 +182,10 @@ type EventChannelCheer struct {
 }
 
 type EventChannelRaid struct {
-	FromBroadcasterUserId    string `json:"from_broadcaster_user_id"`
-	FromBroadcasterUserLogin string `json:"from_broadcaster_user_login"`
-	FromBroadcasterUserName  string `json:"from_broadcaster_user_name"`
-	ToBroadcasterUserId      string `json:"to_broadcaster_user_id"`
-	ToBroadcasterUserLogin   string `json:"to_broadcaster_user_login"`
-	ToBroadcasterUserName    string `json:"to_broadcaster_user_name"`
-	Viewers                  int    `json:"viewers"`
+	FromBroadcaster
+	ToBroadcaster
+
+	Viewers int `json:"viewers"`
 }
 
 type EventChannelBan struct {
@@ -284,9 +293,9 @@ type AutomaticChannelPointRewardUnlockedEmote struct {
 }
 
 type AutomaticChannelPointReward struct {
-	Type          string                                    `json:"type"`
-	Cost          int                                       `json:"cost"`
-	UnlockedEmote *AutomaticChannelPointRewardUnlockedEmote `json:"unlocked_emote"`
+	Type          string                                   `json:"type"`
+	Cost          int                                      `json:"cost"`
+	UnlockedEmote AutomaticChannelPointRewardUnlockedEmote `json:"unlocked_emote"`
 }
 
 type EventChannelChannelPointsAutomaticRewardRedemptionAdd struct {
@@ -548,25 +557,20 @@ type EventChannelShieldModeEnd EventChannelShieldModeBegin
 type EventChannelShoutoutCreate struct {
 	Broadcaster
 	Moderator
+	ToBroadcaster
 
-	ToBroadcasterUserId    string    `json:"to_broadcaster_user_id"`
-	ToBroadcasterUserLogin string    `json:"to_broadcaster_user_login"`
-	ToBroadcasterUserName  string    `json:"to_broadcaster_user_name"`
-	StartedAt              time.Time `json:"started_at"`
-	ViewerCount            int       `json:"viewer_count"`
-	CooldownEndsAt         time.Time `json:"cooldown_ends_at"`
-	TargetCooldownEndsAt   time.Time `json:"target_cooldown_ends_at"`
+	StartedAt            time.Time `json:"started_at"`
+	ViewerCount          int       `json:"viewer_count"`
+	CooldownEndsAt       time.Time `json:"cooldown_ends_at"`
+	TargetCooldownEndsAt time.Time `json:"target_cooldown_ends_at"`
 }
 
 type EventChannelShoutoutReceive struct {
 	Broadcaster
-	Moderator
+	FromBroadcaster
 
-	FromBroadcasterUserId    string    `json:"from_broadcaster_user_id"`
-	FromBroadcasterUserLogin string    `json:"from_broadcaster_user_login"`
-	FromBroadcasterUserName  string    `json:"from_broadcaster_user_name"`
-	ViewerCount              int       `json:"viewer_count"`
-	StartedAt                time.Time `json:"started_at"`
+	ViewerCount int       `json:"viewer_count"`
+	StartedAt   time.Time `json:"started_at"`
 }
 
 type EventChannelAdBreakBegin struct {
@@ -608,7 +612,9 @@ type EventChannelUnbanRequestResolve struct {
 	Moderator
 	User
 
-	LowTrustStatus string `json:"low_trust_status"`
+	Id             string `json:"id"`
+	ResolutionText string `json:"resolution_text"`
+	Status         string `json:"status"`
 }
 
 type EventChannelSharedChatBegin struct {
@@ -648,28 +654,28 @@ type EventChannelModerate struct {
 	SourceBroadcaster
 	Moderator
 
-	Action              string          `json:"action"`
-	Followers           *Followers      `json:"followers,omitempty"`
-	Slow                *SlowMode       `json:"slow,omitempty"`
-	Vip                 *User           `json:"vip,omitempty"`
-	Unvip               *User           `json:"unvip,omitempty"`
-	Mod                 *User           `json:"mod,omitempty"`
-	Unmod               *User           `json:"unmod,omitempty"`
-	Ban                 *Ban            `json:"ban,omitempty"`
-	Unban               *User           `json:"unban,omitempty"`
-	Timeout             *Timeout        `json:"timeout,omitempty"`
-	Untimeout           *User           `json:"untimeout,omitempty"`
-	Raid                *Raid           `json:"raid,omitempty"`
-	Unraid              *User           `json:"unraid,omitempty"`
-	Delete              *DeletedMessage `json:"delete,omitempty"`
-	AutomodTerms        *AutomodTerms   `json:"automod_terms,omitempty"`
-	UnbanRequest        *UnbanRequest   `json:"unban_request,omitempty"`
-	Warn                *Warning        `json:"warn,omitempty"`
-	SharedChatBan       *Ban            `json:"shared_chat_ban,omitempty"`
-	SharedChatUnban     *User           `json:"shared_chat_unban,omitempty"`
-	SharedChatTimeout   *Timeout        `json:"shared_chat_timeout,omitempty"`
-	SharedChatuntimeout *User           `json:"shared_chat_untimeout,omitempty"`
-	SharedChatDelete    *DeletedMessage `json:"shared_chat_delete,omitempty"`
+	Action              string         `json:"action"`
+	Followers           Followers      `json:"followers"`
+	Slow                SlowMode       `json:"slow"`
+	Vip                 User           `json:"vip"`
+	Unvip               User           `json:"unvip"`
+	Mod                 User           `json:"mod"`
+	Unmod               User           `json:"unmod"`
+	Ban                 Ban            `json:"ban"`
+	Unban               User           `json:"unban"`
+	Timeout             Timeout        `json:"timeout"`
+	Untimeout           User           `json:"untimeout"`
+	Raid                Raid           `json:"raid"`
+	Unraid              User           `json:"unraid"`
+	Delete              DeletedMessage `json:"delete"`
+	AutomodTerms        AutomodTerms   `json:"automod_terms"`
+	UnbanRequest        UnbanRequest   `json:"unban_request"`
+	Warn                Warning        `json:"warn"`
+	SharedChatBan       Ban            `json:"shared_chat_ban"`
+	SharedChatUnban     User           `json:"shared_chat_unban"`
+	SharedChatTimeout   Timeout        `json:"shared_chat_timeout"`
+	SharedChatuntimeout User           `json:"shared_chat_untimeout"`
+	SharedChatDelete    DeletedMessage `json:"shared_chat_delete"`
 }
 
 type ChatMessageFragmentCheermote struct {
@@ -688,11 +694,11 @@ type ChatMessageFragmentEmote struct {
 type ChatMessageFragmentMention User
 
 type ChatMessageFragment struct {
-	Type      string                        `json:"type"`
-	Text      string                        `json:"text"`
-	Cheermote *ChatMessageFragmentCheermote `json:"cheermote,omitempty"`
-	Emote     *ChatMessageFragmentEmote     `json:"emote,omitempty"`
-	Mention   *ChatMessageFragmentMention   `json:"mention,omitempty"`
+	Type      string                       `json:"type"`
+	Text      string                       `json:"text"`
+	Cheermote ChatMessageFragmentCheermote `json:"cheermote"`
+	Emote     ChatMessageFragmentEmote     `json:"emote"`
+	Mention   ChatMessageFragmentMention   `json:"mention"`
 }
 
 type ChatMessage struct {
@@ -728,15 +734,15 @@ type EventAutomodSettingsUpdate struct {
 	Broadcaster
 	Moderator
 
-	OverallLevel            *int `json:"overall_level"`
-	Disability              int  `json:"disability"`
-	Aggression              int  `json:"aggression"`
-	SexualitySexOrGender    int  `json:"sexuality_sex_or_gender"`
-	Misogyny                int  `json:"misogyny"`
-	Bullying                int  `json:"bullying"`
-	Swearing                int  `json:"swearing"`
-	RaceEthnicityOrReligion int  `json:"race_ethnicity_or_religion"`
-	SexBasedTerms           int  `json:"sex_based_terms"`
+	OverallLevel            int `json:"overall_level"`
+	Disability              int `json:"disability"`
+	Aggression              int `json:"aggression"`
+	SexualitySexOrGender    int `json:"sexuality_sex_or_gender"`
+	Misogyny                int `json:"misogyny"`
+	Bullying                int `json:"bullying"`
+	Swearing                int `json:"swearing"`
+	RaceEthnicityOrReligion int `json:"race_ethnicity_or_religion"`
+	SexBasedTerms           int `json:"sex_based_terms"`
 }
 
 type EventAutomodTermsUpdate struct {
@@ -799,17 +805,16 @@ type EventChannelChatMessage struct {
 	SourceBroadcaster
 	Chatter
 
-	MessageId                   string                  `json:"message_id"`
-	SourceMessageId             string                  `json:"source_message_id"`
-	Message                     ChatMessage             `json:"message"`
-	Color                       string                  `json:"color"`
-	Badges                      []ChatMessageUserBadge  `json:"badges"`
-	SourceBadges                *[]ChatMessageUserBadge `json:"source_badges,omitempty"`
-	MessageType                 string                  `json:"message_type"`
-	Cheer                       *ChatMessageCheer       `json:"cheer,omitempty"`
-	Reply                       *ChatMessageReply       `json:"reply,omitempty"`
-	ChannelPointsCustomRewardId string                  `json:"channel_points_custom_reward_id"`
-	ChannelPointsAnimationId    string                  `json:"channel_points_animation_id"`
+	MessageId                   string                 `json:"message_id"`
+	SourceMessageId             string                 `json:"source_message_id"`
+	Message                     ChatMessage            `json:"message"`
+	Color                       string                 `json:"color"`
+	Badges                      []ChatMessageUserBadge `json:"badges"`
+	SourceBadges                []ChatMessageUserBadge `json:"source_badges"`
+	MessageType                 string                 `json:"message_type"`
+	Cheer                       ChatMessageCheer       `json:"cheer"`
+	Reply                       ChatMessageReply       `json:"reply"`
+	ChannelPointsCustomRewardId string                 `json:"channel_points_custom_reward_id"`
 }
 
 type EventChannelChatMessageDelete struct {
@@ -905,38 +910,38 @@ type EventChannelChatNotification struct {
 	SourceBroadcaster
 	Chatter
 
-	ChatterIsAnonymous bool                    `json:"chatter_is_anonymous"`
-	Color              string                  `json:"color"`
-	Badges             []ChatMessageUserBadge  `json:"badges"`
-	SourceBadges       *[]ChatMessageUserBadge `json:"source_badges"`
-	SystemMessage      string                  `json:"system_message"`
-	MessageId          string                  `json:"message_id"`
-	SourceMessageId    string                  `json:"source_message_id"`
-	Message            ChatMessage             `json:"message"`
+	ChatterIsAnonymous bool                   `json:"chatter_is_anonymous"`
+	Color              string                 `json:"color"`
+	Badges             []ChatMessageUserBadge `json:"badges"`
+	SourceBadges       []ChatMessageUserBadge `json:"source_badges"`
+	SystemMessage      string                 `json:"system_message"`
+	MessageId          string                 `json:"message_id"`
+	SourceMessageId    string                 `json:"source_message_id"`
+	Message            ChatMessage            `json:"message"`
 
-	NoticeType       string                            `json:"notice_type"`
-	Sub              *ChatNotificationSub              `json:"sub,omitempty"`
-	Resub            *ChatNotificationResub            `json:"resub,omitempty"`
-	SubGift          *ChatNotificationSubGift          `json:"sub_gift,omitempty"`
-	CommunitySubGift *ChatNotificationCommunitySubGift `json:"community_sub_gift,omitempty"`
-	GiftPaidUpgrade  *ChatNotificationGiftPaidUpgrade  `json:"gift_paid_upgrade,omitempty"`
-	PrimePaidUpgrade *ChatNotificationPrimePaidUpgrade `json:"prime_paid_upgrade,omitempty"`
-	PayItForward     *ChatNotificationPayItForward     `json:"pay_it_forward,omitempty"`
-	Raid             *ChatNotificationRaid             `json:"raid,omitempty"`
-	Unraid           *ChatNotificationUnraid           `json:"unraid,omitempty"`
-	Announcement     *ChatNotificationAnnouncement     `json:"announcement,omitempty"`
-	BitsBadgeTier    *ChatNotificationBitsBadgeTier    `json:"bits_badge_tier,omitempty"`
-	CharityDonation  *ChatNotificationCharityDonation  `json:"charity_donation,omitempty"`
+	NoticeType       string                           `json:"notice_type"`
+	Sub              ChatNotificationSub              `json:"sub"`
+	Resub            ChatNotificationResub            `json:"resub"`
+	SubGift          ChatNotificationSubGift          `json:"sub_gift"`
+	CommunitySubGift ChatNotificationCommunitySubGift `json:"community_sub_gift"`
+	GiftPaidUpgrade  ChatNotificationGiftPaidUpgrade  `json:"gift_paid_upgrade"`
+	PrimePaidUpgrade ChatNotificationPrimePaidUpgrade `json:"prime_paid_upgrade"`
+	PayItForward     ChatNotificationPayItForward     `json:"pay_it_forward"`
+	Raid             ChatNotificationRaid             `json:"raid"`
+	Unraid           ChatNotificationUnraid           `json:"unraid"`
+	Announcement     ChatNotificationAnnouncement     `json:"announcement"`
+	BitsBadgeTier    ChatNotificationBitsBadgeTier    `json:"bits_badge_tier"`
+	CharityDonation  ChatNotificationCharityDonation  `json:"charity_donation"`
 
-	SharedChatSub              *ChatNotificationSub              `json:"shared_chat_sub,omitempty"`
-	SharedChatResub            *ChatNotificationResub            `json:"shared_chat_resub,omitempty"`
-	SharedChatSubGift          *ChatNotificationSubGift          `json:"shared_chat_sub_gift,omitempty"`
-	SharedChatCommunitySubGift *ChatNotificationCommunitySubGift `json:"shared_chat_community_sub_gift,omitempty"`
-	SharedChatGiftPaidUpgrade  *ChatNotificationGiftPaidUpgrade  `json:"shared_chat_gift_paid_upgrade,omitempty"`
-	SharedChatPrimePaidUpgrade *ChatNotificationPrimePaidUpgrade `json:"shared_chat_prime_paid_upgrade,omitempty"`
-	SharedChatPayItForward     *ChatNotificationPayItForward     `json:"shared_chat_pay_it_forward,omitempty"`
-	SharedChatRaid             *ChatNotificationRaid             `json:"shared_chat_raid,omitempty"`
-	SharedChatAnnouncement     *ChatNotificationAnnouncement     `json:"shared_chat_announcement,omitempty"`
+	SharedChatSub              ChatNotificationSub              `json:"shared_chat_sub"`
+	SharedChatResub            ChatNotificationResub            `json:"shared_chat_resub"`
+	SharedChatSubGift          ChatNotificationSubGift          `json:"shared_chat_sub_gift"`
+	SharedChatCommunitySubGift ChatNotificationCommunitySubGift `json:"shared_chat_community_sub_gift"`
+	SharedChatGiftPaidUpgrade  ChatNotificationGiftPaidUpgrade  `json:"shared_chat_gift_paid_upgrade"`
+	SharedChatPrimePaidUpgrade ChatNotificationPrimePaidUpgrade `json:"shared_chat_prime_paid_upgrade"`
+	SharedChatPayItForward     ChatNotificationPayItForward     `json:"shared_chat_pay_it_forward"`
+	SharedChatRaid             ChatNotificationRaid             `json:"shared_chat_raid"`
+	SharedChatAnnouncement     ChatNotificationAnnouncement     `json:"shared_chat_announcement"`
 }
 
 type EventChannelChatSettingsUpdate struct {
@@ -973,7 +978,5 @@ type EventChannelSuspiciousUserUpdate struct {
 	User
 	Moderator
 
-	Id             string `json:"id"`
-	ResolutionText string `json:"resolution_text"`
-	Status         string `json:"status"`
+	LowTrustStatus string `json:"low_trust_status"`
 }

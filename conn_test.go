@@ -142,19 +142,6 @@ func TestOnKeepAlive(t *testing.T) {
 	})
 }
 
-// func TestOnReconnect(t *testing.T) {
-// 	t.Parallel()
-
-// 	assertEventOccured(t, func(ch chan struct{}) {
-// 		client := newClient(t, genReconnectGen(""))
-// 		client.OnReconnect(func(message twitch.ReconnectMessage) {
-// 			close(ch)
-// 		})
-
-// 		go connect(t, client)
-// 	})
-// }
-
 func TestOnRevoke(t *testing.T) {
 	t.Parallel()
 
