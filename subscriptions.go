@@ -74,6 +74,8 @@ var (
 	SubChannelShoutoutCreate  EventSubscription = "channel.shoutout.create"
 	SubChannelShoutoutReceive EventSubscription = "channel.shoutout.receive"
 
+	SubChannelModerate EventSubscription = "channel.moderate"
+
 	SubAutomodMessageHold           EventSubscription = "automod.message.hold"
 	SubAutomodMessageUpdate         EventSubscription = "automod.message.update"
 	SubAutomodSettingsUpdate        EventSubscription = "automod.settings.update"
@@ -277,6 +279,10 @@ var (
 			Version:  "1",
 			EventGen: zeroPtrGen[EventChannelShoutoutReceive](),
 		},
+		SubChannelModerate: {
+			Version:  "2",
+			EventGen: zeroPtrGen[EventChannelModerate](),
+    },
 		SubAutomodMessageHold: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventAutomodMessageHold](),

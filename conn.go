@@ -102,6 +102,7 @@ type Client struct {
 	onEventChannelShieldModeEnd                             func(event EventChannelShieldModeEnd)
 	onEventChannelShoutoutCreate                            func(event EventChannelShoutoutCreate)
 	onEventChannelShoutoutReceive                           func(event EventChannelShoutoutReceive)
+	onEventChannelModerate                                  func(event EventChannelModerate)
 	onEventAutomodMessageHold                               func(event EventAutomodMessageHold)
 	onEventAutomodMessageUpdate                             func(event EventAutomodMessageUpdate)
 	onEventAutomodSettingsUpdate                            func(event EventAutomodSettingsUpdate)
@@ -387,6 +388,8 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelShoutoutCreate, *event)
 	case *EventChannelShoutoutReceive:
 		callFunc(c.onEventChannelShoutoutReceive, *event)
+	case *EventChannelModerate:
+		callFunc(c.onEventChannelModerate, *event)
 	case *EventAutomodMessageHold:
 		callFunc(c.onEventAutomodMessageHold, *event)
 	case *EventAutomodMessageUpdate:
@@ -658,6 +661,10 @@ func (c *Client) OnEventChannelShoutoutCreate(callback func(event EventChannelSh
 
 func (c *Client) OnEventChannelShoutoutReceive(callback func(event EventChannelShoutoutReceive)) {
 	c.onEventChannelShoutoutReceive = callback
+}
+
+func (c *Client) OnEventChannelModerate(callback func(event EventChannelModerate)) {
+	c.onEventChannelModerate = callback
 }
 
 func (c *Client) OnEventAutomodMessageHold(callback func(event EventAutomodMessageHold)) {
