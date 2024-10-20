@@ -803,3 +803,13 @@ func TestEventChannelUnbanRequestResolve(t *testing.T) {
 		})
 	}, twitch.SubChannelUnbanRequestResolve)
 }
+
+func TestEventConduitShardDisabled(t *testing.T) {
+	t.Parallel()
+
+	assertSpecificEventOccured(t, func(client *twitch.Client, ch chan struct{}) {
+		client.OnEventConduitShardDisabled(func(event twitch.EventConduitShardDisabled) {
+			close(ch)
+		})
+	}, twitch.SubConduitShardDisabled)
+}

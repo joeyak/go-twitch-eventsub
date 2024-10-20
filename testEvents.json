@@ -1487,5 +1487,16 @@
         "user_name": "Not_Cool_User",
         "resolution_text": "no",
         "status": "denied"
+    },
+    "conduit.shard.disabled": {
+        "conduit_id": "bfcfc993-26b1-b876-44d9-afe75a379dac",
+        "shard_id": "4",
+        "status": "websocket_disconnected",
+        "transport": {
+            "method": "websocket",
+            "session_id": "ad1c9fc3-0d99-4eb7-8a04-8608e8ff9ec9",
+            "connected_at": "2020-11-10T14:32:18.730260295Z",
+            "disconnected_at": "2020-11-11T14:32:18.730260295Z"
+        }
     }
 }
