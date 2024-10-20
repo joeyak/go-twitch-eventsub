@@ -129,6 +129,7 @@ type Client struct {
 	onEventChannelWarningSend                               func(event EventChannelWarningSend)
 	onEventChannelUnbanRequestCreate                        func(event EventChannelUnbanRequestCreate)
 	onEventChannelUnbanRequestResolve                       func(event EventChannelUnbanRequestResolve)
+	onEventConduitShardDisabled                             func(event EventConduitShardDisabled)
 }
 
 func NewClient() *Client {
@@ -450,6 +451,8 @@ func (c *Client) handleNotification(message NotificationMessage) error {
 		callFunc(c.onEventChannelUnbanRequestCreate, *event)
 	case *EventChannelUnbanRequestResolve:
 		callFunc(c.onEventChannelUnbanRequestResolve, *event)
+	case *EventConduitShardDisabled:
+		callFunc(c.onEventConduitShardDisabled, *event)
 	default:
 		c.onError(fmt.Errorf("unknown event type %s", subscription.Type))
 	}
@@ -793,4 +796,8 @@ func (c *Client) OnEventChannelUnbanRequestCreate(callback func(event EventChann
 
 func (c *Client) OnEventChannelUnbanRequestResolve(callback func(event EventChannelUnbanRequestResolve)) {
 	c.onEventChannelUnbanRequestResolve = callback
+}
+
+func (c *Client) OnEventConduitShardDisabled(callback func(event EventConduitShardDisabled)) {
+	c.onEventConduitShardDisabled = callback
 }
