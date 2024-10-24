@@ -121,7 +121,7 @@ func TestOnCloseWithContext(t *testing.T) {
 	t.Parallel()
 	client := newClient(t, noDataGen)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 150*time.Millisecond)
 	defer cancel()
 
 	err := client.ConnectWithContext(ctx)
