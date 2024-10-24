@@ -1,12 +1,11 @@
 package twitch_test
 
 import (
-	"context"
 	"fmt"
 	"testing"
 	"time"
 
-	"github.com/joeyak/go-twitch-eventsub/v2"
+	"github.com/joeyak/go-twitch-eventsub/v3"
 	"github.com/stretchr/testify/assert"
 )
 

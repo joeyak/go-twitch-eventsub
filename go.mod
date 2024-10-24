@@ -1,4 +1,4 @@
-module github.com/joeyak/go-twitch-eventsub/v2
+module github.com/joeyak/go-twitch-eventsub/v3
 
 go 1.19
 

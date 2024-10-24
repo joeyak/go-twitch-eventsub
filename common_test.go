@@ -16,7 +16,7 @@ import (
 
 	"github.com/coder/websocket"
 	"github.com/google/uuid"
-	"github.com/joeyak/go-twitch-eventsub/v2"
+	"github.com/joeyak/go-twitch-eventsub/v3"
 )
 
 //go:embed testEvents.json

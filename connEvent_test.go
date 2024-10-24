@@ -3,7 +3,7 @@ package twitch_test
 import (
 	"testing"
 
-	"github.com/joeyak/go-twitch-eventsub/v2"
+	"github.com/joeyak/go-twitch-eventsub/v3"
 )
 
 func assertSpecificEventOccured(t *testing.T, register func(client *twitch.Client, ch chan struct{}), event twitch.EventSubscription, suffixes ...string) {

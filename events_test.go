@@ -1,8 +1,10 @@
-package twitch
+package twitch_test
 
 import (
 	"fmt"
 	"testing"
+
+	"github.com/joeyak/go-twitch-eventsub/v3"
 )
 
 func TestGoalAmount(t *testing.T) {
@@ -21,7 +23,7 @@ func TestGoalAmount(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("%d-%d", tc.Value, tc.DecimalPlaces), func(t *testing.T) {
-			amount := GoalAmount{
+			amount := twitch.GoalAmount{
 				Value:         tc.Value,
 				DecimalPlaces: tc.DecimalPlaces,
 			}

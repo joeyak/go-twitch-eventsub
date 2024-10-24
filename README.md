@@ -2,7 +2,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/joeyak/go-twitch-eventsub)](https://goreportcard.com/report/github.com/joeyak/go-twitch-eventsub)
 ![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)
-[![GoDoc](https://godoc.org/github.com/joeyak/go-twitch-eventsub?status.svg)](https://godoc.org/github.com/joeyak/go-twitch-eventsub/v2)
+[![GoDoc](https://godoc.org/github.com/joeyak/go-twitch-eventsub?status.svg)](https://godoc.org/github.com/joeyak/go-twitch-eventsub/v3)
 ![tests](https://github.com/joeyak/go-twitch-eventsub/actions/workflows/main.yaml/badge.svg)
 
 
@@ -13,6 +13,15 @@ If a websocket connection has no subscriptions, then it will close automatically
 ## Major Version Changes
 
 v2 changes `OnRawEvent` from passing `EventSubscription` to `PayloadSubscription`. This allows extra information to be passed in the event instead of just the type.
+
+v3 changes to event types
+
+* Added pointers where it made sense and values were null or optional
+* Changed EventChannelBan times to be `time.Time` instead of `string`
+* Fixed EventChannelGoalBegin, EventChannelGoalProgress, and EventChannelGoalEnd which seemed to have charity info
+* Campaign objects did not have CampaignID
+* EventChannelShieldModeBegin should not have StoppedAt
+* EventChannelShieldModeEnd should not have StartedAt
 
 ## Authorization
 
@@ -38,7 +47,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/joeyak/go-twitch-eventsub/v2"
+	"github.com/joeyak/go-twitch-eventsub/v3"
 )
 
 var (
