@@ -100,7 +100,7 @@ var (
 	SubChannelSharedChatEnd    EventSubscription = "channel.shared_chat.end"
 
 	SubUserWhisperMessage EventSubscription = "user.whisper.message"
-  
+
 	SubChannelAdBreakBegin EventSubscription = "channel.ad_break.begin"
 
 	SubChannelWarningAcknowledge EventSubscription = "channel.warning.acknowledge"
@@ -108,6 +108,8 @@ var (
 
 	SubChannelUnbanRequestCreate  EventSubscription = "channel.unban_request.create"
 	SubChannelUnbanRequestResolve EventSubscription = "channel.unban_request.resolve"
+
+	SubConduitShardDisabled EventSubscription = "conduit.shard.disabled"
 
 	subMetadata = map[EventSubscription]subscriptionMetadata{
 		SubChannelUpdate: {
@@ -305,7 +307,7 @@ var (
 		SubChannelModerate: {
 			Version:  "2",
 			EventGen: zeroPtrGen[EventChannelModerate](),
-    },
+		},
 		SubAutomodMessageHold: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventAutomodMessageHold](),
@@ -377,7 +379,7 @@ var (
 		SubUserWhisperMessage: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventUserWhisperMessage](),
-    },
+		},
 		SubChannelAdBreakBegin: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventChannelAdBreakBegin](),
@@ -397,6 +399,10 @@ var (
 		SubChannelUnbanRequestResolve: {
 			Version:  "1",
 			EventGen: zeroPtrGen[EventChannelUnbanRequestResolve](),
+		},
+		SubConduitShardDisabled: {
+			Version:  "1",
+			EventGen: zeroPtrGen[EventConduitShardDisabled](),
 		},
 	}
 )
