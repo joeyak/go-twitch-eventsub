@@ -888,7 +888,7 @@ type ChatNotificationPayItForward struct {
 type ChatNotificationRaid struct {
 	User
 
-	ViewerCount     string `json:"viewer_count"`
+	ViewerCount     int    `json:"viewer_count"`
 	ProfileImageUrl string `json:"profile_image_url"`
 }
 
